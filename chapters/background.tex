@@ -84,17 +84,23 @@ Since the latency is given in milliseconds, while the bandwidth is provided in m
    \label{fig:background:theoryplot}
 \end{figure}
 
-TODO: Explain graphs here
+The plot shows, that the total computation time is already faster in the distributed network if the network consists of two or more nodes. This proves that the approach to distribute the workload is a performance gain in this example. But it needs to be considdered, that if there is only one node in the network this approach is way slower due to the offset time and the additional network latency for each task.
+
+The graph in Figure \ref{fig:background:theoryA} represents the total runtime, on the y-axis in seconds, as a function of the number of nodes in the network, on the x-axis. The red dotted line displays the performance of a single machine, while the blue line illustrates the performance of the distributed computing network. The total number of all tasks to be executed is set to 20. This plot reveals that the distributed network achieves a faster total computation time than a single device, if the network contains two or more nodes. The performance gain is already more than 50\% when the workload is distributed to three nodes. However, it is important to note that the network will be slower in any scenario, if it consists of only one node, due to the initial overhead to set up the system and the network latency.
+
+The second graph in Figure \ref{fig:background:theoryB} depicts the total runtime on the y-axis in seconds as a function of the number of tasks on the x-axis. Again represents the red dotted line a single machine and the blue line the distributed computing network. The number of nodes N is set to three. This plot demonstrates that the distributed network achieves faster total computation time than a single device when the workload consists of more than one task. The performance gain grows exponentially as the number of tasks increases. Additionally, the total computation time of the network only increases when the number of tasks T and the number of nodes N have no common divisor. However, it is crucial to note that the network exhibits slower performance in scenarios with only one task, as a single task cannot be executed in parallel.
 
 \section{Related Work}
 \label{sec:background:related_work}
-This Sections introduces related Works in this field topic from the past and present
+The idea of distributed computing or volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently actively used and maintained.   
+\subsection{BOINC}
+\label{subsec:background:related_work:boinc}
+\ac{BOINC} is an open-source middleware system for volunteer computing, which utilizes consumer devices for scientific computing. It addresses key challenges in distributed computing, such as dealing with untrusted, unreliable, and heterogeneous computing resources, validating results from potentially malicious hosts, and supporting diverse applications and computing environments.
+The BOINC architecture consists of server components, including a database and job scheduler, and client software comprising a core client, GUI, and screensaver. Communication between clients and servers is facilitated through HTTP-based RPCs. BOINC employs replication-based validation and adaptive replication to ensure result integrity while minimizing overhead. The system also implements sophisticated scheduling policies both on the client and server sides to optimize resource allocation and job dispatch.
+While BOINC has been successful in supporting numerous scientific projects and providing substantial computing power, our proposed system aims to leverage modern web technologies to create a more dynamic and accessible distributed computing platform. \cite{relatedwork:boinc1}
 \subsection{SETI@home}
 \label{subsec:background:related_work:seti}
 Informations about SETI
-\subsection{BOINC}
-\label{subsec:background:related_work:boinc}
-Informations about BOINC
 \subsection{XtremWeb}
 \label{subsec:background:related_work:xtremweb}
 Informations about XtremWeb
