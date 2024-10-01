@@ -1,0 +1,34 @@
+Frontend (Popular Frameworks in General) 2023 Statista:
+https://www.statista.com/statistics/1124699/worldwide-developer-survey-most-used-frameworks-web/
+
+Backend 1 (Most Popular Backend Frameworks - 2012/2023)
+https://www.youtube.com/watch?v=S9JcI254DZI&t=2s
+
+Backend 2 (Most Popular Backend Frameworks - 2012/2024)
+https://www.youtube.com/watch?v=RSNwYPnh0Yc
+
+	-> Benchmark of these specific BE Frameworks
+https://web-frameworks-benchmark.netlify.app/result?f=express,koa,nestjs-express,nestjs-fastify,laravel,django,flask,rails,spring,beego,symfony,aspnet-minimal-api,aspnet-mvc,phoenix_bandit,phoenix_cowboy
+	
+https://web-frameworks-benchmark.netlify.app/result?f=beego,django,flask,spring,symfony,codeigniter4,laravel,rails,koa,nestjs-express,express,nestjs-fastify
+
+https://www.techempower.com/benchmarks/#hw=ph&test=fortune&section=data-r22&a=2&f=zhavon-zik073-v2qiv3-zik0zj-zijunz-zik0zj-zik0zj-zik0zj-zih7un-zhxjwf-zik0zj-zik0zj-zik0zj-zik0zj-1ekf
+
+
+Results of Mandelbrot test:
+
+pi@pi-HP-ProBook-640-G4:~/Master_Hda/MasterArbeit/C++Test$ ./mandelbrot -2.0 1.0 -1.5 1.5
+Mandelbrot calculation completed in 620965100[ns]
+Mandelbrot calculation completed in 620965[µs]
+Mandelbrot calculation completed in 620[ms]
+Mandelbrot calculation completed in 0[s]
+pi@pi-HP-ProBook-640-G4:~/Master_Hda/MasterArbeit/C++Test$ ./mandelbrot -2.0 1.0 -1.5 1.5
+Mandelbrot calculation completed in 608439359[ns]
+Mandelbrot calculation completed in 608439[µs]
+Mandelbrot calculation completed in 608[ms]
+Mandelbrot calculation completed in 0[s]
+pi@pi-HP-ProBook-640-G4:~/Master_Hda/MasterArbeit/C++Test$ ./mandelbrot -2.0 1.0 -1.5 1.5
+Mandelbrot calculation completed in 613928186[ns]
+Mandelbrot calculation completed in 613928[µs]
+Mandelbrot calculation completed in 613[ms]
+Mandelbrot calculation completed in 0[s]

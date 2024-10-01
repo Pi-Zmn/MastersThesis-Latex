@@ -1,0 +1,287 @@
+\chapter{Appendix}
+
+\section{System Specifications}
+
+\subsection{Linux System}
+\label{app:system:mymachine}
+Tests and code executions have been made on a system with the following specifications:
+
+\begin{itemize}
+    \item \textbf{CPU:} Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
+    \item \textbf{RAM:} 15 Gi (15.4667 GB)
+    \item \textbf{Operating System:} Ubuntu 20.04.6 LTS
+    \item \textbf{Kernel:} 5.15.0-119-generic
+    \item \textbf{GPU:} Intel Corporation UHD Graphics 620 (rev 07)
+\end{itemize}
+
+\section{Sourcecode and Output}
+
+\subsection{Calculation of Mandelbrot Set: C++}
+\label{app:code:mandelbrot1}
+Below is the C++ source code for calculating the Mandelbrot set:
+
+\begin{lstlisting}[language=C++, frame=tb, caption={Mandelbrot Set Calculation}]
+    #include <iostream>
+    #include <complex>
+    #include <chrono>
+    
+    using namespace std;
+    using namespace std::chrono;
+    
+    // Function to compute Mandelbrot iterations for a given complex number
+    int mandelbrot(complex<long double> c, int max_iter) {
+        complex<long double> z = 0;
+        int n = 0;
+    
+        while (abs(z) <= 2.0 && n < max_iter) {
+            z = z * z + c;
+            n++;
+        }
+    
+        return n;
+    }
+    
+    // Mandelbrot calculation over a 2D area defined by xmin, xmax, ymin, ymax
+    void calculate_mandelbrot(long double xmin, long double xmax, long double ymin, long double ymax, int width, int height, int max_iter) {
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                // Map pixel position to complex plane
+                long double real = xmin + (x / (long double)width) * (xmax - xmin);
+                long double imag = ymin + (y / (long double)height) * (ymax - ymin);
+                complex<long double> c(real, imag);
+    
+                mandelbrot(c, max_iter);
+            }
+        }
+    }
+    
+    int main(int argc, char* argv[]) {
+        if (argc != 5) {
+            cerr << "Usage: " << argv[0] << " <xmin> <xmax> <ymin> <ymax>" << endl;
+            return 1;
+        }
+    
+        // Parse command-line arguments for region bounds
+        long double xmin = atof(argv[1]);
+        long double xmax = atof(argv[2]);
+        long double ymin = atof(argv[3]);
+        long double ymax = atof(argv[4]);
+    
+        // Settings for calculation
+        const int width = 512;     // Resolution width
+        const int height = 512;    // Resolution height
+        const int max_iter = 100;  // Maximum number of iterations
+    
+        // Start measuring time
+        auto start = high_resolution_clock::now();
+    
+        // Calculate Mandelbrot set in the specified region
+        calculate_mandelbrot(xmin, xmax, ymin, ymax, width, height, max_iter);
+    
+        // Stop measuring time
+        auto end = high_resolution_clock::now();
+    
+        // Print Computing Time
+        cout << "Mandelbrot calculation completed in " << duration_cast<milliseconds>(end - start).count() << "[ms]" << endl;
+        cout << "Mandelbrot calculation completed in " << duration_cast<seconds>(end - start).count() << "[s]" << endl;
+    
+        return 0;
+    }
+\end{lstlisting}
+
+This code has been executed in three isolated runs with following input parameters:
+\begin{lstlisting}
+    ./mandelbrot -2.0 1.0 -1.5 1.5
+\end{lstlisting}
+
+The output of this code on the system specified in \ref{app:system:mymachine} was:
+\begin{itemize}
+    \item \begin{lstlisting}
+        Mandelbrot calculation completed in 620[ms]
+        Mandelbrot calculation completed in 0[s]
+    \end{lstlisting}
+    \item \begin{lstlisting}
+        Mandelbrot calculation completed in 608[ms]
+        Mandelbrot calculation completed in 0[s]
+    \end{lstlisting}
+    \item \begin{lstlisting}
+        Mandelbrot calculation completed in 613[ms]
+        Mandelbrot calculation completed in 0[s]
+    \end{lstlisting}
+\end{itemize}
+
+\subsection{Calculation of Mandelbrot Set: C++ (WASM build)}
+\label{app:code:mandelbrot2}
+Below is the C++ source code for calculating the Mandelbrot set with all additions to be complied to .wasm with emscripten (emcc):
+
+\begin{lstlisting}[language=C++, frame=tb, caption={Mandelbrot Set Calculation (WASM build)}]
+#include <emscripten.h>
+#include <iostream>
+#include <complex>
+#include <chrono>
+
+using namespace std;
+using namespace std::chrono;
+
+// Function to compute Mandelbrot iterations for a given complex number
+int mandelbrot(complex<long double> c, int max_iter) {
+    complex<long double> z = 0;
+    int n = 0;
+
+    while (abs(z) <= 2.0 && n < max_iter) {
+        z = z * z + c;
+        n++;
+    }
+
+    return n;
+}
+
+// Mandelbrot calculation over a 2D area defined by xmin, xmax, ymin, ymax
+void calculate_mandelbrot(long double xmin, long double xmax, long double ymin, long double ymax, int width, int height, int max_iter) {
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            // Map pixel position to complex plane
+            long double real = xmin + (x / (long double)width) * (xmax - xmin);
+            long double imag = ymin + (y / (long double)height) * (ymax - ymin);
+            complex<long double> c(real, imag);
+
+            mandelbrot(c, max_iter);
+        }
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void wasmMain(long double xmin, long double xmax, long double ymin, long double ymax) {
+    // Settings for calculation
+    const int width = 512;     // Resolution width
+    const int height = 512;    // Resolution height
+    const int max_iter = 100;  // Maximum number of iterations
+
+    // Start measuring time
+    auto start = high_resolution_clock::now();
+
+    // Calculate Mandelbrot set in the specified region
+    calculate_mandelbrot(xmin, xmax, ymin, ymax, width, height, max_iter);
+
+    // Stop measuring time
+    auto end = high_resolution_clock::now();
+
+    // Print Computing Time
+    cout << "Mandelbrot calculation completed in " << duration_cast<milliseconds>(end - start).count() << "[ms]" << endl;
+    cout << "Mandelbrot calculation completed in " << duration_cast<seconds>(end - start).count() << "[s]" << endl;
+}
+
+int main(int argc, char *argv[]) {
+    // Set default region bounds
+    long double xmin = -2.0;
+    long double xmax = 1.0;
+    long double ymin = -1.5;
+    long double ymax = 1.5;
+
+    // Parse command-line arguments for region bounds
+    if (argc == 5) {
+        xmin = atof(argv[1]);
+	xmax = atof(argv[2]);
+	ymin = atof(argv[3]);
+	ymax = atof(argv[4]);
+    }
+
+    wasmMain(xmin, xmax, ymin, ymax);
+
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{Generating Plots: Python}
+\label{app:code:theoryplots}
+
+The following code was used to generate figure \ref{fig:background:theoryA}:
+\begin{lstlisting}[language=Python, frame=tb, caption={Ploting execution time (variable nodes)}]
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import math
+    import numpy as np
+    
+    t = 20
+    n = 5
+    tc = 614
+    tl = 32
+    setup_offset = 75
+    
+    # Run Time on single device
+    threshold_value = (t * tc) / 1000
+    
+    # Time Data
+    x = np.linspace(1, n, n)
+    # Run Time distributed on n devices
+    y = np.array([((math.ceil(t / n_val) * (tc + tl)) + setup_offset) / 1000 for n_val in x])
+    
+    # Create a line plot for the array of values
+    sns.set(style="whitegrid")
+    plt.plot(x, y, label="Runtime on N devices", color="blue")
+    
+    # Add a horizontal dotted line for the threshold value
+    plt.axhline(y=threshold_value, color='red', linestyle='--',
+                label=f'Runtime on single device ({threshold_value}s)')
+    
+    # Set plot title and labels
+    plt.title("Impact of varying nodes N on total runtime\n"
+              f'({t} Tasks, {tc}ms Computation time, {tl}ms Round Trip Time, {setup_offset}ms Offset)')
+    plt.xlabel("Number of nodes N")
+    plt.ylabel("Total runtime in Seconds [s]")
+    
+    # Show legend
+    plt.legend()
+    
+    # Save the plot as an SVG file
+    plt.savefig("line_plot_with_threshold.svg", format="svg")
+    
+    # Show the plot
+    plt.show()
+\end{lstlisting}
+
+The following code was used to generate figure \ref{fig:background:theoryB}:
+\begin{lstlisting}[language=Python, frame=tb, caption={Ploting execution time (variable tasks)}]
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import math
+    import numpy as np
+    
+    t = 15
+    n = 3
+    tc = 614
+    tl = 32
+    setup_offset = 75
+    
+    # Task Container
+    x = np.linspace(1, t, t)
+    
+    # Run Time on single device
+    threshold_value = np.array([(t_val * tc) / 1000 for t_val in x])
+    
+    
+    # Run Time distributed on n devices
+    y = np.array([((math.ceil(t_val / n) * (tc + tl)) + setup_offset) / 1000 for t_val in x])
+    
+    # Create a line plot for the array of values
+    sns.set(style="whitegrid")
+    plt.plot(x, y, label="Runtime on N devices", color="blue")
+    
+    # Add a dotted line for the threshold value
+    plt.plot(x, threshold_value, color='red', linestyle='--', label=f'Runtime on single device')
+    
+    # Set plot title and labels
+    plt.title("Impact of varying ammount of tasks T on total runtime\n"
+              f'({n} Nodes, {tc}ms Computation time, {tl}ms Round Trip Time, {setup_offset}ms Offset)')
+    plt.xlabel("Number of tasks T")
+    plt.ylabel("Total runtime in Seconds [s]")
+    
+    # Show legend
+    plt.legend()
+    
+    # Save the plot as an SVG file
+    plt.savefig("line_plot_with_threshold.svg", format="svg")
+    
+    # Show the plot
+    plt.show()
+\end{lstlisting}
