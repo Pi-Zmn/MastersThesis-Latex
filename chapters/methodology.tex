@@ -5,20 +5,29 @@ This chapter enumerates and describes all the technologies, frameworks, and tool
 \section{WebAssembly}
 \label{sec:methodology:wasm}
 WebAssembly is a key technology in this proposed system, offering several advantages for distributed computing. It provides near-native performance, platform independence, and potential multi-threading capabilities. WebAssembly allows to compile code written in languages such as C, C++, and Rust to a binary format that can be executed in web browsers, enabling efficient computation on diverse client devices.
+
+\cite{methodology:wasmdocu, relatedwork:wasmedgecomputing}
 \subsection{emscriptren for C and C++}
 \label{subsec:methodology:wasm:cpp}
+compiler from C \& C++ to .wasm with .js Gluecode (setup wasm environment) \cite{methodology:emcc}
 \subsection{Go}
 \label{subsec:methodology:wasm:go}
+compiler from Go to .wasm, offically from Go \cite{methodology:godocu}
 \subsection{Pyodie for Python}
 \label{subsec:methodology:wasm:python}
+"Pyodide is a port of CPython to WebAssembly/Emscripten". \cite{methodology:pyodie}
 
 \section{WebSokets}
 \label{sec:methodology:websokets}
 WebSockets play a crucial role in this system's communication infrastructure. Unlike traditional HTTP requests, WebSockets enable faster, bidirectional communication between clients and servers. This real-time capability is essential for efficient task distribution, progress monitoring, and result collection in the distributed computing platform.
 
+\cite{methodology:websockets1, methodology:websockets2, methodology:websockets3}
+
 \section{WebWorker}
 \label{sec:methodology:webworker}
 Web Workers are employed to enhance the performance and responsiveness of client-side computations. By executing computationally intensive tasks in separate threads, Web Workers prevent blocking the main thread responsible for the user interface and other critical browser functions. This approach allows our system to utilize client resources more effectively while maintaining a smooth user experience.
+
+\cite{methodology:webworkers}
 
 \section{Frameworks}
 \label{sec:methodology:frameworks}
@@ -56,15 +65,30 @@ In addition to the previously stated criteria, the selected backend framework ne
 
 To identify a high-performance framework, the most popular backend frameworks listed in Figure \ref{fig:methodology:popularBE} were compared using two different benchmarks. The results of these benchmarks are presented in Figure \ref{fig:methodology:benchmarkBE}, where the frameworks are ranked from top to bottom based on their performance in both benchmarks. It is important to note that some frameworks from the list in Figure \ref{fig:methodology:popularBE} could not be found in these specific benchmarks. Both benchmark sources simulated numerous clients sending requests to each backend and measuring the number of successful responses per second in order to determine the performance \cite{backend:benchmark1, backend:benchmark2}.
 
-Finally, NestJS with Fastify was selected as the backend framework. It performed exceptionally well in both benchmarks shown in Figure \ref{fig:methodology:benchmarkBE} and is also a popular choice among developers.
+Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the backend framework. It performed exceptionally well in both benchmarks shown in Figure \ref{fig:methodology:benchmarkBE} and is also a popular choice among developers.
 
 \subsection{Frontend}
 \label{subsec:methodology:frameworks:frontend}
 Why is NextJs a good choise?
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{gfx/figures/Top15_Frameworks_2024_Statista.png}
+  \caption{Most Used Web Frameworks in 2024 (Developer Survey) \cite{frontend:popularity}}
+  \label{fig:methodology:popularFE}
+\end{figure}
+
 \section{Entities}
 \label{sec:methodology:entities}
-To define the nomenvclature later in the Thesis and the structure of the Project
+To define the enteties and namings later in the Thesis and the structure of the Project
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{gfx/figures/Entities.jpg}
+  \caption{UML Entities}
+  \label{fig:methodology:entities}
+\end{figure}
+
 \subsection{Job}
 \label{subsec:methodology:entities:job}
 ..

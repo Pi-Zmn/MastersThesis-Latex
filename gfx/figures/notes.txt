@@ -32,3 +32,30 @@ Mandelbrot calculation completed in 613928186[ns]
 Mandelbrot calculation completed in 613928[µs]
 Mandelbrot calculation completed in 613[ms]
 Mandelbrot calculation completed in 0[s]
+
+
+---- BOINC Q 1 ------
+Available desktop devices: Source 2
+Available mobile devices: Source 3
+Acceptance of VS computing (5-10%): Source 4 & 5
+cost efficenty for VC: Source 10
+"VC is best suited to high-throughput computing
+(HTC), where workloads consist of large groups or
+streams of jobs, and the goal is high rate of job comple-
+tion rather than low job turnaround time. [...]
+Many BOINC projects run standard scientific programs
+such as Autodock, Gromacs, Rosetta, LAMMPS, and
+BLAST."
+Diverse/Heterogenous Volunteer devices (Hardware & OS): Source 11
+  ->BOINC: "As an example, SETI@home has 9 supported plat-
+forms, 2 apps, 86 app versions, and 34 plan classes." 
+   --> Less effort with WASM?
+Reference all expected states/cases a task can have:
+"1. The job completes successfully and correctly.
+2. The program crashes.
+3. The job completes but the returned results are in-
+correct, either because of hardware malfunction or
+because a malicious volunteer intentionally substi-
+tutes wrong results.
+4. The job is never returned, because (for example) the
+computer stops running BOINC."

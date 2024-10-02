@@ -1,21 +1,81 @@
 \chapter{Introduction}
 \label{ch:intro}
-Abstract here again
+\section{Introduction}
+Text from Expose: (TODO: mention volunteer computing, add sources, ...)
+
+\ac{HPC} networks have become increasingly important in solving complex, resource-intensive tasks across various domains (TODO: source here). However, traditional \ac{HPC} infrastructures often require significant investments in dedicated hardware and maintenance (TODO: source here). This paper proposes a approach to \ac{HPC} networking that leverages heterogeneous, dynamic, and wireless capabilities to create a more flexible and cost-effective solution.
+
+The proposed high-performance network infrastructure is characterized by three key features:
+
+\begin{enumerate}
+    \item \textbf{Heterogeneity:} The network can incorporate a diverse range of devices, regardless of their operating system or type. For the proof of concept, we will utilize everyday devices such as smartphones, tablets, and personal computers to form the network.
+    
+    \item \textbf{Dynamic participation:} The number of connected devices forming the network is variable and can change dynamically during runtime. The implemented infrastructure ensures that all active jobs are completed without issues, even as the number of participating devices fluctuates. Participants can join an active job or leave the network at any time without disrupting ongoing processes.
+    
+    \item \textbf{Wireless connectivity:} To enable flexible and location-independent usage, devices will connect via the Internet or within a \ac{LAN}. While this may introduce increased latency, it allows for greater accessibility and scalability.
+\end{enumerate}
+
+It is important to note that this approach is primarily suited for highly parallelizable problems. Each participating device will independently process an assigned task, with the results subsequently aggregated by a master instance.
+
+The primary objective of this research is to develop a resource-efficient alternative to conventional data centers. By enabling universities and small businesses to create powerful high-performance networks from their existing devices, we aim to provide a cost-effective solution that eliminates the need for expensive access fees or long wait times associated with external supercomputers. (TODO: Also creating a attractive alternative approach to current volunteer computing platforms)
 
 \section{Motivation}
 \label{sec:intro:motivation}
-Why is Volunteer Computing awesome? What makes my Platform different from exiting platforms? Save Resources / use Resources? Electricity coast? Free unused Computing Power overall ?
+Why is Volunteer Computing awesome? What makes my Platform different from exiting platforms? Save Resources / use exisitng (old) Resources? Electricity coast? Free unused Computing Power overall?
+
+\begin{itemize}
+    \item Back in 2014 was estimated that about 2 Billion computers are aktively in use worldwide \cite{intro:computersAmount,relatedwork:boinc1}
+    \item In the study 5\% of the respondents said they were "very likely" to participate \cite{intro:volunteerStudy,relatedwork:boinc1}, 37\% of the study participants said they were either "somewhat likely" or "very likely" \cite{intro:volunteerStudy}
+    \item Privacy and security concerns negatively impacted willingness to participate in volunteer computing \cite{intro:volunteerStudy}
+    \item The cost of volunteer computing can be lower than the cost of cloud computing depending on the amount of volunteer nodes and the number of working system administrators on a project \cite{intro:costAnalysis}.
+    \item Volunteer devices are very diverse in Hardware (Resources and Drivers) and operating systems \cite{intro:diverseDevices}. 
+\end{itemize}
+
+Text from Expose:
+
+The computational power of everyday devices such as laptops, smartphones, tablets, and desktop computers continues to increase, and these devices are now omnipresent in everyday live (TODO: source here). However, in many situations, these devices remain idle or underutilized during use. Moreover, businesses or households often possess several functional but outdated devices. While these untapped resources may seem insignificant individually, they collectively represent substantial potential due to their total number. These available yet unused resources in office buildings, universities, or public spaces can be harnessed to form a powerful high-performance network.
+
+(TODO: maybe remove this paragraph) Current approaches to building supercomputers or large-scale data centers focus on physically connecting all resources via cables to achieve optimal latency and using largely homogeneous hardware to ensure compatibility between individual devices (TODO: source here). However, this research focuses on an alternative approach.
+
+As the quality of wireless communication and internet connectivity continues to improve in terms of latency and data throughput (TODO: source here), I aim to leverage these advancements for the platform, utilizing current tools and technologies to my advantage. This research examines high-performance computing from a different perspective, investigating the advantages and disadvantages of a heterogeneous and wireless network. The primary requirement is that the implemented network should be capable of processing computationally intensive and time-consuming tasks.
+
+(TODO: maybe remove this paragraph) Large corporations such as OpenAI, Google, and Microsoft maintain their monopoly in areas like artificial intelligence development, in part due to their numerous large-scale data centers. The goal of this work is to provide universities and small businesses with a simple and financially viable option for research and development, ensuring they are not completely excluded from competition. This approach allows them to create their own \ac{HPC} network using existing resources, reducing their dependence on access to external data centers.
+
+The proposed system offers several potential benefits:
+
+\begin{itemize}
+    \item \textbf{Resource Efficiency:} Utilization of existing, often idle computational resources.
+    \item \textbf{Cost-Effectiveness:} Reduced need for investment in dedicated HPC hardware.
+    \item \textbf{Flexibility:} Easy scalability and adaptation to changing computational needs.
+    \item \textbf{Accessibility:} Democratization of high-performance computing capabilities.
+\end{itemize}
+
+By addressing these aspects, this research aims to contribute to the broader field of distributed computing and explore new paradigms in high-performance network architectures (TODO: volunteer computing is been present since 1997). The following sections will detail the proposed system design, implementation challenges, and potential applications in various domains.
 
 \section{Objectives}
 \label{sec:intro:objectives}
-some bla bla
+Easy to use platform for universitys or companies. Low overhead for volunteers. Secure for volunteers. Able to solve complex high throughput problems.
 \subsection{Problem Definition}
 \label{subsec:into:objectives:problems}
-Hos can i generate volunteers? How can i make the edge most efficient -> performat? How do i handel Heterogenous clients? How do i handel/build a dynamic environment -> clients come and go?
+Hos can i motivate volunteers? How can i make the edge (user device) most efficient -> performat? How do i handel Heterogenous clients? How do i handel/build a dynamic environment -> clients come and go?
 \subsection{Research Questions}
 \label{subsec:into:objectives:questions}
-Here a list of questions lol
+This study focuses on addressing the following key research questions:
+
+\begin{enumerate}
+    \item \textbf{Computational Capability:} Is the proposed high-performance network capable of successfully solving large, parallelizable problems?
+    
+    \item \textbf{Economic Viability:} Does this approach represent a resource-efficient and economically attractive alternative to conventional supercomputers?
+\end{enumerate}
+
+These questions aim to evaluate both the technical feasibility and the practical applicability of the proposed heterogeneous, dynamic, and wireless high-performance network.
+
+The first question focuses on the technical performance of the system, examining its ability to handle complex computational tasks that are typically reserved for traditional \ac{HPC} systems.
+
+The second question addresses the economic and environmental aspects of the proposed system. It involves comparing the resource utilization, energy consumption, and overall cost-effectiveness of our approach with that of conventional supercomputers.
+
+To answer these questions, a usabel platform has been developed and will be introduced and evaluated in the following chapters. The findings will provide insights into the potential of leveraging everyday devices for high-performance computing tasks.
 
 \section{Structure}
 \label{sec:intro:structure}
-Briefly describe all chapters here
+This paper is organized as follows: Chapter \ref{ch:background} discusses the main concept of volunteer computing, the theoretical background and related work in distributed and volunteer computing. Chapter \ref{ch:methodology} introduces the key technologys as well as the structure used to develop the platform. Chapter \ref{ch:implementation} focuses in deatial how the platform has been implemented and what challenges occured during the development. Chapter \ref{ch:evaluation} describes the experimental setup to benchmark the platform and evaluates the results. Finally, Chapter \ref{ch:conclusion} concludes the paper and outlines future research directions.
