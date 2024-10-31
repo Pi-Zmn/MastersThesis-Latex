@@ -8,7 +8,7 @@ This section describes all entities and establishes the terms used to describe t
 
 \subsection{Job}
 \label{subsec:methodology:entities:job}
-The Job entity represents a problem to be processed or solved using the platform. The platform is designed to handle multiple Jobs and each Job is a unique object. The State of a Job can have one of the following values:
+The Job entity represents a problem to be processed or solved using the platform. The platform is designed to handle multiple Jobs while each Job is a unique object. The State of a Job can have one of the following values:
 
 \begin{itemize}
 \item PENDING
@@ -18,7 +18,7 @@ The Job entity represents a problem to be processed or solved using the platform
 \item DONE
 \end{itemize}
 
-Figure \ref{fig:methodology:job-task} illustrates the \ac{UML} class diagram for the Job entity on the left side, lisitng all important attributes and methods of a Job. The language attributes defines the programming langugae of the source code that has been compiled to a WebAssembly binary file.
+Figure \ref{fig:methodology:job-task} illustrates the \ac{UML} class diagram for the Job entity on the left side, lisitng all important attributes and methods of a Job. The language attribute defines the programming langugae of the source code that has been compiled to a WebAssembly binary file.
 
 \begin{figure}[htbp]
   \centering
@@ -53,11 +53,11 @@ Figure \ref{fig:methodology:client} displays the \ac{UML} class diagram for the 
 
 \subsubsection{Worker}
 \label{ssubsec:methodology:entities:client:worker}
-Workers are Clients that voluntarily donate their computing power to support an active Job. Therfore they receive Tasks from the current Batch sent by the Server (\ref{subsec:methodology:entities:Server}), compute these Tasks, and return the corresponding results to the Server. Figure \ref{fig:methodology:client} presents the \ac{UML} class diagram of the Worker entity on the left side, listing all relevant attributes and methods. As Workers connect to the Server via web browsers, the browser's User Agent is utilized to characterize the Worker object. A browser User Agent can provide usefull information about the device's hardware resources and operating system.
+Workers are Clients that voluntarily donate their computing power to support an active Job. Therfore they receive Tasks from the current Batch sent by the Server (\ref{subsec:methodology:entities:Server}), compute these Tasks, and return the corresponding results back to the Server. Figure \ref{fig:methodology:client} presents the \ac{UML} class diagram of the Worker entity on the left side, listing all relevant attributes and methods. As Workers connect to the Server via web browsers, the browser's User Agent is utilized to individually characterize each worker. A browser User Agent can provide information about the Client's hardware resources and operating system.
 
 \subsubsection{Administrator}
 \label{ssubsec:methodology:entities:client:admin}
-An Administrator Client can perform the same actions as a Worker, but also has additional capabilities. Administrators have the ability to set the state of Jobs and to oversee the progress of all Jobs. Figure \ref{fig:methodology:client} illustrates the \ac{UML} class diagram of the Administrator entity on the right side.
+An Administrator Client can perform the same actions as a Worker, but also has additional capabilities. Only Administrators have the ability to set or change the state of Jobs and to oversee the progress of all Jobs. Figure \ref{fig:methodology:client} illustrates the \ac{UML} class diagram of the Administrator entity on the right side.
 
 \subsection{Server}
 \label{subsec:methodology:entities:Server}
@@ -69,7 +69,8 @@ Additionally the Server is responsible for scheduling and distributing the Tasks
 \label{sec:methodology:wasm}
 WebAssembly is a key technology in this proposed system, offering several advantages for distributed computing. It provides near-native performance, platform independence, and potential multi-threading capabilities. WebAssembly allows to compile code written in languages such as C, C++, and Rust to a binary format that can be executed in web browsers, enabling efficient computation on diverse client devices.
 
-\cite{methodology:wasmdocu, relatedwork:wasmedgecomputing}
+\cite{methodology:wasm, methodology:wasmdocu, relatedwork:wasmedgecomputing}
+
 \subsection{emscriptren for C and C++}
 \label{subsec:methodology:wasm:cpp}
 compiler from C \& C++ to .wasm with .js Gluecode (setup wasm environment) \cite{methodology:emcc}
@@ -104,25 +105,33 @@ This section introduces the frameworks selected for the development of the web a
 \subsection{Backend}
 \label{subsec:methodology:frameworks:backend}
 It was crucial for the backend framework to be popular among web developers. Working with a popular framework improves the development process by ensuring the availability of extensive educational and support resources online. Additionally, a widely used framework increases the likelihood that the platform can be maintained or further extended by other programmers.
+
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.95\textwidth]{gfx/figures/Popular_BE.png}
  \caption{Most Popular Backend Frameworks (Jan 2024) by GitHub Stars \cite{backend:popularity}}
  \label{fig:methodology:popularBE}
 \end{figure}
+
 The 15 most popular backend frameworks of January 2024 are displayed in figure \ref{fig:methodology:popularBE}. The popularity for each framework of this list is calculated by the number of GitHub Stars from repositories listed in a GitHub Archive \cite{backend:popularity}. The selection options of the backend framework where based on this popularity list. 
 \begin{figure}[htbp]
   \myfloatalign
   \subfloat[Requests/Second (2024-06-25) \cite{backend:benchmark1}]{
      \label{fig:methodology:benchmark1BE}
-     \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark1_BE.png}
-   } \\
-   \subfloat[Best fortunes responses per second (2023-10-17) \cite{backend:benchmark2}]{
-     \label{fig:methodology:benchmark2BE}
-     \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark2_BE.png}
+     \includegraphics[width=.75\linewidth]{gfx/figures/Benchmark1_BE.png}
    }
    \caption{Most Popular Backend Frameworks from Figure \ref{fig:methodology:popularBE} ranked by Performance.}
    \label{fig:methodology:benchmarkBE}
+\end{figure}
+
+\begin{figure}[htbp] \ContinuedFloat
+  \myfloatalign
+  \subfloat[Best fortunes responses per second (2023-10-17) \cite{backend:benchmark2}]{
+    \label{fig:methodology:benchmark2BE}
+    \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark2_BE.png}
+  }
+\caption{Most Popular Backend Frameworks from Figure \ref{fig:methodology:popularBE} ranked by Performance.}
+\label{fig:methodology:benchmarkBE}
 \end{figure}
 In addition to the previously stated criteria, the selected backend framework needed to meet specific performance requirements. It was essential for the framework to efficiently handle multiple connected clients with minimal latency. Furthermore, the framework's internal computation speed was critical, particularly for preparing input arguments for each task and managing task scheduling across all clients. The goal was to reduce overhead as much as possible to ensure high performance.
 
@@ -132,15 +141,33 @@ Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the backe
 
 \subsection{Frontend}
 \label{subsec:methodology:frameworks:frontend}
-The criteria state in \ref{sec:methodology:frameworks} also applied for the selection of a framework for the frontend. Figure \ref{fig:methodology:popularFE} shows the 15 most used frameworks among web developers in July 2024 \cite{frontend:popularity}. This statistic has been collected by statista and is a survey of Stack Overflow (TODO: Stack Overflow quelle und so) 
+The criteria stated in \ref{sec:methodology:frameworks} also applied for the selection of a framework for the frontend. Figure \ref{fig:methodology:popularFE} shows the 36 most used frameworks among web developers in July 2024 \cite{frontend:popularity}. This statistic has been collected by Stack Overflow and is the result of a survey. In this survey web developers have been asked which web frameworks and web technologies they had been working with in the past year, and which do they want to work in over the next year \cite{frontend:popularity}. The two must popular options are, by far, Node.js and React with each around 40\% of votes. While Node.js is mainly used for backend development React is a JavaScript library used for frontend development. This is qualifying React as the choice of technology for the frontend development. Ranking fourth in figure \ref{sec:methodology:frameworks} is Next.js with 17.9\% of votes. Next.js is a web framework based on React \cite{methodology:nextjs} and according to the survey the most popular React web framework in the year 2024. Therfore Next.js was selected as the framework for frontend development.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.95\textwidth]{gfx/figures/Top15_Frameworks_2024_Statista.png}
-  \caption{Most Used Web Frameworks in 2024 (Developer Survey on Stack Overflow) \cite{frontend:popularity}}
+  \includegraphics[width=0.95\textwidth]{gfx/figures/FrameworkSurvey2024.png}
+  \caption{Most Used Web Frameworks and technologies in 2024 (Developer Survey from Stack Overflow) \cite{frontend:popularity}}
   \label{fig:methodology:popularFE}
 \end{figure}
 
-\section{Benchmark: Definition of Job}
+\section{Benchmark: Visualizing the Mandelbrot set}
 \label{sec:methodology:benchmark}
-How can i benchmark the platform? What problem / code is used to benchmark? Which hardware is used for the benchmark?
+To benchmark the platform's performance, a computationally intensive Job is implemented for the platform and executed across multiple connected Workers. The total execution time is compared to the execution time of the same Job on a single machine with native source code. The visualization of the Mandelbrot set represents all characteristics previously described in section \ref{sec:background:theory}, making it suitable as a Job for this benchmark.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{gfx/figures/mandelbrot.png}
+  \caption{Mandelbrot Set (generated with the source code in \ref{app:code:mandelbrot1})}
+  \label{fig:methodology:mandelbrot}
+\end{figure}
+
+The Mandelbrot set is a famous subset of the complex numbers $\mathbb{C}$. Figure \ref{fig:methodology:mandelbrot} displays a coloriesed visualization of the set in the plane of complex numbers. To determine if a complex number $c$ is part of the Mandelbrot set, it is applied to the function \ref{equ:mandelbrot} with $z_{0}=0$.
+
+\begin{equation}
+  z_{n+1} = z_{n}^2 + c
+  \label{equ:mandelbrot}
+\end{equation}
+
+If the value of $z_{n+1}$ does not diverge over n iterations, $c$ belongs to the Mandelbrot set. In Figure \ref{fig:methodology:mandelbrot}, all complex numbers $c$, for wich $z_{n+1}$ remains bounded over n iterations are colored black. All other $c$ are colored based on the number of iterations required for $z_{n+1}$ to diverge, with the color spectrum ranging from red (low iteration count) over to blue (high iteration count) indicating increasing iteration counts.
+
+The calculation and visualization of the Mandelbrot set can be partitioned into multiple tasks. Each task executes the same source code but with different input parameters, which define a unique two-dimensional area in the complex plane. These tasks can be executed in parallel due to the independence of calculations between different areas. The implementation for this benchmark is provided in native Go (\ref{app:code:mandelbrot1}) and its Go-to-WebAssembly counterpart (\ref{app:code:mandelbrot2}).

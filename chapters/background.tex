@@ -60,34 +60,37 @@ The last expression through the transformation in \eqref{equ:transformation} res
 Additionally the expression \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. This expression reaches its minimum when \emph{N} equals \emph{T}. This outcome is intuitive, as in this ideal scenario each Node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
 
 \subsection{Theoretical Case}
-To illustrate the performance gain achieved by a distributed computing network, both expressions \eqref{equ:single} and \eqref{equ:multiple} are plotted in figure \ref{fig:background:theoryplot}. To calculate these graphs, an Internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{C}$ for a single task was assumed to be 614 ms, based on the measured average run time of the example code in \ref{app:code:mandelbrot1} on the system specified in \ref{app:system:mymachine}.
+To illustrate the performance gain achieved by a distributed computing network, both expressions \eqref{equ:single} and \eqref{equ:multiple} are plotted in figure \ref{fig:background:theoryplot}. To calculate these graphs, an Internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{C}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \ref{app:code:mandelbrot1} on the system specified in \ref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \ref{app:code:mandelbrot2}. The average execution time of the WebAssembly binary in a browser environment on the system specified in \ref{app:system:mymachine} was measured at 71.17 seconds. 
 
-An initial setup offset is additionally considered to establish the distributed computing network. In this process, each node must download all necessary files in advance to be able to execute the workload. Since this setup occurs in parallel across all nodes, the offset matches the time required for the setup of a single node. This offset value is calculated using the \ac{IQI} estimated download speed in Europe of 29 Mbps \cite{backend:latency}. The size of the compiled WebAssembly binary file from the source code in \ref{app:code:mandelbrot2} is 1096 Kb (137 KB), and the coresponding generated Gluecode JavaScript file is 129 Kb (24 KB), resulting in a total file size of 1225 Kb. The time required to download both files to a single node can be estimated using the following expression:
+This unexpected difference in computation duration is very likely due to the use of 64-bit and 128-bit values in the source code of \ref{app:code:mandelbrot1} and \ref{app:code:mandelbrot2}. Since the WebAssembly environment is constrained to 32-bit operations (TODO: ADD WASM SOURCE), the conversion process from multiple 32-bit values to 64-bit or 128-bit values could introduce computational overhead, extending the execution time of the WebAssembly binary. (TODO: Use explanation of "Not so fast!")
+
+An initial offset time is additionally considered to establish the distributed computing network. In this process, each node must download all necessary files in advance to be able to execute the workload. Since this setup occurs in parallel across all nodes, the offset matches the time required for the setup of a single node. This offset value is calculated using the \ac{IQI} estimated download speed in Europe of 29 Mbps \cite{backend:latency}. The size of the compiled WebAssembly binary file from the source code in \ref{app:code:mandelbrot2} is 21.6 Mb (2.7 MB), and the coresponding \emph{wasm\_exec.js} JavaScript file to setup the WebAssembly environment is 0.13 Mb (16.7 KB), resulting in a total file size of 21.76 Mb. The time required to download both files to a single node can be estimated using the following expression:
 \begin{equation}
- Offset = Latency + (\frac{Filesize}{Bandwith} \cdot 1000) 
+ Download-Time = Latency + \frac{Filesize}{Bandwith} 
  \label{equ:offset}
 \end{equation}
-Since the latency is given in milliseconds, while the bandwidth is provided in megabits per second, the unit of the result from expression \ref{equ:offset} is converted to milliseconds by multiplying the download time by 1000. Using this calculation, the additional offset required to set up the platform in this theoretical case is estimated to be at least 75 ms. The source code to generate both graphs of figure \ref{fig:background:theoryplot} can be found in section \ref{app:code:theoryplots}.
+Since the bandwidth is given in megabits per second, while the latency is provided in milliseconds, the latency value needs to be converted to seconds. Using the calculation in \ref{equ:offset}, the additional offset that is required to set up the platform, in this theoretical case, is estimated to be at least 0.78 s.
 
 \begin{figure}[bth]
   \myfloatalign
   \subfloat[Variable amount of nodes N]{
      \label{fig:background:theoryA}
-     \includegraphics[width=.45\linewidth]{gfx/figures/Theory_A.pdf}
-   }
+     \includegraphics[width=.75\linewidth]{gfx/figures/Theory_A.png}
+   } \\
    \subfloat[Variable amount of tasks T]{
      \label{fig:background:theoryB}
-     \includegraphics[width=.45\linewidth]{gfx/figures/Theory_B.pdf}
+     \includegraphics[width=.75\linewidth]{gfx/figures/Theory_B.png}
    }
    \caption{Visualizing the Total Computation Time for an Estimated Example Case}
    \label{fig:background:theoryplot}
 \end{figure}
 
-The plot shows, that the total computation time is already faster in the distributed network if the network consists of two or more nodes. This proves that the approach to distribute the workload is a performance gain in this example. But it needs to be considdered, that if there is only one node in the network this approach is way slower due to the offset time and the additional network latency for each task.
+The graph in Figure \ref{fig:background:theoryA} represents the total runtime, on the y-axis in seconds, as a function of the number of nodes in the network, on the x-axis. The red dotted line displays the performance of a single machine, while the blue line illustrates the performance of the distributed computing network. The total number of all tasks to be executed is set to 20. This plot reveals that the distributed network achieves a faster total computation time than a single device, if three or more nodes are availabile in the network. The total runtime is already reduced by 30\% when the workload is distributed to three nodes.
 
-The graph in Figure \ref{fig:background:theoryA} represents the total runtime, on the y-axis in seconds, as a function of the number of nodes in the network, on the x-axis. The red dotted line displays the performance of a single machine, while the blue line illustrates the performance of the distributed computing network. The total number of all tasks to be executed is set to 20. This plot reveals that the distributed network achieves a faster total computation time than a single device, if the network contains two or more nodes. The performance gain is already more than 50\% when the workload is distributed to three nodes. However, it is important to note that the network will be slower in any scenario, if it consists of only one node, due to the initial overhead to set up the system and the network latency.
+The second graph in Figure \ref{fig:background:theoryB} displays the total runtime on the y-axis in seconds as a function of the number of tasks on the x-axis. The red dotted line represents again a single device and the blue line the distributed computing network. The number of nodes N is set to three. This plot demonstrates that the distributed network achieves faster total computation time than a single device when the workload consists of more than two tasks. The performance gain grows exponentially as the number of tasks increases. Additionally, the total computation time of the network only increases when the number of tasks T and the number of nodes N have no common divisor. However, it is crucial to note that the network will have a longer computation time in every scenario with only one task, as a single task cannot be executed in parallel.
 
-The second graph in Figure \ref{fig:background:theoryB} depicts the total runtime on the y-axis in seconds as a function of the number of tasks on the x-axis. Again represents the red dotted line a single machine and the blue line the distributed computing network. The number of nodes N is set to three. This plot demonstrates that the distributed network achieves faster total computation time than a single device when the workload consists of more than one task. The performance gain grows exponentially as the number of tasks increases. Additionally, the total computation time of the network only increases when the number of tasks T and the number of nodes N have no common divisor. However, it is crucial to note that the network exhibits slower performance in scenarios with only one task, as a single task cannot be executed in parallel.
+Both plots show, that the total computation time is already almost even in the distributed network if the network consists of two nodes and faster if there are three or more nodes. This holds true even if the computation time $t_{C}$ of a single task is twice as fast on a native system then in the distributed environment. This proves that the approach to distribute the workload is a performance gain in this example, if multiple nodes are availabile. But it needs to be considdered, that if there is only one or two node in the network this approach will be slower due to the offset time, the additional network latency and the higher computation time for each individual task.
+
 
 \section{Related Work}
 \label{sec:background:related_work}
@@ -101,7 +104,7 @@ While BOINC has been successful in supporting numerous scientific projects and p
 \label{subsec:background:related_work:seti}
 \ac{SETI} at home (SETI@home) represents a pioneering project in the field of distributed and volunteer computing. It utilises the resources of volunteer computers worldwide to analyze radio telescope data in search of extraterrestrial intelligence. Data from the Arecibo radio telescope is divided into smaller chunks which are distributed to volunteer computers for processing. The system is designed to identify several types of patterns in radio signals that could indicate an artificial origin. These anormalies are spikes, Gaussians, pulsed signals, and triplets in the collected radio data.
 Back in 2002, \ac{SETI}@home had engaged over 3.8 million participants across 226 countries, achieving an average computing power of 27.36 teraFLOPS.
-SETI@home demonstrated the viability of large-scale public-resource computing and identified key factors that make tasks suitable for this approach:
+\ac{SETI}@home demonstrated the viability of large-scale public-resource computing and identified key factors that make tasks suitable for this approach:
 \begin{itemize}
 \item High computing-to-data ratio
 \item Independent parallelism
@@ -126,7 +129,7 @@ XtremWeb employs a two-part scheduling system:
 The default scheduling policy is FIFO, but policies are dynamically configurable. The system supports timeout detection and rescheduling of aborted tasks.
 One of the key features of XtremWeb is its worker-initiated communication protocol, which facilitates easier deployment through firewalls. The protocol consists of four main requests: hostRegister, workRequest, workAlive, and workResult. This protocol is independent of the communication layer, allowing for flexibility in implementation (e.g., TCP/UDP, CORBA, Java RMI).
 Security in XtremWeb is addressed through native code execution for performance and an ad-hoc verification process for downloadable applications. Future versions plan to implement Software Fault Isolation for enhanced security.
-XtremWeb has been successfully applied to various projects, including the Pierre Auger Observatory for studying high-energy cosmic rays. In this application, XtremWeb was used to run the AIRES (Air Showers Extended Simulation) program by partitioning large simulations into smaller subtasks.
+XtremWeb has been successfully applied to various projects, including the Pierre Auger Observatory for studying high-energy cosmic rays. In this application, XtremWeb was used to run the \ac{AIRES} program by partitioning large simulations into smaller subtasks.
 Key features of XtremWeb include:
 \begin{itemize}
   \item Scalability to hundreds of thousands of nodes
@@ -135,7 +138,7 @@ Key features of XtremWeb include:
   \item Dynamic resource management
   \item User-friendly deployment and usage
 \end{itemize}
-The implementation of XtremWeb uses a MySQL database on the server side (though designed for database vendor neutrality) and provides a web interface for task submission, monitoring, and result retrieval. The use of free software components ensures portability across different systems.
+The implementation of XtremWeb uses a MySQL database on the server side and provides a web interface for task submission, monitoring, and result retrieval. The use of free software components ensures portability across different systems.
 In summary, XtremWeb provides a flexible and robust platform for experimenting with Global Computing concepts, offering insights into programming models, performance models, and algorithms suitable for massively distributed environments. \cite{relatedwork:xtremweb}
 \subsection{EGEE}
 \label{subsec:background:related_work:egee}
