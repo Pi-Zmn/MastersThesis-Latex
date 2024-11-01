@@ -65,6 +65,11 @@ The Server is used as the central component to maintain the network. Each Client
 
 Additionally the Server is responsible for scheduling and distributing the Tasks to all Workers. It also persistently stores each Job along with all results of its corresponding Tasks.
 
+\section{Database}
+An object-relational database system was identified to fulfill the platform's requirements, as these systems typically offer high performance capabilities and the entities described in the previous sections can be represented with an object-relational database schema.
+
+PostgreSQL is an open source object-relational database system that has been actively developed for more than 35 years \cite{methodology:db}. Therefore it has gained a strong reputation for reliability, feature robustness, and performance \cite{methodology:db}, hence PostgreSQL was selected as the database management system for this implementation.
+
 \section{WebAssembly}
 \label{sec:methodology:wasm}
 WebAssembly is a key technology in this proposed system, offering several advantages for distributed computing. It provides near-native performance, platform independence, and potential multi-threading capabilities. WebAssembly allows to compile code written in languages such as C, C++, and Rust to a binary format that can be executed in web browsers, enabling efficient computation on diverse client devices.
