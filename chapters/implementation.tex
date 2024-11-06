@@ -6,21 +6,21 @@ The following sections describe the components of the architecture, communicatio
 
 \section{Architecture}
 \label{sec:implementation:architecture}
-The platform consists of the following three components:
-\begin{itemize}
-    \item Backend (Server) as the central component handling the distribution of Tasks and persistence of Job results \ref{sec:implementation:backend}, implemented using Nest.js \cite{methodology:nestjs}
-    \item Frontend providing the web application for all Clients \ref{sec:implementation:frontend}, implemented using Next.js \cite{methodology:nextjs}
-    \item Database for persisting Job and User data, implemented with PostgreSQL \cite{methodology:db}
-\end{itemize}
-
-Figure \ref{fig:implementation:architecture} illustrates the architecture of the platform. Heterogenous clients, diverse in hardware and operating system, are able to connect to the platform. Clients access the platform throuh the Frontend which than establish the WebSocket communication to the Server using the Socket.IO library. Each client (Worker and Administrator) maintains a bidirectional WebSocket connection to the Server. The database is exclusively accessible by the Server.
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/WebAssembly-MA.png}
-    \caption{Architecture (Draft)}
+    \caption{Architecture Modell of the platform}
     \label{fig:implementation:architecture}
 \end{figure}
+
+The platform consists of the following three components:
+\begin{itemize}
+    \item Server (Backend) as the central component handling the distribution of Tasks and persistence of Job results \ref{sec:implementation:backend}, implemented using Nest.js \cite{methodology:nestjs}
+    \item Frontend providing the web application for all clients \ref{sec:implementation:frontend}, implemented using Next.js \cite{methodology:nextjs}
+    \item Database for persisting Job and User data, implemented with PostgreSQL \cite{methodology:db}
+\end{itemize}
+
+Figure \ref{fig:implementation:architecture} illustrates the architecture of the platform. Heterogenous clients, diverse in hardware and operating system, are able to connect to the platform. Clients access the platform throuh the Frontend which than establishes the WebSocket communication with the Server using the Socket.IO \cite{methodology:websockets2} library. Each client (Worker and Administrator) maintains a bidirectional WebSocket connection to the Server. The database is exclusively accessible by the Server.
 
 \subsection{Communication}
 \label{subsec:implementation:architecture:communication}
@@ -38,13 +38,13 @@ Figure \ref{fig:implementation:communication1} illustrates the process of a Work
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/communication-jobexecution.png}
-    \caption{Communication: Administrator starts Job \& Worker execute Tasks}
+    \caption{Communication: Administrator starts Job \& Worker executes Tasks}
     \label{fig:implementation:communication2}
 \end{figure}
 
 Figure \ref{fig:implementation:communication2} illustrates the Job initiation and execution process. The sequence begins when an Administrator changes a Jobs status to \emph{ACTIVE}. The Server then generates a Batch of Tasks for the specified Job and notifies all connected Workers by transmitting the activated Job to them. Upon receiving this notification, each Worker retrieves the corresponding WebAssembly binary from the Server and initializes a WebWorker with the WebAssembly environment for this active Job. When this step is successfully completed the Worker notifies the Server which sets the Workers \emph{ready} attribute to true. This update is also forwarded to all Administrators.
 
-If an Administrator changes the status of a active Job to \emph{RUNNING}, the Server than distributes unique Tasks from the current Batch to all Workers that have completed the Job initialization and transmitted the \emph{Worker Ready} message. Each Worker executes its assigned Task, then appends the corresponding result to the Task object, and transmits the completed Task back to the Server. If unprocessed or unscheduled Tasks remain in the Batch at the moment of receiving the completed Task, the Server responds by assigning the next pending Task to this Worker. Additionally, the Server notifies all Administrators after each successfully completed Task. This enables monitoring of the Jobs progression in real-time for all Administrators.
+If an Administrator changes the status of a active Job to \emph{RUNNING}, the Server than distributes unique Tasks from the current Batch to all Workers that have transmitted the \emph{Worker Ready} message and therfore have successfully completed the Job initialization process. Each Worker executes its assigned Task, then appends the corresponding result to the Task object, and transmits the completed Task back to the Server. If unprocessed or unscheduled Tasks remain in the Batch at the moment of receiving the completed Task, the Server responds by assigning the next pending Task to this Worker. Additionally, the Server notifies all Administrators after each successfully completed Task. This enables monitoring of the Jobs progression in real-time for all Administrators.
 
 If a Worker is connecting while there is already an active or running Job, the communication sequence is automatically executed identically. Accordingly the Worker starts to initializes this Job and then proceeds to process Tasks of the Batch, hence enabling dynamic participation in ongoing Jobs for Workers.
 
@@ -70,7 +70,7 @@ The following data objects have been identified as critical for a system recover
     \item Task results
     \item User credentials
 \end{itemize}
-Information regarding Workers, their hardware specifications, and operating systems is intentionally excluded from permanent storage.
+Information regarding Workers, their hardware specifications and operating systems is intentionally excluded from permanent storage.
 
 The system implements a robust persistence mechanism for Job progression. When a running Job is stoped, the current progress and all Task results are automatically saved, hence actively stoping a running Job initiates the persistence process for this Job's current state. This functionality should be utilized if the platform is scheduled to be restarted or terminated.
 
@@ -102,9 +102,9 @@ To prevent malicious use, particularly in critical processes managed by Administ
 
 Authentication and Authorization are two key security concepts that work together to protect systems and data. Authentication is used to verify a clients identity - proving they are who they claim to be - in this platform realized through User credentials. Once a User is authenticated, Authorization determines what they're allowed to do within the system by checking their permissions and access rights. The \emph{userRole} attribute in the user object defines the specific access permissions. Together, these processes ensure that not only are Users verified, but they can only access the resources and perform the actions appropriate for their role or permission level.
 
-A \ac{JWT} implements a compact, URL-safe methodology for secure information transmission between parties as a \ac{JSON} object. The token architecture comprises three dot-separated components: a header that describes the token type and signing algorithm, a payload containing the encoded data, and a signature to verify the token's authenticity. \ac{JWT}s are commonly used in authentication and authorization processes, where information like user identity and permissions needs to be securely shared between services. The token can be verified by other services using the signature, eliminating the need to repeatedly validate credentials against a database. This makes \ac{JWT}s particularly useful in modern web applications and microservices architectures where secure, stateless authentication is required. \cite{implementation:jwt}
+A \ac{JWT} implements a compact, URL-safe methodology for secure information transmission between parties as a \acs{JSON} object \cite{implementation:jwt}. The token architecture comprises three dot-separated components: a header that describes the token type and signing algorithm, a payload containing the encoded data, and a signature to verify the token's authenticity \cite{implementation:jwt}. \ac{JWT}s are commonly used in authentication and authorization processes, where information like user identity and permissions needs to be securely shared between services. The token can be verified by other services using the signature, eliminating the need to repeatedly validate credentials against a database. This makes \ac{JWT}s particularly useful in modern web applications and microservices architectures where secure, stateless authentication is required. \cite{implementation:jwt}
 
-Upon successful User authentication, when a client connects to the platform, the Server generates and sings a \ac{JWT} containing identity and access rights, which is used to authenticates subsequent requests of this User. This generated \ac{JWT} is stored as a browser cookie on the client side which remains valid during a two-day expiration period. The data stored in the \ac{JWT} payload is a \ac{JSON} object containing the attributes \emph{id}, \emph{name}, and \emph{userRole} corresponding to the authenticated User. Clients transmitt their specific \ac{JWT} with every \ac{API} request and when establishing a WebSocket connection. Hence the Server can then use this token to authenticate the User and check if the User is authorized for this action.
+Upon successful User authentication, when a client connects to the platform, the Server generates and sings a \ac{JWT}, which is used to authenticates subsequent requests of this User. This generated \ac{JWT} is stored as a browser cookie on the client side which remains valid during a two-day expiration period. The data stored in the \ac{JWT} payload is a \acs{JSON} object containing the attributes \emph{id}, \emph{name}, and \emph{userRole} corresponding to the authenticated User. Clients transmitt their specific \ac{JWT} with every \ac{API} request or when establishing a WebSocket connection. Hence the Server can then use this token to authenticate the User and check if the User is authorized for this action.
 
 \section{Backend}
 \label{sec:implementation:backend}
@@ -116,9 +116,9 @@ This section describes the usage and features of the Backend, which is implement
     \item Task distribution to participating Workers.
 \end{itemize}
 
-Therefore this implementation represents the Server component described in subsection \ref{subsec:methodology:entities:Server}..
+Therefore the Backend implementation represents the Server component described in subsection \ref{subsec:methodology:entities:Server}.
 
-To manage and interact with Jobs or Users, the Backend exposes multiple endpoints through a RESTful \ac{API} - \ac{REST}. Figure \ref{fig:implementation:backend} presents a list of all available endpoints and their corresponding HTTP request method. Due to their handling of critical and sensitive data, all endpoints are secured through \ac{JWT} authorization and require Administrator privileges, granted only for Users with the Admin \emph{userRole}. The login endpoint represents the only exception to this security measure, as it serves to generate a \ac{JWT} in the first place by validating a Users credentials, and therefore operates without any \ac{JWT} authorization.
+To manage and interact with Jobs or Users, the Backend exposes multiple endpoints through a \acs{REST}ful \ac{API}. Figure \ref{fig:implementation:backend} presents a list of all available endpoints and their corresponding \acs{HTTP} request method. Due to their handling of critical and sensitive data, all endpoints are secured through \ac{JWT} authorization and require Administrator privileges, granted only for Users with the Admin \emph{userRole}. The login endpoint represents the only exception to this security measure, as it serves to generate a \ac{JWT} in the first place by validating a Users credentials, and therefore operates without any \ac{JWT} authorization.
 
 \begin{figure}[bth]
     \myfloatalign
@@ -136,30 +136,31 @@ To manage and interact with Jobs or Users, the Backend exposes multiple endpoint
 
 The Backend \ac{API} implements comprehensive \ac{CRUD} operations for both Job and User entities. These endpoints enable the retrieval of individual entities or complete entity collections, the creation of new entities, and the modification or removal of existing entities.
 
-Furthermore the \ac{API} exposes four additional endpoints to change the sate of Jobs and therefore providing the features to control Job execution with the platform. Upon Job activation, a Batch associated to this Job is generated and all connected Workers are triggered to initiate the initialization of their WebAssembly environment. Starting a Job initiates the process of distributing Tasks from its Batch to \emph{ready} and participating Workers. When a Job is stopped, its current state is persisted in the Backend as described in subsection \ref{subsec:implementation:architecture:persistence}. The reset operation permanently removes all progress associated with a Job and generates a new unprocessed Batch containing the initial Tasks.
+Furthermore the \ac{API} exposes four additional endpoints to change the sate of Jobs and therefore providing the features to control Job execution with the platform. Upon Job activation, a Batch associated to this Job is generated and all connected Workers are triggered to initiate the initialization of their WebAssembly environment. Starting a Job initiates the process of distributing Tasks from its Batch to \emph{ready} and participating Workers. When a Job is stopped, its current state is persisted in the Server as described in subsection \ref{subsec:implementation:architecture:persistence}. The reset operation permanently removes all progress associated with a Job and generates a new unprocessed Batch containing the initial Tasks.
 
-Additionally the Backend \ac{API} serves static files of the compiled WebAssembly binaries and the optionally required JavaScript gluecode files of each Job. These files are requested inside the WebWorker of Worker to initializes its WebAssembly environment.
+Additionally the Backend \ac{API} serves static files of the compiled WebAssembly binaries and the optionally required JavaScript gluecode files of each Job. These files are required to initializes a WebAssembly environment, and are therfore requested by Worker nodes.
 
-Furthermore the Backend implements a WebSocket-based communication protocol as described in subsection \ref{subsec:implementation:architecture:communication} that manages bidirectional data streams between the Server and connected client nodes. This implementation enables performant Task distribution and Task result collection while minimizing the overall communication overhead.
+Furthermore the Backend implements a WebSocket-based communication protocol as described in subsection \ref{subsec:implementation:architecture:communication} that manages bidirectional data streams between the Server and connected client nodes. This implementation enables performant Task distribution and Task result collection as well as real-time comunication for Job progress monitoring while minimizing the overall communication overhead.
 
 \section{Frontend}
 \label{sec:implementation:frontend}
 This section describes the features and main web pages served by the Frontend. It is implemented utilizing the NextJS framework in combination with styled components from the React Bootstrab library \cite{implementation:bootstrap}. The core features implemented in the Frontend application are:
 
 \begin{itemize}
-    \item Provide an easy to use interface to interact with the platform.
+    \item Providing an easy to use interface to interact with the platform.
     \item Establishing a WebSocket connection to the Server.
-    \item Execute WebAssembly in a WebWorker.
-    \item Serve dashboard to manage Jobs.
+    \item Executing WebAssembly in a WebWorker.
+    \item Serving a dashboard to manage Jobs.
 \end{itemize}
 
 The Frontend implements two main web pages. These are the \emph{Dashboard Page} and the \emph{Client Page}.
 
-The \emph{Dashboard Page}, displayed in figure \ref{fig:implementation:dashboard-page}, is only accessible for Administrators. The left container is dedicated to Jobs. It holds a list of all existing Jobs and their current progress, displayed in figure \ref{fig:implementation:job-list}. When a Job has the \emph{ACTIVE} state above the list of Jobs appears a container with further information about this Job. This is displayed in figure \ref{fig:implementation:active-job}. This container also enables Administrators to change the state of this active Job.
+\subsection{Dashboard Page}
+\label{subsec:implementation:dashboard-page}
 
-This page is used to manage Jobs and to monitor the progress of Jobs as well as connected Workers in real-time. The left container shows the currently active Job at the top of the page. It displays live information about the Job progress and
+The \emph{Dashboard Page}, displayed in figure \ref{fig:implementation:dashboard-page}, is only accessible for Administrators. This page is used to monitor all connected Workers and the progress of Jobs in real-time. Furthermore are Administrator able to manage Jobs through this web page.
 
-\begin{figure}[bth]
+\begin{figure}[ht!]
     \myfloatalign
     \subfloat[Dashboard Page: Job List]{
     \label{fig:implementation:job-list}
@@ -173,16 +174,24 @@ This page is used to manage Jobs and to monitor the progress of Jobs as well as 
     \label{fig:implementation:dashboard-page}
 \end{figure}
 
+On the left side of the \emph{Dashboard Page} is a component located to manage the Jobs of the platform. It holds a list of all existing Jobs and their current progress, displayed in figure \ref{fig:implementation:job-list}. Above this list of Jobs appears a new component when a Job is activated by an Administrator. Figure \ref{fig:implementation:active-job} displays a view of this active Job component on the left side. This component visualizes the progress of an active Job and displays the gathered results of complete Tasks in real-time. Additionally it provides an interface to interact with this Job. When a button of this interface is clicked, a corresponding \acs{HTTP} request, containing the Administrator's \ac{JWT}, is transmitted to the server. After all Tasks are completed and the state of the Job is \emph{DONE}, this component presents information about the total run time of the Job. On the right side is another component located that displays a list of all connected Workers also in real-time. This list contains information about the initialization progress as well as the harware and operating systm for each Worker with a active WebSocket connection to the Server. A view of this list is displayed in figure \ref{fig:implementation:active-job} on the right side.
+
+\subsection{Client Page}
+\label{subsec:implementation:client-page}
+
+The \emph{Client Page} represents the logic for Workers and can be accessed by Workers or Administrators. When a client is accessing this web page the browser process becomes a participating Worker in the crowd computing platform. First the Worker establishes a WebSocket connection to the Server to recieve Job and Task data and to send Task results as described in section \ref{subsec:implementation:architecture:communication}. If this connection is successful the browser user agent of the Workers device is extracted and transmitted to the Server. When a Job is active or running the connected Worker is creating an independent browser thread - the WebWorker - and initializes the corresponding WebAssembly environment inside this WebWorker. Each Task that the Worker is receiving is forewarded for computing to this WebWorker. The performance and availabilty of the main browser thread, responsible for the \ac{UI} and WebSocket connection, is not affected by the processing of incoming Tasks, since the heavy WebAssembly computation is handled inside the separate WebWorker.
+
+In the current state of the project the Worker is implemented to initialize and execute WebAssembly binaries complied from either C \& C++, Go or Python source code. The support of further WebAssembly targeting langues can be added effortless to this work, since the usage of WebWorker scripts is handled generic. To support specific programming languages each WebWorker script requires additional unique gluecode during the WebAssembly initialization process.
+
+Figure \ref{fig:implementation:client-page} displays the view of the \emph{Client Page}. The component lists various information like the WebSocket connection status, the current actively supported Job and statistics about Tasks completed by the Worker.
+
+\clearpage
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/client-page.png}
     \caption{Frontend Client Page}
     \label{fig:implementation:client-page}
 \end{figure}
-
-The integration of WebAssembly modules is achieved through a dedicated worker pool, allowing for efficient execution of compiled code while preserving the application's reactive nature. 
-
-The frontend implementation includes real-time status updates and progress monitoring features, leveraging WebSocket connections to maintain synchronized state with the backend. This approach creates a seamless experience for users managing distributed computing tasks across the cluster.
 
 \section{Benchmark}
 \label{sec:implementation:benchmark}
@@ -203,4 +212,6 @@ what was difficult?
     \item Continue Stoped Job
     \item Implement system recovery
     \item load gluecode and wasm from third party in Webworker
+    \item generic Job implementation
+    \item generic handeling of different programming languages
 \end{itemize}
