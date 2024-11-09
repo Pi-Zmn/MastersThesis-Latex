@@ -203,15 +203,33 @@ The WebAssembly-compatible Go source code, which is executed by Workers during T
 
 \section{Challenges}
 \label{sec:implementation:challenges}
-what was difficult?
-\begin{itemize}
-    \item Hadel Input and Output
-    \item Output as File (PNG)
-    \item Prevent dublicate Task execution
-    \item Minimize Communication
-    \item Continue Stoped Job
-    \item Implement system recovery
-    \item load gluecode and wasm from third party in Webworker
-    \item generic Job implementation
-    \item generic handeling of different programming languages
-\end{itemize}
+This section lists and describes the  challenges that occured during the development process of the crowd computing platform.
+\newline
+\newline
+\textbf{Generic implementation of Jobs:}
+\newline
+The platform is designed to allow the execution of any kind of custom Job. To ensure a flexibel development of new Jobs, the Job entity and the handling of tasks, WebAssembly binaries, and input arguments are implemented generically in all components. This enables the distribution of Jobs, written in any supported programming language and with any amount of Tasks, effortless with little overhead and understanding of the architecture. 
+\newline
+\newline
+\textbf{Loading gluecode and WebAssembly files from external source (Backend) inside WebWorker:}
+\newline
+To ensure simplicity, all WebAssembly and gluecode files are stored in the corresbonding Job directory on the Server. Therfore all Job specific files are located in a single location. But to initialize the WebAssembly environment the required files need to be fetched and included from a third party - the Server. Since the gluecode file exspects the corresponding WebAssembly file to be stored in the same directory, it was not trivial to implement this behavior.
+\newline
+\newline
+\textbf{Handeling the Input and Output of WebAssembly code:}
+\newline
+To ensure a uniform type of Input among Tasks, a regular array of strings has been choosen as input argument for all Tasks. These Input arguments as strings can be read from the Input text file and also effortless forwarded to the WebAssembly functions.
+
+Especially for C and C++ code it was challenging to implement a generic Output format. Main files in C and C++ are required to only return a singular numeric value (\emph{int}). The current implementation supports the Output of any primitive datatypes, lists of primitive datatypes, objects and binaries.
+
+Implementing binaries as Output of Task results was an additional. The WebSocket connection between Worker and Server needed adjustment to enable transmitting of larger data packets. Currently a single message of this WebSocket connection is limited to 100MB to ensure transmission of larger files.
+\newline
+\newline
+\textbf{Implement system recovery measures:}
+\newline
+The design and implementation of system recovery measures described in \ref{subsec:implementation:architecture:persistence} was a non trivial addition to the platform.
+\newline
+\newline
+\textbf{Prevent dublicate Task execution \& ensure Job completion in case of malfunctioning Workers:}
+\newline
+As described in section \ref{subsec:implementation:architecture:scheduling} is a timeout mechanism utilized  similar to the XtremWeb implementation \cite{relatedwork:xtremweb}. This measure is ment to prevent dublicate Task execution adn to ensure the completion of all Tasks in case of aborted Tasks. 
