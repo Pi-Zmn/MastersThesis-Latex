@@ -208,28 +208,32 @@ This section lists and describes the  challenges that occured during the develop
 \newline
 \textbf{Generic implementation of Jobs:}
 \newline
-The platform is designed to allow the execution of any kind of custom Job. To ensure a flexibel development of new Jobs, the Job entity and the handling of tasks, WebAssembly binaries, and input arguments are implemented generically in all components. This enables the distribution of Jobs, written in any supported programming language and with any amount of Tasks, effortless with little overhead and understanding of the architecture. 
+The platform is designed to allow the execution of any kind of custom Job. To ensure a flexibel development of new Jobs, the Job entity and the handling of Tasks, WebAssembly binaries, and input arguments are implemented using generic patterns throughout the architecture in all components. This enables the distribution of Jobs across the platform, written in any supported programming language and with any amount of Tasks, effortless with a minimal programming overhead.
 \newline
 \newline
 \textbf{Loading gluecode and WebAssembly files from external source (Backend) inside WebWorker:}
 \newline
-To ensure simplicity, all WebAssembly and gluecode files are stored in the corresbonding Job directory on the Server. Therfore all Job specific files are located in a single location. But to initialize the WebAssembly environment the required files need to be fetched and included from a third party - the Server. Since the gluecode file exspects the corresponding WebAssembly file to be stored in the same directory, it was not trivial to implement this behavior.
+But to initialize the WebAssembly environment the required files need to be fetched and included from a third party - the Server. Since the gluecode file exspects the corresponding WebAssembly file to be stored in the same directory, it was not trivial to implement this behavior.
+
+To maintain simplicity, all WebAssembly binaries and their associated glue code files are centrally stored in their corresponding Job directory on the Server, hence ensuring that all files specific to a Job remain in a single location. However, the initialization of the WebAssembly environment requires fetching and incorporating files from the Server as a third-party source in this design. This behavior presented a challenge during the implementation, as the gluecode scripts expect its corresponding WebAssembly binary to be located in the same local directory instead of beeing externaly loaded.
 \newline
 \newline
 \textbf{Handeling the Input and Output of WebAssembly code:}
 \newline
-To ensure a uniform type of Input among Tasks, a regular array of strings has been choosen as input argument for all Tasks. These Input arguments as strings can be read from the Input text file and also effortless forwarded to the WebAssembly functions.
+A string array format, similar to conventional command-line input arguments, has been selected as the uniform input type across all Tasks. This standardized format enables simple parsing of arguments from the Input text files and can also be effortless forwarded to WebAssembly functions within the JavaScript runtime environment.
 
 Especially for C and C++ code it was challenging to implement a generic Output format. Main files in C and C++ are required to only return a singular numeric value (\emph{int}). The current implementation supports the Output of any primitive datatypes, lists of primitive datatypes, objects and binaries.
 
-Implementing binaries as Output of Task results was an additional. The WebSocket connection between Worker and Server needed adjustment to enable transmitting of larger data packets. Currently a single message of this WebSocket connection is limited to 100MB to ensure transmission of larger files.
+The implementation of a generic output format across all Tasks and programming languages presented significant challenges. Especially for C and C++ source code, where the main function is constrained to return always a single numeric value (\emph{int}). However, the developed solution supports the Output of any primitive datatypes, lists of primitive datatypes, objects and also binaries. This behaviour applies to all kinds of Tasks throughout all supported programming languages.
+
+To enable binaries as Task output the WebSocket connection between Worker and Server had to be adjusted. The default message size limit (\emph{maxHttpBufferSize}) of the Socket.IO library has been raised to 100MB per message to ensure the transmission of larger files.
 \newline
 \newline
 \textbf{Implement system recovery measures:}
 \newline
-The design and implementation of system recovery measures described in \ref{subsec:implementation:architecture:persistence} was a non trivial addition to the platform.
+The design and implementation of system recovery mechanisms, as described in subsection \ref{subsec:implementation:architecture:persistence}, has represented a complex enhancement to the platform.
 \newline
 \newline
 \textbf{Prevent dublicate Task execution \& ensure Job completion in case of malfunctioning Workers:}
 \newline
-As described in section \ref{subsec:implementation:architecture:scheduling} is a timeout mechanism utilized  similar to the XtremWeb implementation \cite{relatedwork:xtremweb}. This measure is ment to prevent dublicate Task execution adn to ensure the completion of all Tasks in case of aborted Tasks. 
+The timeout mechanism described in subsection \ref{subsec:implementation:architecture:scheduling}, comparable but not identical to the timout implementation of XtremWeb \cite{relatedwork:xtremweb}, is integrated into the scheduling process. This mechanism is used to prevente duplicate Task execution and ensure rescheduling od aborted Tasks.
