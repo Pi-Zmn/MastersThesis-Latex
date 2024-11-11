@@ -22,7 +22,7 @@ The platform consists of the following three components:
 
 Figure \ref{fig:implementation:architecture} illustrates the architecture of the platform. Heterogenous clients, diverse in hardware and operating system, are able to connect to the platform. Clients access the platform throuh the Frontend which than establishes the WebSocket communication with the Server using the Socket.IO \cite{methodology:websockets2} library. Each client (Worker and Administrator) maintains a bidirectional WebSocket connection to the Server. The database is exclusively accessible by the Server.
 
-\subsection{Communication}
+\subsection{WebCrowd's Communication Protocol}
 \label{subsec:implementation:architecture:communication}
 When clients establish a connection to the platform by accessing the frontend application, a WebSocket connection is initiated. This enables real-time and bidirectional communication between the Server and client. Therefore this connection is used to send Tasks from the Server to the Workers as well to send the result of each Tasks from the Workers back to the Server. Furthermore, Administrators receive real-time data about all connected Workers and the current status of each Job through this WebSocket connection.
 

@@ -74,6 +74,10 @@ PostgreSQL is an open source object-relational database system that has been act
 \label{sec:methodology:wasm}
 WebAssembly is a key technology in this proposed system, offering several advantages for distributed computing. It provides near-native performance, platform independence, and potential multi-threading capabilities. WebAssembly allows to compile code written in languages such as C, C++, and Rust to a binary format that can be executed in web browsers, enabling efficient computation on diverse client devices.
 
+(TODO: List / tabel of web browsers that support wasm socket and workers)
+
+WebAssembly (Wasm) is a low-level binary instruction format designed to serve as a compilation target for high-level languages, enabling near-native performance execution in web browsers. It employs a stack-based virtual machine architecture, operates in a memory-safe sandboxed environment, and interfaces with JavaScript through a defined API. The compiled Wasm modules execute at machine code speed, making it particularly effective for computationally intensive tasks like image processing, game engines, or cryptographic operations, while maintaining the web's security model.
+
 \cite{methodology:wasm, methodology:wasmdocu, relatedwork:wasmedgecomputing}
 
 \subsection{emscriptren for C and C++}
@@ -90,11 +94,15 @@ compiler from Go to .wasm, offically from Go \cite{methodology:go}
 \label{sec:methodology:websokets}
 WebSockets play a crucial role in this system's communication infrastructure. Unlike traditional HTTP requests, WebSockets enable faster, bidirectional communication between clients and servers. This real-time capability is essential for efficient task distribution, progress monitoring, and result collection in the distributed computing platform.
 
+WebSocket is a bidirectional, full-duplex communication protocol operating over a single TCP connection, defined in RFC 6455. Unlike traditional HTTP request-response patterns, WebSocket enables persistent connections between client and server, allowing real-time data transmission in both directions with minimal overhead after the initial handshake. The protocol utilizes the ws:// or wss:// (secure) URI scheme and efficiently handles scenarios requiring live updates such as financial trading platforms, multiplayer games, or chat applications, with significantly reduced latency compared to polling mechanisms.
+
 \cite{methodology:websockets1, methodology:websockets2, methodology:websockets3}
 
 \section{WebWorker}
 \label{sec:methodology:webworker}
 Web Workers are employed to enhance the performance and responsiveness of client-side computations. By executing computationally intensive tasks in separate threads, Web Workers prevent blocking the main thread responsible for the user interface and other critical browser functions. This approach allows our system to utilize client resources more effectively while maintaining a smooth user experience.
+
+WebWorkers are a JavaScript API that enables concurrent execution of scripts in background threads separate from the main browser UI thread. They operate in an isolated context, communicating with the main thread via a message-passing interface (postMessage), and cannot directly manipulate the DOM. This implementation of parallel processing prevents CPU-intensive tasks from blocking the user interface, making them optimal for computationally heavy operations such as data processing, complex calculations, or cryptographic operations. WebWorkers maintain browser performance by adhering to a strict same-origin policy and limited access to core JavaScript features.
 
 \cite{methodology:webworkers}
 

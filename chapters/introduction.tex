@@ -1,18 +1,18 @@
 \chapter{Introduction}
 \label{ch:intro}
-\section{Introduction}
-Text from Expose: (TODO: mention volunteer computing, add sources, ...)
+The work of this paper proposes a new approach to implement a crowd computing platform. \emph{WebCrowd} leverages the infrastructure of the continuously evolving web ecosystem. The computational capabilities of edge devices have significantly increased over the past (TODO: QUELLE), while the modern web provides multiple features to develop a robust and high-performant crowd computing platform. The key web technologies utilized in the implementation of \emph{WebCrowd} include:
 
-\ac{HPC} networks have become increasingly important in solving complex, resource-intensive tasks across various domains (TODO: source here). However, traditional \ac{HPC} infrastructures often require significant investments in dedicated hardware and maintenance (TODO: source here). This paper proposes a approach to \ac{HPC} networking that leverages heterogeneous, dynamic, and wireless capabilities to create a more flexible and cost-effective solution.
+\begin{itemize}
+    \item \textbf{WebAssembly}, a binary format that can be executed in a web browser. Multiple programming languages support WebAssembly as a compilation target and It is promissing near-native performance while providing platform independent code execution.\cite{methodology:wasm}
+    \item \textbf{WebSockets}, a bidirectional communication protocol that establishes persistent connections between clients and servers. This technology enables real-time data transmission in both directions while maintaining minimal overhead following the initial TCP handshake. The protocol significantly reduces latency compared to traditional HTTP polling methods. \cite{methodology:websockets3} 
+    \item \textbf{WebWorker} enable parallel processing in the browser by executing JavaScript code in isolated background threads. These WebWorker threads are independent of the main browser UI thread and prevent computationally intensive tasks from blocking the user interface rendering process. \cite{methodology:webworkers}
+\end{itemize}
 
-The proposed high-performance network infrastructure is characterized by three key features:
+Edge devices that participate in volunteer or crowd computing are usually very diverse in hardware and operating system. \cite{intro:diverseDevices} Furthermore, these clients are most likely unreliable \cite{relatedwork:boinc1}, as they fluctuate in availability and may disconnect during active task execution. To manage such an inconsistent crowd of heterogeneous clients, \emph{WebCrowd} implements the following two main features:
 
 \begin{enumerate}
-    \item \textbf{Heterogeneity:} The network can incorporate a diverse range of devices, regardless of their operating system or type. For the proof of concept, we will utilize everyday devices such as smartphones, tablets, and personal computers to form the network.
-    
-    \item \textbf{Dynamic participation:} The number of connected devices forming the network is variable and can change dynamically during runtime. The implemented infrastructure ensures that all active jobs are completed without issues, even as the number of participating devices fluctuates. Participants can join an active job or leave the network at any time without disrupting ongoing processes.
-    
-    \item \textbf{Wireless connectivity:} To enable flexible and location-independent usage, devices will connect via the Internet or within a \ac{LAN}. While this may introduce increased latency, it allows for greater accessibility and scalability.
+    \item \textbf{Heterogeneity:} The platform supports a diverse range of devices, regardless of their operating system or hardware. The only requirement to participate in WebCrowd is access to a modern browser, which supports the previously specified web technologies. Target clinet devices range from personal computers and smart-devices to single-board computers.
+    \item \textbf{Dynamic participation:} The amount of participating devices is variable and can change dynamically during the runtime of a job. The implemented infrastructure of WebCrowd ensures that all active jobs are completed without issues, even as the number of participating devices fluctuates. Hence clients are able to join an active job or disconnect from the platform at any time without disrupting ongoing processes.
 \end{enumerate}
 
 It is important to note that this approach is primarily suited for highly parallelizable problems. Each participating device will independently process an assigned task, with the results subsequently aggregated by a master instance.
@@ -21,6 +21,9 @@ The primary objective of this research is to develop a resource-efficient altern
 
 \section{Motivation}
 \label{sec:intro:motivation}
+\ac{HPC} networks have become increasingly important in solving complex, resource-intensive tasks across various domains (TODO: source here). However, traditional \ac{HPC} infrastructures often require significant investments in dedicated hardware and maintenance (TODO: source here). 
+
+
 Why is Volunteer Computing awesome? What makes my Platform different from exiting platforms? Save Resources / use exisitng (old) Resources? Electricity coast? Free unused Computing Power overall?
 
 \begin{itemize}

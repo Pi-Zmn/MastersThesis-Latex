@@ -1,11 +1,13 @@
 \chapter{Background and related Work}
 \label{ch:background}
-This chapter covers the theoretical foundation of this work and the present state of research and development in the field of volunteer and crowd computing.
+TODO: Chapter 1 blabla
 
-\begin{enumerate}
-  \item Web technologies and Edge Hardware improve fast -> why did i choose the web?
-  \item Present state of VC or CC -> what makes my work different?
-\end{enumerate}
+This chapter covers the theoretical foundation of this work in the first section. A theoretical example case is used to ilustrate the expected performance gains through using the platform. The following section presents other related works to describes the state of research and development in the field of volunteer and crowd computing.
+
+TODO: Present state of VC or CC -> what makes my work different?
+
+\section{TODO}
+TODO: what is crowd computing or volunteer computing -> what makes my work different? 
 
 \section{Theory}
 \label{sec:background:theory}
@@ -94,60 +96,70 @@ Both plots show, that the total computation time is already almost even in the d
 The idea of distributed computing or volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently actively used and maintained.   
 \subsection{BOINC}
 \label{subsec:background:related_work:boinc}
-\ac{BOINC} is an open-source middleware system for volunteer computing, which utilizes consumer devices for scientific computing. It addresses key challenges in distributed computing, such as dealing with untrusted, unreliable, and heterogeneous computing resources, validating results from potentially malicious hosts, and supporting diverse applications and computing environments.
-The BOINC architecture consists of server components, including a database and job scheduler, and client software comprising a core client, GUI, and screensaver. Communication between clients and servers is facilitated through HTTP-based RPCs. BOINC employs replication-based validation and adaptive replication to ensure result integrity while minimizing overhead. The system also implements sophisticated scheduling policies both on the client and server sides to optimize resource allocation and job dispatch.
-While BOINC has been successful in supporting numerous scientific projects and providing substantial computing power, our proposed system aims to leverage modern web technologies to create a more dynamic and accessible distributed computing platform. \cite{relatedwork:boinc1}
+\ac{BOINC} is an open-source middleware system for volunteer computing, which utilizes consumer devices for scientific computing. It addresses key challenges in distributed computing, such as dealing with untrusted, unreliable, and heterogeneous computing resources, validating results from potentially malicious hosts, and supporting diverse applications and computing environments. \cite{relatedwork:boinc1}
+
+The BOINC architecture consists of server components, including a database and job scheduler, and client software comprising a core client, GUI, and screensaver. Communication between clients and servers is facilitated through HTTP-based RPCs. BOINC employs replication-based validation and adaptive replication to ensure result integrity while minimizing overhead. The system also implements sophisticated scheduling policies both on the client and server sides to optimize resource allocation and job dispatch. \cite{relatedwork:boinc1}
+
+BOINC has been successful in supporting numerous scientific projects and providing substantial computing power. \cite{relatedwork:boinc1}
+
 \subsection{SETI@home}
 \label{subsec:background:related_work:seti}
-\ac{SETI} at home (SETI@home) represents a pioneering project in the field of distributed and volunteer computing. It utilises the resources of volunteer computers worldwide to analyze radio telescope data in search of extraterrestrial intelligence. Data from the Arecibo radio telescope is divided into smaller chunks which are distributed to volunteer computers for processing. The system is designed to identify several types of patterns in radio signals that could indicate an artificial origin. These anormalies are spikes, Gaussians, pulsed signals, and triplets in the collected radio data.
-Back in 2002, \ac{SETI}@home had engaged over 3.8 million participants across 226 countries, achieving an average computing power of 27.36 teraFLOPS.
+\ac{SETI} at home (SETI@home) represents a pioneering project in the field of distributed and volunteer computing. It utilises the resources of volunteer computers worldwide to analyze radio telescope data in search of extraterrestrial intelligence. Data from the Arecibo radio telescope is divided into smaller chunks which are distributed to volunteer computers for processing. The system is designed to identify several types of patterns in radio signals that could indicate an artificial origin. These anormalies are spikes, Gaussians, pulsed signals, and triplets in the collected radio data. \cite{relatedwork:seti}
+
+Back in 2002, \ac{SETI}@home had engaged over 3.8 million participants across 226 countries, achieving an average computing power of 27.36 teraFLOPS. \cite{relatedwork:seti}
+
 \ac{SETI}@home demonstrated the viability of large-scale public-resource computing and identified key factors that make tasks suitable for this approach:
 \begin{itemize}
-\item High computing-to-data ratio
-\item Independent parallelism
-\item Error tolerance
-\item Ability to attract public interest
+  \item High computing-to-data ratio
+  \item Independent parallelism
+  \item Error tolerance
+  \item Ability to attract public interest
 \end{itemize}
+
 The success of \ac{SETI}@home not only advanced scientific research but also increased public awareness and involvement in scientific participation. This project laid therefore the groundwork for future volunteer computing projects and frameworks. \cite{relatedwork:seti}
+
 \subsection{XtremWeb}
 \label{subsec:background:related_work:xtremweb}
-XtremWeb is an experimental Global Computing platform designed to harness idle computing resources connected to the Internet for high-throughput computing. The system aims to provide a platform for experimenting with Global Computing capabilities and addressing issues such as scalability, heterogeneity, availability, fault tolerance, security, and usability in massively distributed computing environments.
+XtremWeb is an experimental Global Computing platform designed to harness idle computing resources connected to the Internet for high-throughput computing. The system aims to provide a platform for experimenting with Global Computing capabilities and addressing issues such as scalability, heterogeneity, availability, fault tolerance, security, and usability in massively distributed computing environments. \cite{relatedwork:xtremweb}
+
 The architecture of XtremWeb consists of three main components:
 \begin{enumerate}
   \item Workers: These are volunteer PCs that execute tasks. They are implemented primarily in Java for portability, with native code used for OS-specific functions. Workers monitor resource availability based on user-defined policies and support multiple platforms, including Linux and Windows.
   \item Servers: These manage tasks and applications. The server design is modular, with components for application pool, job pool, accounting, and scheduling. Servers can be clustered for increased throughput and support specialization for tasks such as dedicated result collection.
   \item Clients: These submit tasks to the system.
 \end{enumerate}
+
 XtremWeb employs a two-part scheduling system:
 \begin{enumerate}
   \item Dispatcher: Selects tasks from the pool based on application priorities.
   \item Scheduler: Assigns tasks to workers.
 \end{enumerate}
+
 The default scheduling policy is FIFO, but policies are dynamically configurable. The system supports timeout detection and rescheduling of aborted tasks.
-One of the key features of XtremWeb is its worker-initiated communication protocol, which facilitates easier deployment through firewalls. The protocol consists of four main requests: hostRegister, workRequest, workAlive, and workResult. This protocol is independent of the communication layer, allowing for flexibility in implementation (e.g., TCP/UDP, CORBA, Java RMI).
+
+One of the key features of XtremWeb is its worker-initiated communication protocol, which facilitates easier deployment through firewalls. The protocol consists of four main requests: hostRegister, workRequest, workAlive, and workResult. This protocol is independent of the communication layer, allowing for flexibility in implementation (e.g., TCP/UDP, CORBA, Java RMI). \cite{relatedwork:xtremweb}
+
 Security in XtremWeb is addressed through native code execution for performance and an ad-hoc verification process for downloadable applications. Future versions plan to implement Software Fault Isolation for enhanced security.
-XtremWeb has been successfully applied to various projects, including the Pierre Auger Observatory for studying high-energy cosmic rays. In this application, XtremWeb was used to run the \ac{AIRES} program by partitioning large simulations into smaller subtasks.
-Key features of XtremWeb include:
-\begin{itemize}
-  \item Scalability to hundreds of thousands of nodes
-  \item Support for heterogeneity across hardware and software
-  \item Fault tolerance for frequent node failures
-  \item Dynamic resource management
-  \item User-friendly deployment and usage
-\end{itemize}
-The implementation of XtremWeb uses a MySQL database on the server side and provides a web interface for task submission, monitoring, and result retrieval. The use of free software components ensures portability across different systems.
-In summary, XtremWeb provides a flexible and robust platform for experimenting with Global Computing concepts, offering insights into programming models, performance models, and algorithms suitable for massively distributed environments. \cite{relatedwork:xtremweb}
+
+XtremWeb has been successfully applied to various projects, including the Pierre Auger Observatory for studying high-energy cosmic rays. In this application, XtremWeb was used to run the \ac{AIRES} program by partitioning large simulations into smaller subtasks. \cite{relatedwork:xtremweb}
+
+In summary, XtremWeb provides a flexible and robust platform for experimenting with Global Computing concepts. Its approach and concept is similar to WebCrowd, but the original project not maintained anymore since its development in the early 2000s.
+
 \subsection{EGEE}
 \label{subsec:background:related_work:egee}
-Initiated on April 1, 2004, \ac{EGEE} was a two-year project within a planned four-year program, involving 71 partners from Europe, Russia, and the United States \cite{relatedwork:egee}. The project's primary objectives were to establish a seamless European grid infrastructure for scientific research, provide production-level grid services, and re-engineer grid middleware for enhanced robustness and scalability.
-The infrastructure of \ac{EGEE} was built upon the EU Research Network GEANT, leveraging expertise from previous initiatives such as EU DataGrid, UK e-Science, INFN Grid, Nordugrid, and US Trillium. The project aimed to expand its computational capabilities from an initial 3000 CPUs at 10 sites to 10000 CPUs across 50 sites by the end of its second year.
+Initiated on April 1, 2004, \ac{EGEE} was a two-year project within a planned four-year program, involving 71 partners from Europe, Russia, and the United States \cite{relatedwork:egee}. The project's primary objectives were to establish a seamless European grid infrastructure for scientific research, provide production-level grid services, and re-engineer grid middleware for enhanced robustness and scalability. \cite{relatedwork:egee}
+
+The infrastructure of \ac{EGEE} was built upon the EU Research Network GEANT, leveraging expertise from previous initiatives such as EU DataGrid, UK e-Science, INFN Grid, Nordugrid, and US Trillium. The project aimed to expand its computational capabilities from an initial 3000 CPUs at 10 sites to 10000 CPUs across 50 sites by the end of its second year. \cite{relatedwork:egee}
+
 The project focused on two primary pilot applications: 
 \begin{itemize}
   \item The \ac{LCG} for high-energy physics data analysis.
   \item Biomedical Grids addressing challenges in genomic database mining and medical database indexing
 \end{itemize}
-A key aspect of EGEE was its emphasis on middleware development. The project focused on re-engineering existing middleware to address issues from first-generation implementations and ensure adherence to \ac{OGSA} standards. This approach aimed to enhance the reliability and scalability of the grid infrastructure.
-In conclusion, the \ac{EGEE} project represented a significant effort to transform grid computing from a research concept into a practical infrastructure to support "e-science" across Europe. \cite{relatedwork:egee}
+
+A key aspect of EGEE was its emphasis on middleware development. The project focused on re-engineering existing middleware to address issues from first-generation implementations and ensure adherence to \ac{OGSA} standards. This approach aimed to enhance the reliability and scalability of the grid infrastructure. \cite{relatedwork:egee}
+
+In conclusion, the \ac{EGEE} project represented a significant effort to transform grid computing from a research concept into a practical infrastructure to support "e-science" across Europe.
 
 \subsection{WebAssembly for Edge Computing}
 \label{subsec:background:related_work:wasmedgecomputing}
