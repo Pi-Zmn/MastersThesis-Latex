@@ -1,86 +1,52 @@
 \chapter{Introduction}
 \label{ch:intro}
-The work of this paper proposes a new approach to implement a crowd computing platform. \emph{WebCrowd} leverages the infrastructure of the continuously evolving web ecosystem. The computational capabilities of edge devices have significantly increased over the past (TODO: QUELLE), while the modern web provides multiple features to develop a robust and high-performant crowd computing platform. The key web technologies utilized in the implementation of \emph{WebCrowd} include:
-
+The work of this paper proposes a new approach to implement a volunteer computing platform. \emph{WebCrowd} leverages the infrastructure of the continuously evolving web ecosystem. The computational capabilities of edge devices have significantly increased over the past (TODO: QUELLE), while the modern web provides multiple features to develop a robust and high-performant volunteer computing platform. The key web technologies utilized in the implementation of \emph{WebCrowd} include:
 \begin{itemize}
-    \item \textbf{WebAssembly}, a binary format that can be executed in a web browser. Multiple programming languages support WebAssembly as a compilation target and It is promissing near-native performance while providing platform independent code execution.\cite{methodology:wasm}
-    \item \textbf{WebSockets}, a bidirectional communication protocol that establishes persistent connections between clients and servers. This technology enables real-time data transmission in both directions while maintaining minimal overhead following the initial TCP handshake. The protocol significantly reduces latency compared to traditional HTTP polling methods. \cite{methodology:websockets3} 
-    \item \textbf{WebWorker} enable parallel processing in the browser by executing JavaScript code in isolated background threads. These WebWorker threads are independent of the main browser UI thread and prevent computationally intensive tasks from blocking the user interface rendering process. \cite{methodology:webworkers}
+    \item \textbf{WebAssembly}, a binary format that can be executed in a web browser. Multiple programming languages support WebAssembly as a compilation target and it is promissing near-native performance while providing platform independent code execution. \cite{methodology:wasm}
+    \item \textbf{WebSockets}, a bidirectional communication chanel that establishes persistent connections between clients and servers. This technology enables data transmission in both directions while maintaining a minimal overhead. WebSockets significantly reduce the latency compared to traditional \acs{HTTP} polling methods. \cite{methodology:websockets3} 
+    \item \textbf{WebWorker}, enabling parallel processing in the browser by executing JavaScript code in isolated background threads. These WebWorker threads are independent of the main browser UI thread and prevent computationally intensive tasks from blocking the user interface rendering process. \cite{methodology:webworkers}
 \end{itemize}
-
-Edge devices that participate in volunteer or crowd computing are usually very diverse in hardware and operating system. \cite{intro:diverseDevices} Furthermore, these clients are most likely unreliable \cite{relatedwork:boinc1}, as they fluctuate in availability and may disconnect during active task execution. To manage such an inconsistent crowd of heterogeneous clients, \emph{WebCrowd} implements the following two main features:
-
+Edge devices that participate in volunteer computing are usually very diverse in hardware and operating system. \cite{intro:diverseDevices} Furthermore, these clients are most likely unreliable \cite{relatedwork:boinc1}, as they fluctuate in availability and may disconnect during active task execution. To manage such an inconsistent crowd of heterogeneous clients, \emph{WebCrowd} implements the following two main features:
 \begin{enumerate}
-    \item \textbf{Heterogeneity:} The platform supports a diverse range of devices, regardless of their operating system or hardware. The only requirement to participate in WebCrowd is access to a modern browser, which supports the previously specified web technologies. Target clinet devices range from personal computers and smart-devices to single-board computers.
-    \item \textbf{Dynamic participation:} The amount of participating devices is variable and can change dynamically during the runtime of a job. The implemented infrastructure of WebCrowd ensures that all active jobs are completed without issues, even as the number of participating devices fluctuates. Hence clients are able to join an active job or disconnect from the platform at any time without disrupting ongoing processes.
+    \item \textbf{Heterogeneity:} The platform supports a diverse range of devices, regardless of their operating system or hardware. The only requirement to participate in a job distributed by \emph{WebCrowd} is access to a modern browser, which supports the previously specified web technologies. Supported clinet devices range from personal computers and smart-devices to single-board computers.
+    \item \textbf{Dynamic participation:} The amount of participating devices is variable and can change dynamically during the runtime of a job. The implemented infrastructure of \emph{WebCrowd} ensures that all active jobs are completed without issues, even as the number of participating devices fluctuates. Hence clients are able to join an active job or disconnect from the platform at any time without disrupting ongoing processes.
 \end{enumerate}
-
-It is important to note that this approach is primarily suited for highly parallelizable problems. Each participating device will independently process an assigned task, with the results subsequently aggregated by a master instance.
-
-The primary objective of this research is to develop a resource-efficient alternative to conventional data centers. By enabling universities and small businesses to create powerful high-performance networks from their existing devices, we aim to provide a cost-effective solution that eliminates the need for expensive access fees or long wait times associated with external supercomputers. (TODO: Also creating a attractive alternative approach to current volunteer computing platforms)
 
 \section{Motivation}
 \label{sec:intro:motivation}
-\ac{HPC} networks have become increasingly important in solving complex, resource-intensive tasks across various domains (TODO: source here). However, traditional \ac{HPC} infrastructures often require significant investments in dedicated hardware and maintenance (TODO: source here). 
-
-
-Why is Volunteer Computing awesome? What makes my Platform different from exiting platforms? Save Resources / use exisitng (old) Resources? Electricity coast? Free unused Computing Power overall?
-
-\begin{itemize}
-    \item Back in 2014 was estimated that about 2 Billion computers are aktively in use worldwide \cite{intro:computersAmount,relatedwork:boinc1}
-    \item In the study 5\% of the respondents said they were "very likely" to participate \cite{intro:volunteerStudy,relatedwork:boinc1}, 37\% of the study participants said they were either "somewhat likely" or "very likely" \cite{intro:volunteerStudy}
-    \item Privacy and security concerns negatively impacted willingness to participate in volunteer computing \cite{intro:volunteerStudy}
-    \item The cost of volunteer computing can be lower than the cost of cloud computing depending on the amount of volunteer nodes and the number of working system administrators on a project \cite{intro:costAnalysis}.
-    \item Volunteer devices are very diverse in Hardware (Resources and Drivers) and operating systems \cite{intro:diverseDevices}. 
-\end{itemize}
-
-Text from Expose:
-
-The computational power of everyday devices such as laptops, smartphones, tablets, and desktop computers continues to increase, and these devices are now omnipresent in everyday live (TODO: source here). However, in many situations, these devices remain idle or underutilized during use. Moreover, businesses or households often possess several functional but outdated devices. While these untapped resources may seem insignificant individually, they collectively represent substantial potential due to their total number. These available yet unused resources in office buildings, universities, or public spaces can be harnessed to form a powerful high-performance network.
-
-(TODO: maybe remove this paragraph) Current approaches to building supercomputers or large-scale data centers focus on physically connecting all resources via cables to achieve optimal latency and using largely homogeneous hardware to ensure compatibility between individual devices (TODO: source here). However, this research focuses on an alternative approach.
-
-As the quality of wireless communication and internet connectivity continues to improve in terms of latency and data throughput (TODO: source here), I aim to leverage these advancements for the platform, utilizing current tools and technologies to my advantage. This research examines high-performance computing from a different perspective, investigating the advantages and disadvantages of a heterogeneous and wireless network. The primary requirement is that the implemented network should be capable of processing computationally intensive and time-consuming tasks.
-
-(TODO: maybe remove this paragraph) Large corporations such as OpenAI, Google, and Microsoft maintain their monopoly in areas like artificial intelligence development, in part due to their numerous large-scale data centers. The goal of this work is to provide universities and small businesses with a simple and financially viable option for research and development, ensuring they are not completely excluded from competition. This approach allows them to create their own \ac{HPC} network using existing resources, reducing their dependence on access to external data centers.
-
-The proposed system offers several potential benefits:
-
-\begin{itemize}
-    \item \textbf{Resource Efficiency:} Utilization of existing, often idle computational resources.
-    \item \textbf{Cost-Effectiveness:} Reduced need for investment in dedicated HPC hardware.
-    \item \textbf{Flexibility:} Easy scalability and adaptation to changing computational needs.
-    \item \textbf{Accessibility:} Democratization of high-performance computing capabilities.
-\end{itemize}
-
-By addressing these aspects, this research aims to contribute to the broader field of distributed computing and explore new paradigms in high-performance network architectures (TODO: volunteer computing is been present since 1997). The following sections will detail the proposed system design, implementation challenges, and potential applications in various domains.
+The primary objective of this work is to develop a resource-efficient, accessible and flexible alternative to conventional data centers and \ac{HPC} infrastructures. These traditional \ac{HPC} infrastructures often require significant investments in dedicated hardware and maintenance. This creates barriers for universities, research projects or smaller businesses that do not have access to external supercomputers and do not possess the necessary resources to build a \ac{HPC} infrastructure themselfe. WebCrowd aims to provide for such organizations with limited resources a simple and user friendly platform to execute extensive research or development tasks. By leveraging WebCrowd, these organizations can establish their own local volunteer computing network that utilizes existing and available computational resources. Furthermore, WebCrowd can be expanded to a global volunteer computing platform where volunteering clients world wide are able to support reaserch projects and jobs.
 
 \section{Objectives}
 \label{sec:intro:objectives}
-Easy to use platform for universitys or companies. Low overhead for volunteers. Secure for volunteers. Able to solve complex high throughput problems.
+WebCrowd aims to reduce overhead for volunteering participants, thereby potentialy generating a larger volunteer base. The platform is designed in a way that volunteers require no setup to participate in projects. They connect to the web application through their browser via \acs{URL}, with the platform's structure automatically handling all processes in the background. No files or executables need to be downloaded on to the device, except for a modern browser, which already comes pre-installed on most consumer devices. Volunteers can transparently monitor the computing process of tasks through the web interface and maintain flexibility in joining or leaving the process at any time. When participants disconnect from the platform, no persistent files or data remain stored on their devices leaving no permanent effect on the device. 
 
-\subsection{Problem Definition}
-\label{subsec:into:objectives:problems}
-Hos can i motivate volunteers? How can i make the edge (user device) most efficient -> performat? How do i handel Heterogenous clients? How do i handel/build a dynamic environment -> clients come and go?
+A study has revealed that privacy and security concerns significantly impact willingness to participate in volunteer computing projects. \cite{intro:volunteerStudy} The approach to utilize the browser enviornment offers an additional advantage in addressing these concerns, as it implements an inherent security model. The browser cannot read or write files or access device hardware such as cameras or microphones without explicit user permissions. WebAssembly, the key technology underlying WebCrowd, is also restricted to these security constraints. Additionally, the fact that volunteers are not required to install any third-party tool on their device could enhance the trust and positively effect the sense of security for participants.
+\\~\\
+Furthermore, WebCrowd aims to minimize any overhead for administrators that maintain the platform or develop additional jobs. The process of creating and distributing new jobs through the platform is designed to be straightforward and does not require a deep understanding of the underlying architecture of WebCrowd. WebAssembly significantly facilitates this objective, since it is designed to be a compilation target for numerous high-level programming languages. \cite{methodology:wasm,methodology:wasmdocu, relatedwork:wasmedgecomputing} Developers can select a programming language with which they are familiar to create projects, while the overhead required to implement this code into the WebCrowd framework remains comparatively low. 
+
+Administrators should additionally be able to monitor and controll the deployed volunteer computing platform through a transparent web application.
 
 \subsection{Research Questions}
 \label{subsec:into:objectives:questions}
-This work focuses on addressing the following key research questions:
-
+This work investigates the viability of the developed volunteer computing platform - WebCrowd. Through empirical testing, this work focuses on addressing three fundamental research questions that examine WebCrowd's computational capabilities, dynamic adaptability, and support of heterogeneous devices:
 \begin{enumerate}
-    \item \textbf{Computational Capability:} Is the proposed high-performance network capable of successfully solving large, parallelizable problems?
-    
-    \item \textbf{Economic Viability:} Does this approach represent a resource-efficient and economically attractive alternative to conventional supercomputers?
+    \item \textbf{Computational Capability:} Is WebCrowd capable of successfully solving large, parallelizable problems?
+    \item \textbf{Dynamic Viability:} Is the WebCrowd platform stable in a environment with dynamic clients?
+    \item \textbf{Heterogeneous Viability:} Does WebCrowd effortlessly support a diverse range of client devices?
 \end{enumerate}
-
-These questions aim to evaluate both the technical feasibility and the practical applicability of the proposed heterogeneous, dynamic, and wireless high-performance network.
-
-The first question focuses on the technical performance of the system, examining its ability to handle complex computational tasks that are typically reserved for traditional \ac{HPC} systems.
-
-The second question addresses the economic and environmental aspects of the proposed system. It involves comparing the resource utilization, energy consumption, and overall cost-effectiveness of our approach with that of conventional supercomputers.
-
-To answer these questions, a usabel platform has been developed and will be introduced and evaluated in the following chapters. The findings will provide insights into the potential of leveraging everyday devices for high-performance computing tasks.
+These research questions are designed to evaluate critical aspects of WebCrowd's functionality and performance. The first question examines the platform's fundamental ability to successfully distribute task across the network to complete a parallelizable job. The second question addresses the platform's resilience and stability when dealing with varying numbers of connected clients and potentially unreliable connections. The third question investigates the platform's compatibility across different device hardware and operating systems. Through these investigations, this work aims to validate WebCrowd's effectiveness as a viable solution for distributed computing in the modern web environment.
 
 \section{Structure}
 \label{sec:intro:structure}
-This paper is organized as follows: Chapter \ref{ch:background} discusses the main concept of volunteer computing, the theoretical background and related work in distributed and volunteer computing. Chapter \ref{ch:methodology} introduces the key technologys as well as the structure used to develop the platform. Chapter \ref{ch:implementation} focuses in deatial how the platform has been implemented and what challenges occured during the development. Chapter \ref{ch:evaluation} describes the experimental setup to benchmark the platform and evaluates the results. Finally, Chapter \ref{ch:conclusion} concludes the paper and outlines future research directions.
+This paper presents a comprehensive examination of the developed WebCrowd platform. The foundation is established in Chapter \ref{ch:background}, which explores the fundamental concepts of volunteer computing, provides the theoretical background, and examines related work in the fields of distributed and volunteer computing as well as edge computing with WebAssembly. Chapter \ref{ch:methodology} introduces the key technologys as well as the structure of the development process. The implementation process and challenges that occured during the development are discussed in Chapter \ref{ch:implementation}, providing insights into the architecture and technical desing of the platform. Chapter \ref{ch:evaluation} describes the experimental setup that has been used to benchmark the platform and evaluates the corresponding results of these benchmarks. The paper concludes in Chapter \ref{ch:conclusion} with a summary of the findings and outlines potential future research directions of this project.
+
+\section{Temporäre Notizen}
+
+\begin{itemize}
+    \item The cost of volunteer computing can be lower than the cost of cloud computing depending on the amount of volunteer nodes and the number of working system administrators on a project \cite{intro:costAnalysis}.
+    \item Add additional introduction section to chapter methodology/Implementaiton
+    \item Why is Volunteer Computing awesome? What makes my Platform different from exiting platforms? Save Resources / use exisitng (old) Resources? Electricity coast? Free unused Computing Power overall?
+    \item Quelle finden: Idle time of devices
+    \item Quelle finden: Total amount of edge devices | is amount increasing?
+    \item Quelle finden: Does the computational hardware of edge device increase? 
+\end{itemize}

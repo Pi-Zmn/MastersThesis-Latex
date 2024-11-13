@@ -1,26 +1,26 @@
 \chapter{Background and related Work}
 \label{ch:background}
-TODO: Chapter 1 blabla
+This chapter covers the background and theoretical foundation of this work. A theoretical example case is used to ilustrate the expected performance behaviour of the WebCrowd platform. Section \ref{sec:background:related_work} presents related works to describes the state of research and development in the field of volunteer computing and edge computing with WebAssembly.
 
-This chapter covers the theoretical foundation of this work in the first section. A theoretical example case is used to ilustrate the expected performance gains through using the platform. The following section presents other related works to describes the state of research and development in the field of volunteer and crowd computing.
+\section{Distributed Computing \& Volunteer Computing}
+Distributed computing describes a architecture where many autonomous computing elements collaborate as a unified system to solve complex computational problems through coordinated sharing of resources. A distributed computing system typically consists of multiple independent nodes, each possessing local memory and computational resources, interconnected through a network infrastructure that facilitates communication and synchronization between processes. This concept is particularly suitable to compute parallelizable workloads.
 
-TODO: Present state of VC or CC -> what makes my work different?
+Volunteer Computing is a sub category of distributed computing that focuses on puplic support. Participants share their computer processing power to support a collective interest. The idea of volunteer computing emerged in 1996 \cite{relatedwork:boinc1} and the first large-scale scientific projects SETI@home and Folding@Home where launched in 1999. \cite{relatedwork:boinc1,relatedwork:seti} These pioneering projects are since than demonstrating the success and popularity of volunteer computing. Since the total amount of edge devices like laptops, smartphones, tablets and desktop computers continues to increase (TODO: QUELLE) there is a big pool of devices that can be used for volunteer computing. A study in 2014 has estimated that about 2 Billion computers are aktively in use worldwide. \cite{intro:computersAmount,relatedwork:boinc1}. However, many of these resources often remain idle or underutilized during regular operation. (TODO: QUELLE) While these untapped resources may seem insignificant individually, they collectively represent substantial potential due to their total number. These available resources located in office buildings, universities or public spaces can participate in volunteer computing projects to share their unused computational capabilities.
 
-\section{TODO}
-TODO: what is crowd computing or volunteer computing -> what makes my work different? 
+A study of 2011 revealed significant potential acceptance of volunteer computing, with 37\% of respondents indicating they were either \emph{"somewhat likely"} or \emph{"very likely"} to participate in volunteer computing projects. \cite{intro:volunteerStudy}. However, the study also identified privacy and security concerns as primary factors that negatively influence willingness to volunteer. \cite{intro:volunteerStudy}.
 
 \section{Theory}
 \label{sec:background:theory}
-This following section displays the mathematical and theoretical background of a distributed computing network. The objective is to identify the constraints that must be satisfied to ensure that the use of a distributed computing network offers advantages over regular local computing on a single device.
+This following section displays the mathematical and theoretical background of the developed volunteer computing network. The objective is to identify the constraints that must be satisfied to ensure that the use of a volunteer computing network offers advantages over regular local computing on a single device.
 
-The primary constraint is that the program code, which is distributed across multiple devices, must be capable of parallel execution. This allows all participating devices to  each compute a portion of the overall workload simultaneously. In this context, a parallelizable problem, as defined in this thesis, is characterized by the following properties:
+The primary constraint is that the program code, which is distributed across multiple devices, must be capable of parallel execution. This allows all participating devices to  each compute a portion of the overall workload simultaneously. In this context, a parallelizable problem, as defined in this work, is characterized by the following properties:
 \begin{itemize}
     \item The problem can be divided into multiple tasks.
     \item Each task executes the same program code.
     \item Each task can receive specific input parameters to process a distinct part of the problem.
     \item Each task operates independently, with no need for communication between tasks.
 \end{itemize}
-To calculate the execution time of a parallelizable problem, the problem is divided into \emph{T} equally sized tasks. It is assumed that, on average, each task requires a computing time of $t_{C}$ when executed on a single device. Consequently, the total computation time for a parallelizable problem on a single device is expressed as:
+To calculate the estimated execution time of a parallelizable problem, the problem is divided into \emph{T} equally sized tasks. It is assumed that, on average, each task requires a computing time of $t_{C}$ when executed on a single device. Consequently, the total computation time for a parallelizable problem on a single device is expressed as:
 \begin{equation}
 T \cdot t_{C}
 \label{equ:single}
@@ -59,17 +59,19 @@ The last expression through the transformation in \eqref{equ:transformation} res
 Additionally the expression \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. This expression reaches its minimum when \emph{N} equals \emph{T}. This outcome is intuitive, as in this ideal scenario each Node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
 
 \subsection{Theoretical Case}
-To illustrate the performance gain achieved by a distributed computing network, both expressions \eqref{equ:single} and \eqref{equ:multiple} are plotted in figure \ref{fig:background:theoryplot}. To calculate these graphs, an Internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{C}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \ref{app:code:mandelbrot1} on the system specified in \ref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \ref{app:code:mandelbrot2}. The average execution time of the WebAssembly binary in a browser environment on the system specified in \ref{app:system:mymachine} was measured at 71.17 seconds. 
+To illustrate the performance gain achieved by a volunteer computing network, both expressions \eqref{equ:single} and \eqref{equ:multiple} are plotted in figure \ref{fig:background:theoryplot}. To calculate these graphs, an Internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{C}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \ref{app:code:mandelbrot1} on the system specified in \ref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \ref{app:code:mandelbrot2}. The average execution time of the WebAssembly binary in a browser environment on the system specified in \ref{app:system:mymachine} was measured at 71.17 seconds. 
 
-This unexpected difference in computation duration is very likely due to the use of 64-bit and 128-bit values in the source code of \ref{app:code:mandelbrot1} and \ref{app:code:mandelbrot2}. Since the WebAssembly environment is constrained to 32-bit operations (TODO: ADD WASM SOURCE), the conversion process from multiple 32-bit values to 64-bit or 128-bit values could introduce computational overhead, extending the execution time of the WebAssembly binary. (TODO: Use explanation of "Not so fast!")
+This is a unexpected difference in computation duration between native and WebAssembly code execution, since is promissed to perform at near-native speed. \cite{methodology:wasm} A likely explanation for this time difference coud be the additional overhead of ?, as stated in the work from (TODO: Use explanation of "Not so fast!" paper)
 
-An initial offset time is additionally considered to establish the distributed computing network. In this process, each node must download all necessary files in advance to be able to execute the workload. Since this setup occurs in parallel across all nodes, the offset matches the time required for the setup of a single node. This offset value is calculated using the \ac{IQI} estimated download speed in Europe of 29 Mbps \cite{backend:latency}. The size of the compiled WebAssembly binary file from the source code in \ref{app:code:mandelbrot2} is 21.6 Mb (2.7 MB), and the coresponding \emph{wasm\_exec.js} JavaScript file to setup the WebAssembly environment is 0.13 Mb (16.7 KB), resulting in a total file size of 21.76 Mb. The time required to download both files to a single node can be estimated using the following expression:
+An initial offset time is additionally considered to establish the volunteer computing network. In this process, each node must download all necessary files in advance to be able to execute the workload. Since this setup occurs in parallel across all nodes, the offset matches the time required for the setup of a single node. This offset value is calculated using the \ac{IQI} estimated download speed in Europe of 29 Mbps \cite{backend:latency}. The size of the compiled WebAssembly binary file from the source code in \ref{app:code:mandelbrot2} is 21.6 Mb (2.7 MB), and the coresponding \emph{wasm\_exec.js} JavaScript file to setup the WebAssembly environment is 0.13 Mb (16.7 KB), resulting in a total file size of 21.73 Mb. The time required to download both files to a single node can be estimated using the following expression:
 \begin{equation}
- Download-Time = Latency + \frac{Filesize}{Bandwith} 
+ DownloadTime = Latency + \frac{Filesize}{Bandwith} 
  \label{equ:offset}
 \end{equation}
 Since the bandwidth is given in megabits per second, while the latency is provided in milliseconds, the latency value needs to be converted to seconds. Using the calculation in \ref{equ:offset}, the additional offset that is required to set up the platform, in this theoretical case, is estimated to be at least 0.78 s.
-
+\\~\\
+The graph in Figure \ref{fig:background:theoryA} represents the total runtime, on the y-axis in seconds, as a function of the number of nodes in the network, on the x-axis. The red dotted line displays the performance of a single machine, while the blue line illustrates the performance of the volunteer computing network. The total number of all tasks to be executed is set to 20. This plot reveals that the volunteer network achieves a faster total computation time than a single device, if three or more nodes are availabile in the network. The total runtime is already reduced by 30\% when the workload is distributed to three nodes.
+\clearpage
 \begin{figure}[bth]
   \myfloatalign
   \subfloat[Variable amount of nodes N]{
@@ -83,17 +85,15 @@ Since the bandwidth is given in megabits per second, while the latency is provid
    \caption{Visualizing the Total Computation Time for an Estimated Example Case}
    \label{fig:background:theoryplot}
 \end{figure}
-
-The graph in Figure \ref{fig:background:theoryA} represents the total runtime, on the y-axis in seconds, as a function of the number of nodes in the network, on the x-axis. The red dotted line displays the performance of a single machine, while the blue line illustrates the performance of the distributed computing network. The total number of all tasks to be executed is set to 20. This plot reveals that the distributed network achieves a faster total computation time than a single device, if three or more nodes are availabile in the network. The total runtime is already reduced by 30\% when the workload is distributed to three nodes.
-
-The second graph in Figure \ref{fig:background:theoryB} displays the total runtime on the y-axis in seconds as a function of the number of tasks on the x-axis. The red dotted line represents again a single device and the blue line the distributed computing network. The number of nodes N is set to three. This plot demonstrates that the distributed network achieves faster total computation time than a single device when the workload consists of more than two tasks. The performance gain grows exponentially as the number of tasks increases. Additionally, the total computation time of the network only increases when the number of tasks T and the number of nodes N have no common divisor. However, it is crucial to note that the network will have a longer computation time in every scenario with only one task, as a single task cannot be executed in parallel.
+The second graph in Figure \ref{fig:background:theoryB} displays the total runtime on the y-axis in seconds as a function of the number of tasks on the x-axis. The red dotted line represents again a single device and the blue line the volunteer computing network. The number of nodes N is set to three. This plot demonstrates that the volunteer network achieves faster total computation time than a single device when the workload consists of more than two tasks. The performance gain grows exponentially as the number of tasks increases. Additionally, the total computation time of the network only increases when the number of tasks T and the number of nodes N have no common divisor. However, it is crucial to note that the network will have a longer computation time in every scenario with only one task, as a single task cannot be executed in parallel.
 
 Both plots show, that the total computation time is already almost even in the distributed network if the network consists of two nodes and faster if there are three or more nodes. This holds true even if the computation time $t_{C}$ of a single task is twice as fast on a native system then in the distributed environment. This proves that the approach to distribute the workload is a performance gain in this example, if multiple nodes are availabile. But it needs to be considdered, that if there is only one or two node in the network this approach will be slower due to the offset time, the additional network latency and the higher computation time for each individual task.
 
 
 \section{Related Work}
 \label{sec:background:related_work}
-The idea of distributed computing or volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently actively used and maintained.   
+The idea of volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently in active use and maintenance.
+
 \subsection{BOINC}
 \label{subsec:background:related_work:boinc}
 \ac{BOINC} is an open-source middleware system for volunteer computing, which utilizes consumer devices for scientific computing. It addresses key challenges in distributed computing, such as dealing with untrusted, unreliable, and heterogeneous computing resources, validating results from potentially malicious hosts, and supporting diverse applications and computing environments. \cite{relatedwork:boinc1}
@@ -104,7 +104,7 @@ BOINC has been successful in supporting numerous scientific projects and providi
 
 \subsection{SETI@home}
 \label{subsec:background:related_work:seti}
-\ac{SETI} at home (SETI@home) represents a pioneering project in the field of distributed and volunteer computing. It utilises the resources of volunteer computers worldwide to analyze radio telescope data in search of extraterrestrial intelligence. Data from the Arecibo radio telescope is divided into smaller chunks which are distributed to volunteer computers for processing. The system is designed to identify several types of patterns in radio signals that could indicate an artificial origin. These anormalies are spikes, Gaussians, pulsed signals, and triplets in the collected radio data. \cite{relatedwork:seti}
+\ac{SETI} at home (\ac{SETI}@home) represents a pioneering project in the field of distributed and volunteer computing. It utilises the resources of volunteer computers worldwide to analyze radio telescope data in search of extraterrestrial intelligence. Data from the Arecibo radio telescope is divided into smaller chunks which are distributed to volunteer computers for processing. The system is designed to identify several types of patterns in radio signals that could indicate an artificial origin. These anormalies are spikes, Gaussians, pulsed signals, and triplets in the collected radio data. \cite{relatedwork:seti}
 
 Back in 2002, \ac{SETI}@home had engaged over 3.8 million participants across 226 countries, achieving an average computing power of 27.36 teraFLOPS. \cite{relatedwork:seti}
 
@@ -115,7 +115,6 @@ Back in 2002, \ac{SETI}@home had engaged over 3.8 million participants across 22
   \item Error tolerance
   \item Ability to attract public interest
 \end{itemize}
-
 The success of \ac{SETI}@home not only advanced scientific research but also increased public awareness and involvement in scientific participation. This project laid therefore the groundwork for future volunteer computing projects and frameworks. \cite{relatedwork:seti}
 
 \subsection{XtremWeb}
@@ -128,13 +127,11 @@ The architecture of XtremWeb consists of three main components:
   \item Servers: These manage tasks and applications. The server design is modular, with components for application pool, job pool, accounting, and scheduling. Servers can be clustered for increased throughput and support specialization for tasks such as dedicated result collection.
   \item Clients: These submit tasks to the system.
 \end{enumerate}
-
 XtremWeb employs a two-part scheduling system:
 \begin{enumerate}
   \item Dispatcher: Selects tasks from the pool based on application priorities.
   \item Scheduler: Assigns tasks to workers.
 \end{enumerate}
-
 The default scheduling policy is FIFO, but policies are dynamically configurable. The system supports timeout detection and rescheduling of aborted tasks.
 
 One of the key features of XtremWeb is its worker-initiated communication protocol, which facilitates easier deployment through firewalls. The protocol consists of four main requests: hostRegister, workRequest, workAlive, and workResult. This protocol is independent of the communication layer, allowing for flexibility in implementation (e.g., TCP/UDP, CORBA, Java RMI). \cite{relatedwork:xtremweb}
@@ -156,7 +153,6 @@ The project focused on two primary pilot applications:
   \item The \ac{LCG} for high-energy physics data analysis.
   \item Biomedical Grids addressing challenges in genomic database mining and medical database indexing
 \end{itemize}
-
 A key aspect of EGEE was its emphasis on middleware development. The project focused on re-engineering existing middleware to address issues from first-generation implementations and ensure adherence to \ac{OGSA} standards. This approach aimed to enhance the reliability and scalability of the grid infrastructure. \cite{relatedwork:egee}
 
 In conclusion, the \ac{EGEE} project represented a significant effort to transform grid computing from a research concept into a practical infrastructure to support "e-science" across Europe.
