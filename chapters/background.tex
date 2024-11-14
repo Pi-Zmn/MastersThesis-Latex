@@ -15,37 +15,44 @@ This following section displays the mathematical and theoretical background of t
 
 The primary constraint is that the program code, which is distributed across multiple devices, must be capable of parallel execution. This allows all participating devices to  each compute a portion of the overall workload simultaneously. In this context, a parallelizable problem, as defined in this work, is characterized by the following properties:
 \begin{itemize}
-    \item The problem can be divided into multiple tasks.
-    \item Each task executes the same program code.
-    \item Each task can receive specific input parameters to process a distinct part of the problem.
-    \item Each task operates independently, with no need for communication between tasks.
+  \item The problem can be divided into multiple tasks.
+  \item Each task executes the same program code.
+  \item Each task can receive specific input parameters to process a distinct part of the problem.
+  \item Each task operates independently, with no need for communication between tasks.
 \end{itemize}
-To calculate the estimated execution time of a parallelizable problem, the problem is divided into \emph{T} equally sized tasks. It is assumed that, on average, each task requires a computing time of $t_{C}$ when executed on a single device. Consequently, the total computation time for a parallelizable problem on a single device is expressed as:
+The total estimated execution time of a problem that is divided into \emph{T} equally sized tasks which are executed sequentially is denoted as $t_{ExSeq}$. It is assumed that, on average, each task requires a computing time of $t_{C}$ when executed. Consequently, the total computation time for the sequential execution of a problem on a single device is expressed as:
 \begin{equation}
-T \cdot t_{C}
-\label{equ:single}
+  t_{ExSeq} = T \cdot t_{C}
+  \label{equ:single}
 \end{equation}
-When the tasks \emph{T} are executed in parallel on \emph{N} nodes, the total computation time is reduced proportionally by distributing the workload. This is implemented through the fraction of \emph{T} and \emph{N}. Since \emph{T}, \emph{N} and the result of their division need to be natural numbers ($\mathbb{N}$), the gaussian ceiling function is applied. The ceiling function values any remainder as a additional value when dividing tasks among nodes and therefore always returns a value in range of $\mathbb{N}$. Hence, the fraction is given by: 
+When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the total computation time is expected to be proportionally reduced, hece the workload is being parallelized. This reducing factor \emph{I} represents the amount of iterations needed to distribute all tasks \emph{T} over \emph{N} nodes and is described by the fraction of \emph{T} devided by \emph{N}. Since \emph{T}, \emph{N} and \emph{I} are part of the natural numbers $\mathbb{N}$, the gaussian ceiling function is applied to esure that the result of the devision is always a natural number. Hence, \emph{I} is given by: 
 \begin{equation}
-\bigg\lceil\frac{T}{N}\bigg\rceil
-\label{equ:frac}
+  I = \bigg\lceil\frac{T}{N}\bigg\rceil
+  \label{equ:frac}
 \end{equation}
-When a problem is distributed across \emph{N} nodes over a wireless connection, the network latency must be taken into account in the computation. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. Additionally, it is assumed that the computation time, $t_{C}$, is equally long across all \emph{N} nodes. Thus, the total execution time for a parallelizable problem distributed across \emph{N} nodes can be expressed as: 
+When a problem is distributed across \emph{N} nodes over a wireless connection, the network latency must be taken into account in the computation of the total execution time $t_{ExDist}$. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. Additionally, it is assumed that the computation time of a task - $t_{C}$ - is equally long across all \emph{N} nodes. Thus, the total execution time $t_{ExDist}$ for a parallelizable problem distributed across \emph{N} nodes can be expressed as: 
+\begin{alignat}{4}
+  t_{ExDist} &= I \cdot (t_{C} + t_{L}) \nonumber \\
+  t_{ExDist} &= \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{C} + t_{L})
+  \label{equ:multiple}
+\end{alignat}
+The objective is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the execution time on a single device $t_{ExSeq}$, as described by \eqref{equ:single}, must be longer than the execution time on multiple devices $t_{ExDist}$, as described by \eqref{equ:multiple}. This leads to following inequality expression:
+\begin{alignat}{4}
+  t_{ExSeq} &> t_{ExDist} \nonumber \\
+  T \cdot t_{C} &> \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{C} + t_{L})
+  \label{equ:compare}
+\end{alignat}
+In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. The value of \emph{I} can be overestimated by the following term:
 \begin{equation}
-\bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{C} + t_{L})
-\label{equ:multiple}
+  I = \bigg\lceil\frac{T}{N}\bigg\rceil < \frac{T}{N} + 1
+  \label{equ:frac2}
 \end{equation}
-The objective is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the execution time on a single device, as described by \eqref{equ:single}, must be longer than the execution time on multiple devices, as described by \eqref{equ:multiple}. This leads to following inequality expression:
+This overestimate is used to substitude the value of \emph{I} in function \ref{equ:multiple} to create following inequality expression:
 \begin{equation}
-T \cdot t_{C} > \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{C} + t_{L})
-\label{equ:compare}
+  T \cdot t_{C} > \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{C} + t_{L})
+  \label{equ:substitution}
 \end{equation}
-In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. The fraction \eqref{equ:frac} can be replaced by an overestimate, without altering the logical validity of the inequality:
-\begin{equation}
-\bigg\lceil\frac{T}{N}\bigg\rceil < \frac{T}{N} + 1
-\label{equ:frac2}
-\end{equation}
-Substituting this overestimate into the inequality allows for the following transformation:
+This allows following transformation of the inequality of \ref{equ:substitution}:
 \begin{alignat}{4}
  T \cdot t_{C} &> \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{C} + t_{L}) \nonumber \\
  T \cdot t_{C} &> \bigg(\frac{T + N}{N}\bigg) \cdot (t_{C} + t_{L}) \nonumber \\
@@ -56,7 +63,7 @@ Substituting this overestimate into the inequality allows for the following tran
 \end{alignat}
 The last expression through the transformation in \eqref{equ:transformation} results in the constrain, that distributing a parallelizable problem across multiple nodes is only beneficial if the latency $t_{L}$ is shorter than the computation time of a single task multiplied by the factor $(\frac{T \cdot N}{T + N} - 1)$.
 
-Additionally the expression \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. This expression reaches its minimum when \emph{N} equals \emph{T}. This outcome is intuitive, as in this ideal scenario each Node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
+Additionally the expression \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. The number of iterations \emph{I} reaches its minimum of $1$ if \emph{N} and \emph{T} are equally sized. This outcome is intuitive, as in this ideal scenario each node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
 
 \subsection{Theoretical Case}
 To illustrate the performance gain achieved by a volunteer computing network, both expressions \eqref{equ:single} and \eqref{equ:multiple} are plotted in figure \ref{fig:background:theoryplot}. To calculate these graphs, an Internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{C}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \ref{app:code:mandelbrot1} on the system specified in \ref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \ref{app:code:mandelbrot2}. The average execution time of the WebAssembly binary in a browser environment on the system specified in \ref{app:system:mymachine} was measured at 71.17 seconds. 
