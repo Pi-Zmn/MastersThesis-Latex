@@ -1,8 +1,8 @@
 \chapter{Introduction}
 \label{ch:intro}
-The work of this paper proposes a new approach to implement a volunteer computing platform. \emph{WebCrowd} leverages the infrastructure of the continuously evolving web ecosystem. While the modern web provides multiple technologies to develop a robust and high-performant volunteer computing platform, the continuous development of hardware for consumer devices has led to a significant increase of computational capabilities at the edge. The key web technologies utilized in the implementation of \emph{WebCrowd} include:
+The work of this paper proposes a new approach to implement a volunteer computing platform. \emph{WebCrowd} leverages the infrastructure of the continuously evolving web ecosystem. While the modern web provides multiple technologies to develop a robust and high-performant volunteer computing platform, the continuous development of hardware for consumer devices has led to a significant increase of computational capabilities at the edge of the internet \cite{relatedwork:mobilecloud, relatedwork:wasmedgecomputing}. The key web technologies utilized in the implementation of \emph{WebCrowd} include:
 \begin{itemize}
-    \item \textbf{WebAssembly} \cite{methodology:wasmdocu}, a binary format that can be executed in a web browser. Multiple programming languages support WebAssembly as a compilation target and it is promissing near-native performance while providing platform independent code execution \cite{methodology:wasm}.
+    \item \textbf{WebAssembly} \cite{methodology:wasm2}, a binary format that can be executed in a web browser. Multiple programming languages support WebAssembly as a compilation target and it is promissing near-native performance while providing platform independent code execution \cite{methodology:wasm}.
     \item \textbf{WebSockets} \cite{methodology:websockets1}, a bidirectional communication chanel that establishes persistent connections between clients and servers. This technology enables data transmission in both directions while maintaining a minimal overhead. Therfore WebSockets significantly reduce the latency compared to traditional \acs{HTTP} polling methods \cite{methodology:websockets3}. 
     \item \textbf{WebWorker} \cite{methodology:webworkers}, enabling parallel processing in the browser by executing JavaScript code in isolated background threads. These WebWorker threads are independent of the main browser UI thread and prevent computationally intensive tasks from blocking the user interface rendering process \cite{methodology:webworkers}.
 \end{itemize}
@@ -39,14 +39,3 @@ These research questions are designed to evaluate critical aspects of WebCrowd's
 \section{Structure}
 \label{sec:intro:structure}
 This paper presents a comprehensive examination of the developed WebCrowd platform. The foundation is established in \autoref{ch:background}, which explores the fundamental concepts of volunteer computing, provides the theoretical background, and examines related work in the fields of distributed and volunteer computing as well as edge computing with WebAssembly. \autoref{ch:methodology} introduces the key technologys as well as the structure of the development process. The implementation process and challenges that occured during the development are discussed in \autoref{ch:implementation}, providing insights into the architecture and technical desing of the platform. \autoref{ch:evaluation} describes the experimental setup that has been used to benchmark the platform and evaluates the corresponding results of these benchmarks. The paper concludes in \autoref{ch:conclusion} with a summary of the findings and outlines potential future research directions of this project.
-
-\section{Temporäre Notizen}
-
-\begin{itemize}
-    \item The cost of volunteer computing can be lower than the cost of cloud computing depending on the amount of volunteer nodes and the number of working system administrators on a project \cite{intro:costAnalysis}.
-    \item Add additional introduction section to chapter methodology/Implementaiton
-    \item Why is Volunteer Computing awesome? What makes my Platform different from exiting platforms? Save Resources / use exisitng (old) Resources? Electricity coast? Free unused Computing Power overall?
-    \item Quelle finden: Idle time of devices
-    \item Quelle finden: Total amount of edge devices | is amount increasing?
-    \item Quelle finden: Does the computational hardware of edge device increase? 
-\end{itemize}
