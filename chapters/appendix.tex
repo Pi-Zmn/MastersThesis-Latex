@@ -2,11 +2,10 @@
 \label{ch:appendix}
 
 \section{System Specifications}
+Experiments and code executions have been made on a systems with the following specifications:
 
 \subsection{Local Linux System}
 \label{app:system:mymachine}
-Experiments and code executions have been made on a system with the following specifications:
-
 \begin{itemize}
     \item \textbf{CPU:} Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
     \item \textbf{RAM:} 15 Gi (15.4667 GB)
@@ -17,8 +16,6 @@ Experiments and code executions have been made on a system with the following sp
 
 \subsection{Server Linux System}
 \label{app:system:server}
-Experiments and code executions have been made on a system with the following specifications:
-
 \begin{itemize}
     \item \textbf{CPU:} Intel Xeon Processor (Cascadelake)
     \item \textbf{RAM:} 3.8 Gi
@@ -29,8 +26,6 @@ Experiments and code executions have been made on a system with the following sp
 
 \subsection{Raspberry Pi Linux System}
 \label{app:system:pi}
-Experiments and code executions have been made on a system with the following specifications:
-
 \begin{itemize}
     \item \textbf{CPU:} Raspberry Pi 4 Model B Rev 1.4
     \item \textbf{RAM:} 7.7 Gi
@@ -62,8 +57,8 @@ Below is the Go source code for generating a colored PNG file of the Mandelbrot 
         startTime := time.Now()
     
         // Set Parameters
-        width := 3000
-        height := 3000
+        width := 1500
+        height := 1500
         maxIterations := 3000
         realMin := -2.0
         realMax := 1.0
@@ -80,13 +75,13 @@ Below is the Go source code for generating a colored PNG file of the Mandelbrot 
                 x := float64(px)/float64(width)*(realMax-realMin) + realMin
                 z := complex(x, y)
                 c := z
-                iteration, smooth := mandelbrot(z, c, maxIterations)
+                iteration := mandelbrot(z, c, maxIterations)
     
                 // Paint Pixel depending on Iteration count
                 if iteration >= maxIterations {
                     img.Set(px, py, color.Black)
                 } else {
-                    img.Set(px, py, colorize(smooth))
+                    img.Set(px, py, colorize(iteration))
                 }
             }
         }
@@ -231,13 +226,13 @@ Below is the Go source code for generating a colored PNG file of the Mandelbrot 
                 z := complex(x, y)
                 c := z
     
-                iteration, smooth := mandelbrot(z, c, maxIterations)
+                iteration := mandelbrot(z, c, maxIterations)
     
                 // Paint Pixel depending on Iteration count
                 if iteration >= maxIterations {
                     img.Set(px, py, color.Black)
                 } else {
-                    img.Set(px, py, colorize(smooth))
+                    img.Set(px, py, colorize(iteration))
                 }
             }
         }
@@ -341,7 +336,7 @@ Below is the Go source code for generating a colored PNG file of the Mandelbrot 
             });
     
             document.getElementById('calculate').addEventListener('click', () => {
-                const pngData = wasmMain('3000', '3000', '3000', '-2.0', '1.0', '-1.5', '1.5');
+                const pngData = wasmMain('1500', '1500', '3000', '-2.0', '1.0', '-1.5', '1.5');
                 
                 // Create a Blob from the PNG data
                 const blob = new Blob([pngData], {type: 'image/png'});
@@ -398,8 +393,8 @@ Below is the Go source code for generating 101 unique colored \ac{PNG} files of 
         startTime := time.Now()
 
         // Set Parameters
-        width := 3000
-        height := 3000
+        width := 1500
+        height := 1500
         maxIterations := 3000
         realMin := -2.0
         realMax := 1.0
@@ -442,13 +437,13 @@ Below is the Go source code for generating 101 unique colored \ac{PNG} files of 
                 x := float64(px)/float64(width)*(realMax-realMin) + realMin
                 z := complex(x, y)
                 c := z
-                iteration, smooth := mandelbrot(z, c, maxIterations)
+                iteration := mandelbrot(z, c, maxIterations)
 
                 // Paint Pixel depending on Iteration count
                 if iteration >= maxIterations {
                     img.Set(px, py, color.Black)
                 } else {
-                    img.Set(px, py, colorize(smooth))
+                    img.Set(px, py, colorize(iteration))
                 }
             }
         }
@@ -525,13 +520,22 @@ This code has been executed in three isolated runs as follows:
     go run mandelbrot_benchmark.go
 \end{lstlisting}
 
-The output of this code on the system specified in \ref{app:system:mymachine} was:
+The output of this code on the system specified in \ref{app:system:server} was:
 \begin{lstlisting}
-    TODO
+    Generating PNG #0 of Mandelbrot set...
+       [...]
+    Generating PNG #100 of Mandelbrot set...
+    Mandelbrot PNG generation completed in 10m43.723762025s
 \end{lstlisting}
 \begin{lstlisting}
-    TODO
+    Generating PNG #0 of Mandelbrot set...
+       [...]
+    Generating PNG #100 of Mandelbrot set...
+    Mandelbrot PNG generation completed in 10m48.318590362s
 \end{lstlisting}
 \begin{lstlisting}
-    TODO
+    Generating PNG #0 of Mandelbrot set...
+       [...]
+    Generating PNG #100 of Mandelbrot set...
+    Mandelbrot PNG generation completed in 10m44.884158311s
 \end{lstlisting}
