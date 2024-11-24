@@ -7,7 +7,7 @@ Distributed computing describes a architecture where many autonomous computing e
 
 Volunteer Computing is a sub category of distributed computing that focuses on puplic support. Participants share their computer processing power to support a collective interest. The idea of volunteer computing already emerged in 1996 \cite{relatedwork:boinc1} and \citeauthor{background:vcname} later characterized the term \emph{volunteer computing} \cite{background:vcname}. The first large-scale scientific projects SETI@home and Folding@Home where launched in 1999 \cite{relatedwork:boinc1,relatedwork:seti}. These pioneering projects are since than demonstrating the success and popularity of volunteer computing.
 
-Since the total amount of edge devices like laptops, smartphones, tablets and desktop computers continues to increase \cite{background:amountdeviceses,relatedwork:boinc1} there is a big pool of devices that can be used for volunteer computing. A study in 2014 has estimated that about 2 Billion computers are aktively in use worldwide \cite{intro:computersAmount}. However, many of these resources often remain idle or underutilized during regular operation \cite{relatedwork:mobilecloud, relatedwork:wasmedgecomputing}. While these untapped resources may seem insignificant individually, they collectively represent substantial potential due to their total number. These available resources located in office buildings, universities or public spaces can participate in volunteer computing projects to share their unused computational capabilities.
+Since the total amount of edge devices like laptops, smartphones, tablets and desktop computers continues to increase \cite{background:amountdeviceses,relatedwork:boinc1} there is a big pool of devices that can be used for volunteer computing. A study in 2014 has estimated that about 2 Billion computers are aktively in use worldwide \cite{intro:computersAmount}. However, many of these resources often remain idle or underutilized during regular operation \cite{relatedwork:mobilecloud, relatedwork:wasmedgecomputing}. While these untapped resources may seem insignificant individually, they collectively represent substantial potential due to their total number. These available resources located in office buildings, universities or public spaces can be utilized to participate in volunteer computing projects and thereby share their unused computational capabilities.
 
 Furthermore, a study of 2011 revealed significant potential acceptance of volunteer computing in society, with 37\% of respondents indicating they were either \emph{"somewhat likely"} or \emph{"very likely"} to participate in volunteer computing projects \cite{intro:volunteerStudy}. However, the study also identified privacy and security concerns as primary factors that negatively influence willingness to volunteer in such projects \cite{intro:volunteerStudy}.
 
@@ -22,48 +22,58 @@ The primary constraint is that the program code, which is distributed across mul
   \item Each task can receive specific input parameters to process a distinct part of the problem.
   \item Each task operates independently, with no need for communication between tasks and no dependencies to other sequentially preceding tasks.
 \end{itemize}
-The total estimated execution time of a problem that is divided into \emph{T} equally sized tasks which are executed sequentially is denoted as $t_{ExSeq}$. It is assumed that, on average, each task requires a computing time of $t_{C}$ when executed. Consequently, the total computation time for the sequential execution of a problem on a single device is expressed as:
+The total estimated execution time of a problem that is divided into \emph{T} equally sized tasks which are executed sequentially is denoted as $t_{ExSeq}$. It is assumed that, on average, each of these tasks requires a computing time of $t_{Native}$ when executed in the native environment. Consequently, the total computation time for the sequential execution of a problem on a single device is expressed as:
 \begin{equation}
-  t_{ExSeq} = T \cdot t_{C}
+  t_{ExSeq} = T \cdot t_{Native}
   \label{equ:single}
 \end{equation}
-When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the total computation time is expected to be proportionally reduced, hece the workload is being parallelized. This reducing factor \emph{I} represents the amount of iterations needed to distribute all tasks \emph{T} over \emph{N} nodes and is described by the fraction of \emph{T} devided by \emph{N}. Since \emph{T} and \emph{N} are part of the natural numbers $\mathbb{N}$ and a single task can not be divided into smaller chunks, \emph{I} is also part of the natural numbers $\mathbb{N}$. To esure that the result of the devision is always a natural number the gaussian ceiling function is applied here. Hence, \emph{I} is given by: 
+When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the total computation time is expected to be proportionally reduced, hece the workload is being parallelized. This reducing factor \emph{I} represents the amount of iterations needed to distribute all tasks \emph{T} over \emph{N} nodes and is described by the fraction of \emph{T} devided by \emph{N}. Since \emph{T} and \emph{N} are part of the natural numbers $\mathbb{N}$ and a single task can not be further divided into smaller chunks, \emph{I} is also part of the natural numbers $\mathbb{N}$. To esure that the result of the devision is always a natural number the gaussian ceiling function is applied here. Hence, \emph{I} is given by: 
 \begin{equation}
   I = \bigg\lceil\frac{T}{N}\bigg\rceil
   \label{equ:frac}
 \end{equation}
-When a problem is distributed across \emph{N} nodes over a wireless connection, the network latency must be taken into account in the computation of the total execution time $t_{ExDist}$. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. Additionally, it is assumed that the computation time $t_{C}$ of a task is equally long across all \emph{N} nodes. Thus, the total execution time $t_{ExDist}$ for a parallelizable problem distributed across \emph{N} nodes can be expressed as: 
+Furthermore, when a problem is distributed across \emph{N} nodes over a wireless connection, the network latency must be taken into account in the computation of the total execution time $t_{ExDist}$. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. Additionally, it is assumed that the computation time $t_{Virtual}$ of each task executed in the virtualized environment is equally long across all independent nodes \emph{N}. Thus, the total execution time $t_{ExDist}$ for a parallelizable problem distributed across \emph{N} nodes can be expressed as:
 \begin{alignat}{4}
-  t_{ExDist} &= I \cdot (t_{C} + t_{L}) \nonumber \\
-  t_{ExDist} &= \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{C} + t_{L})
+  t_{ExDist} &= I \cdot (t_{Virtual} + t_{L}) \nonumber \\
+  t_{ExDist} &= \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})
   \label{equ:multiple}
 \end{alignat}
-The objective is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the execution time on a single device $t_{ExSeq}$, as described by \eqref{equ:single}, must be longer than the execution time on multiple devices $t_{ExDist}$, as described by \eqref{equ:multiple}. This leads to following inequality expression:
+The main objective of this approach is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the sequential execution time on a single device $t_{ExSeq}$, as described by \eqref{equ:single}, must be longer than the distributed execution time on multiple devices $t_{ExDist}$, as described by \eqref{equ:multiple}. This leads to the following inequality expression:
 \begin{alignat}{4}
   t_{ExSeq} &> t_{ExDist} \nonumber \\
-  T \cdot t_{C} &> \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{C} + t_{L})
+  T \cdot t_{Native} &> \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})
   \label{equ:compare}
 \end{alignat}
-In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. The value of \emph{I} can be overestimated by the following term:
+In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. To remove the ceiling function of the gaussian bracket, the value of \emph{I} can be overestimated by the following term:
 \begin{equation}
   I = \bigg\lceil\frac{T}{N}\bigg\rceil \quad < \quad \frac{T}{N} + 1
   \label{equ:frac2}
 \end{equation}
 This overestimate is used to substitude the value of \emph{I} in function \ref{equ:multiple} to create following inequality expression:
 \begin{equation}
-  T \cdot t_{C} > \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{C} + t_{L})
+  T \cdot t_{Native} > \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L})
   \label{equ:substitution}
 \end{equation}
-This allows following transformation of the inequality of \ref{equ:substitution}:
+This allows the transformation of the inequality in \ref{equ:substitution}. The inequality in \ref{equ:substitution} can be transformed as follows, to estimate a maximum threshold value for $t_{Virtual}$.:
 \begin{alignat}{4}
-  T \cdot t_{C} &> \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{C} + t_{L}) \nonumber \\
-  T \cdot t_{C} &> \bigg(\frac{T + N}{N}\bigg) \cdot (t_{C} + t_{L}) \nonumber \\
-  \frac{T \cdot N \cdot t_{C}}{T + N} &> t_{C} + t_{L} \nonumber \\
-  \frac{T \cdot N \cdot t_{C}}{T + N} - t_{C} &> t_{L} \nonumber \\
-  t_{C} \cdot \bigg(\frac{T \cdot N}{T + N} - 1\bigg) &> t_{L}
-  \label{equ:transformation}
+  T \cdot t_{Native} &> \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L}) \nonumber \\
+  T \cdot t_{Native} &> \bigg(\frac{T + N}{N}\bigg) \cdot (t_{Virtual} + t_{L}) \nonumber \\
+  \frac{T \cdot N \cdot t_{Native}}{T + N} &> t_{Virtual} + t_{L} \nonumber \\
+  \frac{T \cdot N \cdot t_{Native}}{T + N} - t_{L} &> t_{Virtual}
+  \label{equ:transformation1}
 \end{alignat}
-The last expression through the transformation in \eqref{equ:transformation} results in the constrain, that distributing a parallelizable problem across multiple nodes is only beneficial if the latency $t_{L}$ is shorter than the computation time of a single task multiplied by the factor $(\frac{T \cdot N}{T + N} - 1)$.
+While the computation time $t_{Virtual}$ is shorter than this threshold value $\frac{T \cdot N \cdot t_{Native}}{T + N} - t_{L}$ from \eqref{equ:transformation1}, the execution time $t_{ExDist}$ will be fast than $t_{ExSeq}$, resulting in a performance gain by distributing the workload $T$ on $N$ nodes.
+
+Furthermore, to estimate a minimum threshold value for $N$ the inequality in \ref{equ:substitution} can also be transformed as follows:
+\begin{alignat}{4}
+  T \cdot t_{Native} &> \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L}) \nonumber \\
+  \frac{T \cdot t_{Native}}{t_{Virtual} + t_{L}} &> \bigg(\frac{T}{N} + 1\bigg) \nonumber \\
+  \frac{T \cdot t_{Native}}{t_{Virtual} + t_{L}} - 1 &> \frac{T}{N} \nonumber \\
+  \frac{T \cdot t_{Native} - t_{Virtual} - t_{L}}{t_{Virtual} + t_{L}} &> \frac{T}{N} \nonumber \\
+  N &> \frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot t_{Native} - t_{Virtual} - t_{L}}
+  \label{equ:transformation2}
+\end{alignat}
+The last expression through the transformation in \eqref{equ:transformation2} results in the constrain, that distributing a parallelizable problem across multiple nodes is only beneficial if the amount of nodes $N$ is larger than the estimated threshold value of $\frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot N \cdot t_{Native} - t_{Virtual} - t_{L}}$.
 
 Additionally the expression from \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. The number of iterations \emph{I} reaches its minimum of $1$ if \emph{N} and \emph{T} are equally sized. This outcome is intuitive, as in this ideal scenario each node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
 
@@ -109,7 +119,7 @@ However it needs to be considdered, that if there is only one or two node in the
 
 \section{Related Work}
 \label{sec:background:related_work}
-The idea of volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently in active use and maintenance.
+The idea of volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently in active use and maintained.
 
 \subsection{BOINC}
 \label{subsec:background:related_work:boinc}
@@ -149,7 +159,7 @@ XtremWeb employs a two-part scheduling system:
   \item Dispatcher: Selects tasks from the pool based on application priorities.
   \item Scheduler: Assigns tasks to workers.
 \end{enumerate}
-The default scheduling policy of XtremWeb is FIFO and XtremWeb implements a timeout to enable rescheduling of aborted tasks \cite{relatedwork:xtremweb}.
+The default scheduling policy of XtremWeb is \ac{FIFO} and XtremWeb implements a timeout to enable rescheduling of aborted tasks \cite{relatedwork:xtremweb}.
 
 Furthermore XtremWeb implements a worker-initiated communication protocol, which facilitates easier deployment through firewalls. This protocol consists of the four main requests: \emph{hostRegister}, \emph{workRequest}, \emph{workAlive}, and \emph{workResult}. \cite{relatedwork:xtremweb}
 
