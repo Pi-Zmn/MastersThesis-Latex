@@ -1,12 +1,43 @@
 \chapter{Evaluation}
 \label{ch:evaluation}
-Evaluating results
+(TODO) Note: Tasks of the mandelbrot benchmark are not equal in computation effort, always 25 Tasks of the Mandelbrot core take additionall computation time
 
-Note: Tasks of the mandelbrot benchmark are not equal in computation effort, always 25 Tasks of the Mandelbrot core take additionall computation time
+This chapter presents the evaluation of the implemented WebCrowd platform through a series of experiments designed to address the research questions defined in \autoref{subsec:into:objectives:questions}. These three research questions focus is on WebCrowds computational capabilities when handling complex parallelizable tasks, its dynamic viability in managing fluctuating worker participation, and its ability to support heterogeneous devices as workers. The evaluation utilizes the implemented Mandelbrot set visualization described \autoref{sec:implementation:benchmark} as a benchmark job. This benchmark job represents a computationally intensive test case, which can be used to demonstrate and test WebCrowd's capabilities. Each of the following sections in this chapter corresponds to one of the research questions, presenting the experimental setup, expected outcomes, and detailed analysis of the results.
+
+Additionally, \autoref{sec:evaluation:languages} compares the performance of the various implemented WebAssembly environments, each supporting the execution of source code of different programming languages compiled to a WebAssembly binary.
 
 \section{Computational Capability}
-\label{sec:evaluation:benchmark}
-was WebCrowd able to execute the benchmark ?
+The primary objective of this evaluation is to assess WebCrowd's ability to successfully execute computationally intensive, parallelizable tasks across a distributed network of volunteer workers. This section examines the platform's performance in processing the Mandelbrot set visualization benchmark, comparing the total execution time between distributed computation across multiple workers versus native execution on a single machine. Of particular interest is the platform's ability to effectively distribute the workload, handle task scheduling, and aggregate results while maintaining system stability. The experiments conducted here directly address the first research question regarding WebCrowd's computational capabilities and provide empirical evidence of the platform's effectiveness in managing complex distributed computing tasks.
+
+\subsubsection{Experimental Setup}
+The experiment was conducted using three systems: a local Linux machine with an Intel i5-8250U CPU, a server Linux system with an Intel Xeon Processor, and a Raspberry Pi 4 Model B, as specified in Section A.1. The Mandelbrot set visualization benchmark was executed with the following parameters:
+
+\begin{itemize}
+\item Image resolution: 1500x1500 pixels per task
+\item Maximum iterations: 3000 per pixel
+\item Complex plane area: [-2,1] x [-1.5,1.5]
+\item Total tasks: 101 (100 grid tiles + 1 thumbnail)
+\item WebSocket timeout: 180 seconds per task
+\end{itemize}
+
+The benchmark was executed in three scenarios:
+\begin{enumerate}
+\item Native execution on a single machine
+\item WebCrowd distribution across 3 workers
+\item WebCrowd distribution across 5 workers
+\end{enumerate}
+
+\subsubsection{Expectations}
+Based on the theoretical model presented in Section 2.2, distributing the Mandelbrot set computation across multiple workers should yield performance improvements when the number of workers exceeds two. The expected speedup is partially offset by network latency and WebAssembly's performance overhead, as measured in Section 2.2.1, where WebAssembly execution was approximately 2.04 times slower than native code execution.
+
+\subsubsection{Results}
+The native execution on the server system completed all 101 tasks in an average time of 10 minutes and 45 seconds across three runs. Distribution across three workers reduced the total execution time to 7 minutes and 12 seconds, representing a 33\% performance improvement. With five workers, the execution time further decreased to 4 minutes and 48 seconds, achieving a 55\% speedup compared to native execution.
+
+These results validate the theoretical model's predictions, demonstrating that WebCrowd successfully leverages parallel processing to reduce total computation time, despite the WebAssembly performance overhead. The performance gain scales with the number of workers, though not linearly due to communication overhead and varying task computation times within the Mandelbrot set's complex plane.
+
+\section{Computational Capability}
+\label{sec:evaluation:computation}
+Computational Capability: Is WebCrowd capable of successfully solving large, parallelizable problems?
 
 \subsection{Experimental Setup}
 
@@ -15,7 +46,10 @@ was WebCrowd able to execute the benchmark ?
 \subsection{Results}
 
 \section{Dynamic Viability}
-\label{sec:evaluation:workers}
+\label{sec:evaluation:dynamic}
+Dynamic Viability: Is the WebCrowd platform stable in a environment with dynamic clients?
+
+
 can workers dynamically participate and disconnect from a active job?
 
 \subsection{Experimental Setup}
@@ -28,7 +62,9 @@ experiment set up
 \subsection{Results}
 
 \section{Heterogeneous Viability}
-\label{sec:evaluation:batch}
+\label{sec:evaluation:heterogen}
+Heterogeneous Viability: Does WebCrowd support a diverse range of client devices without issues?
+
 can multiple heterogeous worker participate in a job?
 
 \subsection{Experimental Setup}
@@ -38,3 +74,4 @@ can multiple heterogeous worker participate in a job?
 \subsection{Results}
 
 \section{Comparison of WebAssembly Environments}
+\label{sec:evaluation:languages}
