@@ -7,38 +7,39 @@ The experiments of the evaluation utilize the implemented visualization of the M
 Additionally, \autoref{sec:evaluation:languages} compares the performance of the various in WebCrowd implemented WebAssembly environments, each supporting the execution of source code from different programming languages compiled to a WebAssembly binary.
 
 \section{Computational Capability}
+\label{sec:evaluation:computation}
 \textbf{Is WebCrowd capable of successfully solving large, parallelizable problems?} 
 \newline
 The objective of the following experiment is to evaluate WebCrowd's ability to successfully execute computationally intensive, parallelizable tasks across a distributed network of volunteer workers. This empirical experiment compares the total execution time between distributed computation across multiple workers and native execution on a single computer.
 
-\subsubsection{Experimental Setup}
+\subsection{Experimental Setup}
 At first the benchmark job was computed on the system specified in \autoref{app:system:server} in a native Go environment using the source code of \autoref{app:code:mandelbrot3}. The resulting computation time serves as a baseline for the following experiments, because this system is later also used to host the WebCrowd platform. Since this system is already required to serve WebCrowd in the first place, the following experiments additionally investigate whether distributing the workload to external clients provides a performance advantage compared to utilizing the existing host system for computation.
 
-Then, the benchmark job is executed multiple times on the WebCrowd platform using the source code of \autoref{app:code:mandelbrot2} complied to WebAssembly. During these experiments all participating workers have been connecting to the client page (\autoref{subsec:implementation:client-page}) in advance to automatically setup the WebAssembly environment in their browser environment. Additionally remain all workers during the experiment available and are only executing the browser to participate in WebCrowd. The benchmark job is executed on the WebCrowd platfrom in the following four scenarios;
+Then, the benchmark job is executed multiple times on the WebCrowd platform using the source code of \autoref{app:code:mandelbrot2} complied to WebAssembly. During these experiments all participating workers have been connecting to the client page (\autoref{subsec:implementation:client-page}) in advance to automatically setup the WebAssembly environment in their browser environment. Additionally remain all workers during the experiment available and are only executing the browser to participate in WebCrowd. The benchmark job is executed on the WebCrowd platfrom in the following four scenarios:
 \begin{itemize}
-    \item Distributing the benchmark job on two independent smartphones with the same harware as specified in \autoref{app:system:phone} as workers
-    \item Distributing the benchmark job on three independent smartphones with the same harware as specified in \autoref{app:system:phone} as workers
-    \item Distributing the benchmark job on three browser taps on same system, specified in \autoref{app:system:mymachine}
-    \item Distributing the benchmark job on 32 independent single-board computers with the same harware as specified in \autoref{app:system:pi} as workers
+    \item Distributing the benchmark job on two independent smartphones with the same harware as specified in \autoref{app:system:phone} as workers, executing the client page in a Safari browser (TODO: Quelle \& Version)
+    \item Distributing the benchmark job on three independent smartphones with the same harware as specified in \autoref{app:system:phone} as workers, executing the client page in a Safari browser (TODO: Quelle \& Version)
+    \item Distributing the benchmark job on three Mozilla Firefox 132.0 \cite{background:firefox} browser taps on same laptop, specified in \autoref{app:system:mymachine}
+    \item Distributing the benchmark job on 16 independent single-board computers with the same harware as specified in \autoref{app:system:pi} as workers, executing the client page in a headless Mozilla Firefox 133.0 \cite{background:firefox2} browser
+    \item Distributing the benchmark job on 32 independent single-board computers with the same harware as specified in \autoref{app:system:pi} as workers, executing the client page in a headless Mozilla Firefox 133.0 \cite{background:firefox2} browser
 \end{itemize}
 
-\subsubsection{Expectations}
-Based on the theoretical model presented in Section 2.2, distributing the Mandelbrot set computation across multiple workers should yield performance improvements when the number of workers exceeds two. The expected speedup is partially offset by network latency and WebAssembly's performance overhead, as measured in Section 2.2.1, where WebAssembly execution was approximately 2.04 times slower than native code execution.
+\subsection{Expectations}
+It is expected that all tasks of the benchmark job will be distributed to the participanting workers and each task result is successfully received by the server and saved on the server. To verify if this process was successful the implemented mandelbrot page (\autoref{sec:implementation:benchmark}) is utilized to examine the generated task results.
 
-\subsubsection{Results}
+Additinally, all experiments are carried out using the interactive dashboard page (\autoref{subsec:implementation:dashboard-page}) to start and monitor the execution of the benchmark job. It is expected that all features of this application work as intended and job progress as well as workers can be monitored in real-time.
+
+Furthermore, based on the theoretical model presented in \autoref{sec:background:theory}, distributing the benchmark job across multiple workers should reduce the total execution time of a job when the number of workers $N$ exceeds the threshold value represented in the inequality term of (\eqref{equ:transformation2}). To estimate this threshold value of $N$ for all previously listed experiment scenarios the amount of tasks $T$ was set to 101 and an Internet latency of 32 ms \cite{backend:latency} was assumed for $t_{L}$. Since the computation times $t_{Native}$ and $t_{Virtual}$ are not equal for all 101 tasks, a heavy computational task - handeling the center of the Mandelbrot set - was selected to represent these computation times. This single task has been executed and measured independently on the native Go environment on the server system as well as on the WebAssembly browser environment through the WebCrowd platform for each device participating in the experiment as worker. The computation time $t_{Native}$ of this computationally heavy task was measured to be 34.60 seconds on the server system specified in \autoref{app:system:server}. The corresponding computation time $t_{Virtual}$ of the same task was measured to be 57.53 seconds using the Safari browser (TODO: Quelle \& Version) on the smartphone specified in \autoref{app:system:phone}, 1.58 minutes using the Mozilla Firefox 132.0 \cite{background:firefox} browser on the laptop specified in \autoref{app:system:mymachine} and a total of 7.22 minutes using the headless Mozilla Firefox 133.0 \cite{background:firefox2} browser on one single-board computer specified in \autoref{app:system:pi}. With this information the expected amount of workers $N$ needed to decrease the total execution time of the benchmark job was assumed to be as follows:
+\begin{itemize}
+    \item \textbf{Smartphones:} $N > 1.7$, meaning two or more smartphones are needed to achieve a performance gain 
+    \item \textbf{Laptops:} $N > 2.8$, meaning three or more laptops are needed to achieve a performance gain
+    \item \textbf{Single-board computers:} $N > 14.3$, meaning 15 or more single-board computers are needed to achieve a performance gain
+\end{itemize}
+
+\subsection{Results}
 The native execution on the server system completed all 101 tasks in an average time of 10 minutes and 45 seconds across three runs. Distribution across three workers reduced the total execution time to 7 minutes and 12 seconds, representing a 33\% performance improvement. With five workers, the execution time further decreased to 4 minutes and 48 seconds, achieving a 55\% speedup compared to native execution.
 
 These results validate the theoretical model's predictions, demonstrating that WebCrowd successfully leverages parallel processing to reduce total computation time, despite the WebAssembly performance overhead. The performance gain scales with the number of workers, though not linearly due to communication overhead and varying task computation times within the Mandelbrot set's complex plane.
-
-\section{Computational Capability}
-\label{sec:evaluation:computation}
-Computational Capability: Is WebCrowd capable of successfully solving large, parallelizable problems?
-
-\subsection{Experimental Setup}
-
-\subsection{Expectations}
-
-\subsection{Results}
 
 \section{Dynamic Viability}
 \label{sec:evaluation:dynamic}
