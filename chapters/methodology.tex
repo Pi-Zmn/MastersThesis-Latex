@@ -166,7 +166,7 @@ Furthermore, WebAssembly is maintaining the browsers inherent security model \ci
 
 \subsection{emscriptren for C and C++}
 \label{subsec:methodology:wasm:cpp}
-The main toolchain, used in this work, to compile C or C++ code into the WebAssembly binary format is emscripten. The team of emscripten already focused on the compilation of C and C++ code to \emph{asm.js} - a predecessor of WebAssembly - in the past \cite{methodology:emcc}. This compiler infrastructure has evolved to target the WebAssembly format, enabling the execution of native C/C++ applications in web browsers. Furthermore, emscripten provides the necessary JavaScript glue code to initialize the WebAssembly environment according to the compiled source code \cite{methodology:emcc}.
+The toolchain, used in this work, to compile C or C++ code into the WebAssembly binary format is emscripten. The team of emscripten already focused on the compilation of C and C++ code to \emph{asm.js} - a predecessor of WebAssembly - in the past \cite{methodology:emcc}. This compiler infrastructure has evolved to target the WebAssembly format, enabling the execution of native C/C++ applications in web browsers. Furthermore, emscripten provides the necessary JavaScript glue code to initialize the WebAssembly environment according to the compiled source code \cite{methodology:emcc}.
 
 \subsection{Go}
 \label{subsec:methodology:wasm:go}
@@ -182,7 +182,7 @@ Unfortunatly, Pyodide performed relatively slow compared to emscripten or Go dur
 \label{sec:methodology:websokets}
 WebSockets play a crucial role for the communication infrastructure of WebCrowd. Different from standard \ac{HTTP} requests enable WebSockets a faster, bidirectional and full-duplex communication between clients and servers \cite{methodology:websockets1, methodology:websockets3, methodology:websockets2}. Unlike traditional \ac{HTTP} request-response patterns, WebSocket are establishing a persistent connections between client and server \cite{methodology:websockets3}, allowing real-time data transmission in both directions with minimal overhead after the initial handshake \cite{methodology:websockets3}. This protocol utilizes the ws:// or wss:// (secure) URI scheme and efficiently handles scenarios requiring live updates such as financial trading platforms, multiplayer games, or chat applications, with significantly reduced latency compared to polling mechanisms.
 
-The real-time capability is leveraged for efficient task distribution, progress monitoring, and result collection in the implementatioon of the WebCrowd platform. Additionally, is the bidirectional and full-duplex communication model extreamly usefull to handel the transmission of task and results between the server and workers. This replaces unperformant polling strategies and therfore enhances the performance of the communication process between server and workers.
+The real-time capability is leveraged for efficient task distribution, progress monitoring, and result collection in the implementation of the WebCrowd platform. Additionally, is the bidirectional and full-duplex communication model extreamly usefull to handel the transmission of task and results between the server and workers. This replaces unperformant polling strategies and therfore enhances the performance of the communication process between server and workers.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{gfx/figures/websocket-browsercompability.png}
