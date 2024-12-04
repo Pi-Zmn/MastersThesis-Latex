@@ -13,7 +13,7 @@ The overall process of developing the WebCrowd platform presented in this work c
   \end{itemize}
   \item Deployment of the web application
   \begin{itemize}
-    \item Dockerize all components of the WebCrowd platform
+    \item Orchestrate all components of the WebCrowd platform with Docker Compose \cite{conclusion:docker}
     \item Host the project on a cloud services (\emph{openstack} from h\_da)
     \item Implement user entity with specific user roles to enable security
     \item Implement security measures through authentication \& authorization
@@ -149,7 +149,7 @@ The criteria stated in \autoref{sec:methodology:frameworks} also applied for the
 \label{sec:methodology:wasm}
 WebAssembly \cite{methodology:wasmW3C} is a key technology utilized in the implementation of WebCrowd, offering several advantages for distributed or edge computing \cite{relatedwork:wasmedgecomputing}. It provides near-native performance, while maintaining platform independence \cite{methodology:wasm, methodology:wasmW3C, relatedwork:wasmedgecomputing}. 
 
-WebAssembly is a low-level binary instruction format designed to serve as a compilation target for high-level languages \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2}, that promisses near-native performance execution in web browsers \cite{methodology:wasm, methodology:wasmW3C, relatedwork:wasmedgecomputing}. It employs a stack-based virtual machine architecture, operates in a memory-safe sandboxed environment, and interacts with JavaScript of the browser environment through a defined \ac{API} \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2, methodology:wasmdocu}. A compiled WebAssembly is particularly effective for computationally intensive tasks in the browser \cite{methodology:wasm2, methodology:wasmW3C} like image processing, game engines, or cryptographic operations.
+WebAssembly is a low-level binary instruction format designed to serve as a compilation target for high-level programming languages \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2}, that promisses near-native performance execution in web browsers \cite{methodology:wasm, methodology:wasmW3C, relatedwork:wasmedgecomputing}. It employs a stack-based virtual machine architecture, operates in a memory-safe sandboxed environment, and interacts with JavaScript of the browser environment through a defined \ac{API} \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2, methodology:wasmdocu}. A compiled WebAssembly is particularly effective for computationally intensive tasks in the browser \cite{methodology:wasm2, methodology:wasmW3C} like image processing, game engines, or cryptographic operations.
 
 The flexible features of platform independence and support of multiple high-level programming languages makes WebAssembly a fantastic choice for the WebCrowd platfrom.
 \\~\\
@@ -199,7 +199,7 @@ Socket.IO \cite{methodology:websockets2} is a popular JavaScript library that im
 \label{sec:methodology:webworker}
 WebWorkers can be accessed through a specific JavaScript \ac{API}, enabling concurrent execution of scripts in background threads separate from the main browser UI thread \cite{methodology:webworkers}. These WebWorkers operate in an isolated context, communicating with the main thread through a message-passing interface, and therfore cannot directly access the \acs{HTML} \acs{DOM} of the web page \cite{methodology:webworkers}. 
 
-This implementation of parallel processing through WebWorkers prevents the computationally heavy WebAssembly execution from blocking the user interface of a worker. This enables the worker to monitor the currently executed task and prevents an unpleasent user experience caused by an unexpectatly frozen screen. Furthermore, the WebWorker \ac{API} allows to create multiple WebWorkers in parallel. This feature could be used in the future to implement a browser based multi-threading solution for WebCrowd.
+This implementation of parallel processing through WebWorkers prevents the computationally intensive WebAssembly execution from blocking the user interface of a worker. This enables the worker to monitor the currently executed task and prevents an unpleasent user experience caused by an unexpectatly frozen screen. Furthermore, the WebWorker \ac{API} allows to create multiple WebWorkers in parallel. This feature could be used in the future to implement a browser based multi-threading solution for WebCrowd.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{gfx/figures/webworker-browsercompability.png}

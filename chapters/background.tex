@@ -38,7 +38,7 @@ Furthermore, when a problem is distributed across \emph{N} nodes over a wireless
   t_{ExDist} &= \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})
   \label{equ:multiple}
 \end{alignat}
-The main objective of this approach is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the sequential execution time on a single device $t_{ExSeq}$, as described by \eqref{equ:single}, must be longer than the distributed execution time on multiple devices $t_{ExDist}$, as described by \eqref{equ:multiple}. This leads to the following inequality expression:
+The main objective of this approach is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the distributed execution time on multiple devices $t_{ExDist}$, as described by \eqref{equ:multiple}, must be shorter than the sequential execution time on a single device $t_{ExSeq}$, as described by \eqref{equ:single}. This leads to the following inequality expression:
 \begin{alignat}{4}
   t_{ExSeq} &> t_{ExDist} \nonumber \\
   T \cdot t_{Native} &> \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})

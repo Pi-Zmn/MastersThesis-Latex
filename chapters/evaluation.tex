@@ -15,14 +15,12 @@ The objective of the following experiment is to evaluate WebCrowd's ability to s
 \subsection{Experimental Setup}
 The batch size of the benchmark job was set to 101. Therfore, only a singel batch is generated and processed during all experiments and the job progress is only persisted once upon completion of all 101 tasks.
 
-At first the benchmark job was computed on the system specified in \autoref{app:system:server} in a native Go environment using the source code of \autoref{app:code:mandelbrot3}. The resulting computation time serves as a baseline for the following experiments, because this system is later also used to host the WebCrowd platform. Since this system is already required to serve WebCrowd in the first place, the following experiments additionally investigate whether distributing the workload to external clients provides a performance advantage compared to utilizing the existing host system for computation. Throughout the experiments, all workers maintained available and executed only the WebCrowd browser process. The benchmark job was evaluated across the following six distinct scenarios:
+At first the benchmark job was computed on the system specified in \autoref{app:system:server} in a native Go environment using the source code of \autoref{app:code:mandelbrot3}. The resulting computation time serves as a baseline for the following experiments, because this system is later also used to host the WebCrowd platform. Since this system is already required to serve WebCrowd in the first place, the following experiments additionally investigate whether distributing the workload to external clients provides a performance advantage compared to utilizing the existing host system for computation. Throughout the experiments, all workers maintained available and executed only the WebCrowd browser process. The benchmark job was evaluated across the following four distinct scenarios:
 \begin{itemize}
     \item Two homogeneous and independent smartphones with the harware specified in \autoref{app:system:phone} as workers, executing the client page in a Apple Safari 18.1 \cite{evaluation:safari} browser
     \item Three homogeneous and independent smartphones with the harware specified in \autoref{app:system:phone} as workers, executing the client page in a Apple Safari 18.1 \cite{evaluation:safari} browser
     \item Three parallel Mozilla Firefox 132.0 \cite{background:firefox} browser taps of the client page on a single laptop, specified in \autoref{app:system:mymachine}
     \item Three parallel Microsoft Edge 131.0.0.0 \cite{evaluation:edge} browser taps of the client page on the same \acs{PC}, specified in \autoref{app:system:mypc}
-    \item 16 homogeneous and independent single-board computers with the harware specified in \autoref{app:system:pi} as workers, each executing the client page in a headless Mozilla Firefox 133.0 \cite{background:firefox2} browser
-    \item 32 homogeneous and independent single-board computers with the harware specified in \autoref{app:system:pi} as workers, each executing the client page in a headless Mozilla Firefox 133.0 \cite{background:firefox2} browser
 \end{itemize}
 
 \subsection{Expectations}
@@ -30,17 +28,19 @@ It is expected that all tasks of the benchmark job will be scheduled as intended
 
 Additinally, all experiments are carried out using the interactive dashboard page (\autoref{subsec:implementation:dashboard-page}) to start and monitor the execution of the benchmark job. It is expected that all features of this application work as intended and the job progress as well as all participating workers can be monitored in real-time.
 
-Furthermore, based on the theoretical model presented in \autoref{sec:background:theory}, distributing the benchmark job across multiple workers should reduce the total execution time of a job when the number of workers $N$ exceeds the threshold value represented in the inequality term of \eqref{equ:transformation2}. To estimate this threshold value of $N$ for all previously listed experiment scenarios the amount of tasks $T$ was set to 101 and an Internet latency of 32 ms \cite{backend:latency} was assumed for $t_{L}$. Since the computation times $t_{Native}$ and $t_{Virtual}$ are not equal for all 101 tasks, a heavy computational task - handeling the center of the Mandelbrot set - was selected to represent these computation times. This single task has been executed and measured independently on the native Go environment on the server system as well as on the WebAssembly browser environment through the WebCrowd platform for each device participating in the experiment as worker. The computation time $t_{Native}$ of this computationally heavy task was measured to be 34.60 seconds on the server system specified in \autoref{app:system:server}. The corresponding computation time $t_{Virtual}$ of the same task was measured to be 57.53 seconds using the Apple Safari 18.1 \cite{evaluation:safari} browser on a smartphone specified in \autoref{app:system:phone}, 1 minute and 34.8 seconds using the Mozilla Firefox 132.0 \cite{background:firefox} browser on the laptop specified in \autoref{app:system:mymachine}, 1 minute and 28.2 seconds using the Microsoft Edge 131.0.0.0 \cite{evaluation:edge} browser on the \acs{PC} specified in \autoref{app:system:mypc} and a total of 7 minutes and 13.2 seconds using the headless Mozilla Firefox 133.0 \cite{background:firefox2} browser on one single-board computer specified in \autoref{app:system:pi}. With this information the amount of workers $N$ - expected to provide a performance advantage compared to the native code execution - was calculated with the inequality term of \eqref{equ:transformation2} for each scenerio:
+Furthermore, based on the theoretical model presented in \autoref{sec:background:theory}, distributing the benchmark job across multiple workers should reduce the total execution time of a job when the number of workers $N$ exceeds the threshold value represented in the inequality term of \eqref{equ:transformation2}. To estimate this threshold value of $N$ for all previously listed experiment scenarios the amount of tasks $T$ was set to 101 and an Internet latency of 32 ms \cite{backend:latency} was assumed for $t_{L}$. Since the computation times $t_{Native}$ and $t_{Virtual}$ are not equal for all 101 tasks, a computationally intensive task - handeling the center of the Mandelbrot set - was selected to represent these computation times. This single task has been executed and measured independently on the native Go environment on the server system as well as on the WebAssembly browser environment through the WebCrowd platform for each device participating in the experiment as worker. The computation time $t_{Native}$ of this computationally intensive task was measured to be 34.60 seconds on the server system specified in \autoref{app:system:server}. The corresponding computation time $t_{Virtual}$ of the same task was measured to be 52.56 seconds using the Apple Safari 18.1 \cite{evaluation:safari} browser on a smartphone specified in \autoref{app:system:phone}, 1 minute and 34.8 seconds using the Mozilla Firefox 132.0 \cite{background:firefox} browser on the laptop specified in \autoref{app:system:mymachine} and 1 minute and 28.2 seconds using the Microsoft Edge 131.0.0.0 \cite{evaluation:edge} browser on the \acs{PC} specified in \autoref{app:system:mypc} With this information the amount of workers $N$ - expected to provide a performance advantage compared to the native code execution - was calculated with the inequality term of \eqref{equ:transformation2} for each scenerio:
 \begin{itemize}
-    \item \textbf{Smartphones:} $N > 1.7$, meaning two or more smartphones are expected to achieve a performance gain 
-    \item \textbf{Laptops:} $N > 2.8$, meaning three or more laptops are expected to achieve a performance gain
-    \item \textbf{PCs:} $N > 2.6$, meaning three or more \acs{PC}s are expected to achieve a performance gain
-    \item \textbf{Single-board computers:} $N > 14.3$, meaning 15 or more single-board computers are expected to achieve a performance gain
+    \item \textbf{Smartphones:} $N > 1.5$, meaning two or more smartphones are expected to achieve a performance improvement 
+    \item \textbf{Laptops:} $N > 2.8$, meaning three or more laptops are expected to achieve a performance improvement
+    \item \textbf{PCs:} $N > 2.6$, meaning three or more \acs{PC}s are expected to achieve a performance improvement
 \end{itemize}
 
 \subsection{Results}
-The benchmark job was successfully computed in every experiment and all features of the web application behaved as intended.
-\newpage
+The benchmark job was successfully computed in every experiment and all features of the web application behaved as intended. \autoref{fig:evaluation:experiment-A} compares the measured execution times of the different experiments to the baseline time of the server.
+
+The native execution on the server system completed all 101 tasks in an average execution time $t_{ExSeq}$ of 10 minutes and 45 seconds across three runs. Distributing the benchmark job across the two smartphone workers resulted in a total execution time $t_{ExDist}$ of 10 minutes and 12 seconds, and therfore faster than the baseline as predicted. With three smartphone workers, the execution time further decreased to 6 minutes and 39 seconds, representing a performance improvement of 38\% compared to the native execution on the server.
+
+Distributing the benchmark job across three browser taps on the laptop took 12 minutes and 56.4 seconds to complete the total workload. This approach did not achieve a performance improvement compared to the native code execution on the server. However, distributing the benchmark job across three browser taps on the \acs{PC} complete the total workload in only 9 minutes and 52.8 seconds and therfore faster than the baseline of the server. These two experiments show that a single device can be successfully utilized to participate in WebCrowd with running multiple worker processes in parallel, and therfore effectively allows to expand the job progress computed by a single device. But it can not be expected that a single browser tab in this scenario will behave in the same way as an independent device. The bahavior of multiple worker tabs on a single device most likely depends on the devices hardware, the amount of available \acs{CPU} cores and the browser and operating system used.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/Evaluation_A.png}
@@ -48,13 +48,7 @@ The benchmark job was successfully computed in every experiment and all features
     \label{fig:evaluation:experiment-A}
 \end{figure}
 ~\\
-\autoref{fig:evaluation:experiment-A} compares the measured execution times of the different experiments to the baseline time of the server. The native execution on the server system completed all 101 tasks in an average execution time $t_{ExSeq}$ of 10 minutes and 45 seconds across three runs. Distributing the benchmark job across the two smartphone workers resulted in a total execution time $t_{ExDist}$ of 10 minutes and 12 seconds, and therfore faster than the baseline as predicted. With three smartphone workers, the execution time further decreased to 6 minutes and 39 seconds, representing a performance improvement of 38\% compared to the native execution on the server. 
-
-Distributing the benchmark job across three browser taps on the laptop took 12 minutes and 56.4 seconds to complete the total workload. This approach did not achieve a performance gain compared to the native code execution on the server. However, distributing the benchmark job across three browser taps on the \acs{PC} complete the total workload in only 9 minutes and 52.8 seconds and therfore faster than the baseline of the server. These two experiments show that a single device can be successfully utilized to participate in WebCrowd with running multiple worker processes in parallel, and therfore effectively allows to expand the job progress computed by a single device. But it can not be expected that a single browser tab in this scenario will behave in the same way as an independent device. The bahavior of multiple worker tabs on a single device most likely depends on the devices hardware, the amount of available \acs{CPU} cores and the browser and operating system used.
-
-Utilizing the 16 independent single-board computers resulted in a total execution time $t_{ExDist}$ of 13 minutes and 15 seconds, and therfore did not achieve an expected performance gain compared to the native code execution. Since all single-board computers are continuously transmitting \ac{PNG} files across a shared networking hardware, a reason for this unexpected longer total execution time could be congestion, jamming or packet loss in the communication between the single-board computers and the server. Because the WebSocket communication utilized in WebCrowd is leveraging the \ac{TCP}, packet loss does not impact the result of the job, but could increase the overall computation time due to retransmission of network packets. However, the network communication has not been further investigated, therfore it can not be excluded that this unexpected slowdown issue is caused by something else. Distributing the same workload across 32 single-board computers completed the benchamrk job in 8 minutes and 48.6 seconds.
-\\~\\
-These results overall validate the predictions of the theoretical model presented in \autoref{sec:background:theory}. Furthermore, these experiments demonstrate that WebCrowd can successfully leverage parallel processing through volunteer computing to reduce the total computation time of a job, despite the overhead of communicating through the Internet and the longer computation time $t_{Virtual}$ in the WebAssembly environment. This performance gain scales with the number of participating workers $N$.
+These results validate the predictions of the theoretical model presented in \autoref{sec:background:theory}. Furthermore, these experiments demonstrate that WebCrowd can successfully leverage parallel processing through volunteer computing to reduce the total computation time of a job, despite the overhead of communicating through the Internet and the longer computation time $t_{Virtual}$ in the WebAssembly environment. This performance improvement scales with the number of participating workers $N$.
 
 \section{Dynamic Viability}
 \label{sec:evaluation:dynamic}
@@ -63,22 +57,21 @@ These results overall validate the predictions of the theoretical model presente
 The second research question investigates whether WebCrowd maintains stability in an environment with dynamic clients, addressing a fundamental challenge in volunteer computing where worker participation is inherently unpredictable and therfore dynamic. This evaluation is crucial, as a key feature of WebCrowd is to maintain operational despite workers joining or leaving at any time. Hence, the following experiments in this section evaluate WebCrowd's ability to handle fluctuating worker participation.
 
 \subsection{Experimental Setup}
-To evaluate WebCrowd's dynamic viability, the platform was tested in a controlled environment with manually connecting or disconnecting workers. The experiments utilized 32 single-board computers specified in \autoref{app:system:pi}, each running a headless Mozilla Firefox 133.0 \cite{background:firefox2} browser to participate in WebCrowd as a worker through the cleint web application. \autoref{evaluation:pilab} further describes the technical setup of these single-board computers. The task timeout to enable rescheduling of aborted tasks was set to be 60 seconds throughout the benchmark job. The following two experiments were conducted to simulate a dynamic environment where workers join or leave the network during the execution of an active job:
+To evaluate WebCrowd's dynamic viability, the platform was tested in a controlled environment with manually connecting or disconnecting workers. The experiments utilized 32 single-board computers specified in \autoref{app:system:pi}, each running a headless Mozilla Firefox 133.0 \cite{background:firefox2} browser to participate in WebCrowd as a worker through the cleint web application. Again, the Mandelbrot benchmark job was utilized for these experiments. All single-board computers used in this experiment are part of the Pi-lab from h\_da, providing a practical infrastructure to interact with multiple Raspberry Pi computers. The task timeout to enable rescheduling of aborted tasks was set to be 60 seconds throughout the benchmark job. The following two experiments were conducted to simulate a dynamic environment where workers join or leave the network during the execution of an active job:
 \begin{enumerate}
     \item Disconnecting of 8 workers (25\% of all conneted workers) after about 50\% of total job completion 
     \item Starting with 8 connected workers and gradually connecting more devices until 32 workers are connected
 \end{enumerate}
-Again, the Mandelbrot benchmark job was utilized for these experiments.
-
-\subsubsection{Pi-lab from h\_da}
-\label{evaluation:pilab}
-TODO
+Additionally, an experiment with all 32 single-board computers computing the benchmark job while maintaining a stable connection to the platform was performed. The total execution time of this experiment is used as a baseline time to compare the results of the previous experiments.
 
 \subsection{Expectations}
 It is expected that all 101 tasks of the bechmark job are successfully completed, regardless of the fluctuating behaviour of workers. Hence, aborted task from disconnected workers are expected to be rescheduled to other availabile workers, and workers wich are connecting while the active job is already running are expected to automatically setup the corresponding WebAssembly environment and then immediately participate as workers.
 
+However, it is expected that the total execution time of both experiments will be longer than the baseline time, since in these scenarios less worker instances are consistently participating throughout the computation of the job. 
+
 \subsection{Results}
-The benchmark job was successfully computed in both experiments and all connecting workers have actively participated in computing the workload of the job. Therfore, these experimental results demonstrate WebCrowd's robust handling of dynamic worker participation. \autoref{fig:evaluation:experiment-B} displays the total computaion time of both experiments compared to the basline computation time of 32 permanently connected single-board computers as workers, previously measured in \autoref{sec:evaluation:computation}.
+The benchmark job was successfully computed in both experiments and all connecting workers have actively participated in computing the workload of the job. Therfore, these experimental results demonstrate WebCrowd's robust handling of dynamic worker participation. \autoref{fig:evaluation:experiment-B} displays the total computaion time of both experiments compared to the basline computation time of 32 permanently connected single-board computers as workers.
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/Evaluation_B.png}
@@ -105,7 +98,7 @@ To evaluate the platform's support for heterogeneous devices, a diverse set of e
     \item One \acs{PC} as specified in \autoref{app:system:mypc}, executing 3 worker tabs in parallel
     \item One tablet as specified in \autoref{app:system:tablet}
 \end{itemize}
-All of these devices where found in one hoeshold to demonstrate the easy accessibility to a potential performance gain of a computational intensive job by leveraging the WebCrowd platform.
+All of these devices where found in one hoeshold to demonstrate the easy accessibility to a potential performance improvement of a computational intensive job by leveraging the WebCrowd platform.
 
 \subsection{Expectations}
 It is expected that the bechmark job is successfully computed and that all participating workers are able to compute their scheduled tasks, regardless of the heterogeneous pool of connected devices. Furthermore, this set of devices - representing a single household - is expected to achieve a significant performance improvement compared to the baseline execution time of the natively computed Mandelbrot visualization on the server.  
@@ -131,8 +124,6 @@ As WebCrowd currently supports three different programming languages as source f
 
 \subsection{Prime Numbers}
 The three implemented WebAssembly environments were evaluated with three other benchmark jobs, each implemented in either C++, Go or Python. Each of these benchmark jobs finds and lists all prime numbers in the range from $0$ to $10.000.000$ and is divided in 10 distinct tasks, each processing a unique intervall of 1 million numbers. All of these 3 prime number jobs have been executed through the WebCrowd platform by a single worker instance, executed in a Apple Safari 18.1 \cite{evaluation:safari} browser on the smartphone specified in \autoref{app:system:phone}.
-
-\autoref{fig:evaluation:experiment-D} compares the total execution time of each prime number job executed in this experiment, revealing significant variations in performance across the different environments. The C++ WebAssembly environment, leveraging the toolchain of emscripten \cite{methodology:emcc}, demonstrated the best computational performance and successfully completed all 10 tasks in only 5.9 seconds. The Go WebAssembly environment, compiled and initialized with the tools provided by Go \cite{methodology:go}, achieved similar but slower execution time of 7.2 seconds for the prime number job. In contrast to these results, the Python WebAssembly environment, utilizing the Pyodide library \cite{methodology:pyodie}, took a total of 156.6 seconds to compute the same workload.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/Evaluation_D.png}
@@ -140,9 +131,28 @@ The three implemented WebAssembly environments were evaluated with three other b
     \label{fig:evaluation:experiment-D}
 \end{figure}
 ~\\
+\autoref{fig:evaluation:experiment-D} compares the total execution time of each prime number job executed in this experiment, revealing significant variations in performance across the different environments. The C++ WebAssembly environment, leveraging the toolchain of emscripten \cite{methodology:emcc}, demonstrated the best computational performance and successfully completed all 10 tasks in only 5.9 seconds. The Go WebAssembly environment, compiled and initialized with the tools provided by Go \cite{methodology:go}, achieved similar but slower execution time of 7.2 seconds for the prime number job. In contrast to these results, the Python WebAssembly environment, utilizing the Pyodide library \cite{methodology:pyodie}, took a total of 156.6 seconds to compute the same workload.
+\\~\\
 Despite the fact that all three jobs executed the same workload with a WebAssembly binary on the same system and in the same browser, the execution time of each job varied significantly. The emscripten \cite{methodology:emcc} WebAssembly toolchain demonstrated the best computational performance in this scenerio, however it has not been further investigated why this is the case.
 
 \subsection{Mandelbrot Set}
-Additionally to the previous experiment, the implemented C++ and Go WebAssembly environments are further compared in this section. Both environments demonstrated a similar performance when computing the simple prime number job. However, the following experiments again utilize the visualization of Mandelbrot set. The Go source code, compiled with Go \cite{methodology:go} to WebAssembly, can be found in \autoref{app:code:mandelbrot2}, and the according C++ source code, compiled by the emscripten \cite{methodology:emcc} toolchain, can be found in (TODO).
+Additionally to the previous experiment, the implemented C++ and Go WebAssembly environments are further compared in this section. Both environments have demonstrated a similar performance when computing the prime number job. However, the following experiments again utilize the visualization of the Mandelbrot set described in \autoref{sec:implementation:benchmark}. The Go source code, compiled with Go \cite{methodology:go} to WebAssembly, can be found in \autoref{app:code:mandelbrot2}, and the according C++ source code, compiled by the emscripten \cite{methodology:emcc} toolchain, can be found in \autoref{app:code:mandelbrot4}.
 
-To compare both environment, 
+To compare the performance of both environments, first a single computationally intensive task, generating the center of the Mandelbrot set, was computed in each WebCrowd environment by a worker instance executed in a Apple Safari 18.1 \cite{evaluation:safari} browser on the smartphone specified in \autoref{app:system:phone}. Then, the same worker instance was used to compute all 101 tasks of the Go Mandelbrot benchmark job and the C++ Mandelbrot benchmark job. Additionally, all of these experiments were repeated with corresponding native environments on the server, specified in \autoref{app:system:server}.
+
+\autoref{fig:evaluation:experiment-E} compares the measured total execution time of this experiment compared to the basline execution time on the native server environment. The C++ WebAssembly environment was able to compute the computationally havy task in only 46.6 seconds and was therfore again faster than the corresponding Go WebAssembly environment, which took 52.56 seconds to compute the same workload. This represents a performance advantage of 11\% for the C++/emscripten approach compared to the Go toolchain, graphically displayed in \autoref{fig:evaluation:experiment-E1} on the right side. This performance advantage increased to 20\% when processing the entire benchmark job, as displayed in \autoref{fig:evaluation:experiment-E2}.
+\\~\\
+This investigation confirms the performance advantage of the implemnted C++ WebAssembly environment over the implemented Go WebAssembly environment.
+\begin{figure}[htbp]
+    \myfloatalign
+    \subfloat[Single Computationally Intensive Task]{
+        \label{fig:evaluation:experiment-E1}
+        \includegraphics[width=0.95\textwidth]{gfx/figures/Evaluation_E-1.png}
+    } \\
+    \subfloat[Mandelbrot Benchmark Job]{
+        \label{fig:evaluation:experiment-E2}
+        \includegraphics[width=.95\linewidth]{gfx/figures/Evaluation_E-2.png}
+    }
+    \caption{Comparison of C++ and Go Execution Time}
+    \label{fig:evaluation:experiment-E}
+\end{figure}
