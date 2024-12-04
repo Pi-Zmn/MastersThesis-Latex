@@ -1,6 +1,6 @@
 \chapter{Background and related Work}
 \label{ch:background}
-This chapter covers the background and theoretical foundation of this work. Additionally, a theoretical example case in \autoref{subsec:background:theroy_example} is used to ilustrate the expected performance behaviour of the WebCrowd platform. \autoref{sec:background:related_work} presents related works to describes the state of research and development in the field of volunteer computing and edge computing with WebAssembly.
+This chapter covers the background and theoretical foundation of this work. Additionally, a theoretical example case in \autoref{subsec:background:theroy_example} is used to ilustrate the expected performance behaviour of the WebArgo platform. \autoref{sec:background:related_work} presents related works to describes the state of research and development in the field of volunteer computing and edge computing with WebAssembly.
 
 \section{Distributed Computing \& Volunteer Computing}
 Distributed computing describes a architecture where many autonomous computing elements collaborate as a unified system to solve complex computational problems through coordinated sharing of resources. A distributed computing system typically consists of multiple independent nodes, each possessing local memory and computational resources, interconnected through a network infrastructure that facilitates communication and synchronization between processes. This concept is particularly suitable to compute parallelizable workloads.
@@ -79,7 +79,7 @@ Additionally the expression from \eqref{equ:frac} can be used to determine the o
 
 \subsection{Theoretical Case}
 \label{subsec:background:theroy_example}
-To illustrate the performance gain achieved by a volunteer computing network, both expressions $t_{ExSeq}$ \eqref{equ:single} and $t_{ExDist}$ \eqref{equ:multiple} are plotted in \autoref{fig:background:theoryplot}. To calculate these graphs, an Internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{Native}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \autoref{app:code:mandelbrot1} on the system specified in \autoref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \autoref{app:code:mandelbrot2}. The average computation time $t_{Virtual}$ of the same task in a browser environment (Mozilla Firefox 132.0 \cite{background:firefox}) on the system specified in \autoref{app:system:mymachine} was measured at 71.17 seconds, being about 2.04 times slower than the native computation time.
+To illustrate the performance gain achieved by a volunteer computing network, both expressions $t_{ExSeq}$ \eqref{equ:single} and $t_{ExDist}$ \eqref{equ:multiple} are plotted in \autoref{fig:background:theoryplot}. To calculate these graphs, an internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{Native}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \autoref{app:code:mandelbrot1} on the system specified in \autoref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \autoref{app:code:mandelbrot2}. The average computation time $t_{Virtual}$ of the same task in a browser environment (Mozilla Firefox 132.0 \cite{background:firefox}) on the system specified in \autoref{app:system:mymachine} was measured at 71.17 seconds, being about 2.04 times slower than the native computation time.
 \newline
 \begin{addmargin}[25pt]{25pt}
   This is an unexpected difference in computation duration between native and WebAssembly code execution, since WebAssembly is promissed to perform at near-native speed \cite{methodology:wasm, methodology:wasmW3C}. \citeauthor{background:not-so-fast} stated in their work that WebAssembly shows a significantly worse performance compared to native code, with an average performance gap of 45\% (Firefox) to 55\% (Chrome) and peak slowdowns of 2.08x (Firefox) and 2.5x (Chrome) across measured SPEC \acs{CPU} benchmarks \cite{background:not-so-fast}. This matches the unexpected slowdown of 2.04 measured in the previously mentioned experiment of this work. \citeauthor{background:not-so-fast} identified the following performance issues to be the root cause of the experienced performance gap when using WebAssembly \cite{background:not-so-fast}:
@@ -147,7 +147,7 @@ The success of \ac{SETI}@home not only advanced scientific research but also inc
 
 \subsection{XtremWeb}
 \label{subsec:background:related_work:xtremweb}
-XtremWeb is an experimental Global Computing platform designed to harness idle computing resources connected to the Internet for high-throughput computing. The system aims to provide a platform for experimenting with Global Computing capabilities and addressing issues such as scalability, heterogeneity, availability, fault tolerance, security, and usability in massively distributed computing environments. \cite{relatedwork:xtremweb}
+XtremWeb is an experimental Global Computing platform designed to harness idle computing resources connected to the internet for high-throughput computing. The system aims to provide a platform for experimenting with Global Computing capabilities and addressing issues such as scalability, heterogeneity, availability, fault tolerance, security, and usability in massively distributed computing environments. \cite{relatedwork:xtremweb}
 
 The architecture of XtremWeb consists of three main components:
 \begin{enumerate}
@@ -166,7 +166,7 @@ Furthermore XtremWeb implements a worker-initiated communication protocol, which
 
 XtremWeb has been successfully applied to various projects in the past. Thes include the Pierre Auger Observatory for studying high-energy cosmic rays. In this application, XtremWeb was used to run the \ac{AIRES} program by partitioning large simulations into smaller subtasks. \cite{relatedwork:xtremweb}
 
-In summary, XtremWeb provides a flexible and robust platform for experimenting with Global Computing concepts. Its approach and concept has some similarities to WebCrowd. The original XtremWeb project seems to be not maintained since its development in the early 2000s.
+In summary, XtremWeb provides a flexible and robust platform for experimenting with Global Computing concepts. Its approach and concept has some similarities to WebArgo. The original XtremWeb project seems to be not maintained since its development in the early 2000s.
 
 \subsection{EGEE}
 \label{subsec:background:related_work:egee}

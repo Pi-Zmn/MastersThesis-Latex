@@ -2,7 +2,7 @@
 \label{ch:implementation}
 This chapter presents the technical implementation of the dynamic and heterogeneous volunteer computing platform in detail. The implementation leverages modern web technologies introduced in \autoref{ch:methodology} to create a high-performance distributed computing solution for the web. At its core, the system utilizes WebAssembly for cross-platform compatibility, high-performance, and language independence (\autoref{sec:methodology:wasm, methodology:wasmW3C}), WebSockets for efficient bidirectional communication (\autoref{sec:methodology:websokets}) and WebWorkers to enhance user experience and to enable potential parallel Task execution (\autoref{sec:methodology:webworker}).
 
-The following sections describe WebCrowds architecture, communication protocol, scheduling strategies, persistence mechanisms and the challenges encountered during the implementation process. \autoref{sec:implementation:backend} and \autoref{sec:implementation:frontend} describe the interaction with the platforms API and web interface.
+The following sections describe WebArgos architecture, communication protocol, scheduling strategies, persistence mechanisms and the challenges encountered during the implementation process. \autoref{sec:implementation:backend} and \autoref{sec:implementation:frontend} describe the interaction with the platforms API and web interface.
 
 \section{Architecture}
 \label{sec:implementation:architecture}
@@ -21,7 +21,7 @@ The platform consists of the following three components:
 \end{itemize}
 \autoref{fig:implementation:architecture} illustrates the architecture of the platform. Heterogenous clients, diverse in hardware and operating system, are able to connect to the platform. Clients access the platform throuh the frontend which than establishes the WebSocket communication with the server using the Socket.IO \cite{methodology:websockets2} library. Each client (worker and administrator) maintains a bidirectional WebSocket connection to the server. The database is exclusively accessible by the server.
 
-\subsection{WebCrowd's Communication Protocol}
+\subsection{WebArgo's Communication Protocol}
 \label{subsec:implementation:architecture:communication}
 When clients establish a connection to the platform by accessing the frontend application, a WebSocket connection is initiated. This enables real-time and bidirectional communication between the server and client. Therefore this connection is used to send tasks from the server to the workers as well to send the result of each task from the workers back to the server. Furthermore, administrators receive real-time data about all connected workers and the current status of each job through this WebSocket connection.
 \begin{figure}[htbp]
@@ -43,7 +43,7 @@ When clients establish a connection to the platform by accessing the frontend ap
 
 If an administrator changes the status of a active job to \emph{RUNNING}, the server than distributes unique tasks from the current batch to all workers that have transmitted the \emph{Worker Ready} message and therfore have successfully completed initialization process of the currently active job. Each worker executes its assigned task, then appends the corresponding result to the task object, and transmits the completed task back to the server. If unprocessed or unscheduled tasks remain in the batch at the moment of receiving the completed task, the server responds by assigning the next pending task to this worker. Additionally, the server notifies all administrators after each successfully completed task. This enables monitoring of the jobs progression in real-time for all administrators.
 
-If a Worker is connecting to WebCrowd while there is already an active or running job, the communication sequence is automatically executed identically. Accordingly the worker starts to initializes this job and then proceeds to process tasks of the batch, hence enabling dynamic participation in ongoing Jobs for Workers.
+If a Worker is connecting to WebArgo while there is already an active or running job, the communication sequence is automatically executed identically. Accordingly the worker starts to initializes this job and then proceeds to process tasks of the batch, hence enabling dynamic participation in ongoing Jobs for Workers.
 \\~\\
 Each job has a timeout attribute for its tasks. Scheduled tasks that remain incomplete after their allocated timeout period can be redistributed to a different worker. This mechanism enables the rescheduling of tasks, which have been assigned to a malfunctioning worker or a worker that has disconnected before completing its assigned task. Additionally, this approach allows rescheduling of tasks that have been assigned to slower workers, known as stragglers, to more efficient workers. Hence this mechanism can optimize the overall execution time of a job.
 \begin{figure}[htbp]
@@ -68,7 +68,7 @@ The following data objects have been identified as critical for a system recover
 \end{itemize}
 Information regarding workers, their hardware specifications and operating systems is intentionally excluded from permanent storage.
 
-WebCrowd implements a robust persistence mechanism for job progression. When a running job is stoped, the current progress and all task results are automatically saved, hence actively stoping a running job initiates the persistence process for this job's current state. This functionality should be utilized if the platform is scheduled to be restarted or terminated.
+WebArgo implements a robust persistence mechanism for job progression. When a running job is stoped, the current progress and all task results are automatically saved, hence actively stoping a running job initiates the persistence process for this job's current state. This functionality should be utilized if the platform is scheduled to be restarted or terminated.
 
 Additionally the system persists job progress after each batch completion. This mechanism enables periodic job backups, as each batch completion establishes a save point. Consequently, the batch size determines the job's fallback tolerance in the event of an unexpected system failure.
 
@@ -174,7 +174,7 @@ On the left side of the \emph{Dashboard Page} is a component located to manage t
 \label{subsec:implementation:client-page}
 The \emph{Client Page} represents the logic for workers and can be accessed by workers or administrators. When a client is accessing this web page the browser process becomes a participating worker in the volunteer computing platform. First the worker establishes a WebSocket connection to the server to recieve job and task data and to send task results as described in \autoref{subsec:implementation:architecture:communication}. If this connection is successful the browser user agent of the workers device is extracted and transmitted to the server. When a job is active or running the connected worker is creating an independent browser thread - the WebWorker - and initializes the corresponding WebAssembly environment inside this WebWorker. Each task that the worker is receiving is forewarded for computing to this WebWorker. The performance and availabilty of the main browser thread, responsible for the \ac{UI} and WebSocket connection, is not affected by the processing of incoming tasks, since the intensive WebAssembly computation is handled inside the separate independent WebWorker.
 
-In the current state of WebCrowd the worker is implemented to initialize and execute WebAssembly binaries complied from either C \& C++, Go or Python source code. The support of further WebAssembly targeting langues can be added effortless to this work, since the usage of WebWorker scripts is handled generic. To support specific programming languages each WebWorker script requires additional unique glue code during the WebAssembly initialization process.
+In the current state of WebArgo the worker is implemented to initialize and execute WebAssembly binaries complied from either C \& C++, Go or Python source code. The support of further WebAssembly targeting langues can be added effortless to this work, since the usage of WebWorker scripts is handled generic. To support specific programming languages each WebWorker script requires additional unique glue code during the WebAssembly initialization process.
 
 \autoref{fig:implementation:client-page} displays the view of the \emph{Client Page}. The component lists various information like the WebSocket connection status, the current actively supported job and statistics about tasks completed by the worker. Therfore workers can always monitor the current status of their device, task computation and what kind of job they are suporting. Additionally, the usage of a WebWorker for the WebAssembly execution prevents the user page from becoming unresponsible during task computation. This enhances the user experience and also is supposed to prevent workers from potentially disconnecting because they could experince a unexpected frozen screen. 
 \begin{figure}[htbp]
@@ -186,7 +186,7 @@ In the current state of WebCrowd the worker is implemented to initialize and exe
 
 \section{Benchmark}
 \label{sec:implementation:benchmark}
-As described in \autoref{sec:methodology:benchmark}, the visualization of the Mandelbrot set is used to benchmark the performance of the volunteer computing platform later in this work. To achieve this, this job is distributed among multiple workers through the WebCrowd platform and the resulting total execution time of approach is then compared to the total execution time of this job on a single device in a native environment.
+As described in \autoref{sec:methodology:benchmark}, the visualization of the Mandelbrot set is used to benchmark the performance of the volunteer computing platform later in this work. To achieve this, this job is distributed among multiple workers through the WebArgo platform and the resulting total execution time of approach is then compared to the total execution time of this job on a single device in a native environment.
 \\~\\
 Since the Mandelbrot set represents a subset of complex numbers, it is visualized in a two-dimensional coordinate system representing the two-dimensional complex plane. The primary region of interest is located in an area bounded by $1$ to $-2$ on the X-axis (real numbers) and $1.5$ to $-1.5$ on the Y-axis (imaginary numbers). This area is partitioned into 100 equally sized sections, forming a 10x10 grid. \autoref{fig:implementation:mandelbrot-page} visualizes the Mandelbrot set's primary region of interest divided into 100 equal areas. 
 \begin{figure}[htbp]
