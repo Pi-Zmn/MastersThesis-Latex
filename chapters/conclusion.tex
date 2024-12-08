@@ -41,5 +41,8 @@ Expanding WebArgo to support multiple actively running jobs simultaneously can i
 \textbf{Extended Programming Language Support}
 While WebArgo currently supports C++, Go, and Python, future work could focus on expanding WebAssembly compilation support for additional programming languages, since WebAssembly is a a compilation target for many more high-level programming languages \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2}. This can potentially make the platform more accessible to a broader range of developers and scientific computing applications.
 \\~\\
+\textbf{Task Result Validation}
+(TODO) Validation through redundancy - constrain many volunteer workers
+\\~\\
 \textbf{Implement the MapReduce model}
 Implementing the MapReduce \cite{conclusion:map-reduce} model in WebArgo is a big opportunity to significantly enhance the platforms capability of providing more complex jobs. Currently the processing module of a job can be assumed to be similar to the mapping step. Each task therefore represents a single map operation. MapReduce could be used to aggregate all gathered task results of a job to a total result of the job. This enables the processing of more complex jobs like a single epoch of reinforcement learning, with each task representing an episode and the reduce step performing the corresponding policy updates. This approach can be further investigated to potentially enable reinforcement learning through a pipeline of multiple MapReduce jobs in WebArgo.

@@ -1,5 +1,7 @@
 \chapter{Background and related Work}
 \label{ch:background}
+(TODO) Anpassen zu neuem content
+
 This chapter covers the background and theoretical foundation of this work. Additionally, a theoretical example case in \autoref{subsec:background:theroy_example} is used to illustrate the expected performance behaviour of the WebArgo platform. \autoref{sec:background:related_work} presents related works to describes the state of research and development in the field of volunteer computing and edge computing with WebAssembly.
 
 \section{Distributed Computing \& Volunteer Computing}
@@ -11,126 +13,25 @@ Since the total amount of edge devices like laptops, smartphones, tablets and de
 
 Furthermore, a study of 2011 revealed significant potential acceptance of volunteer computing in society, with 37\% of respondents indicating they were either \emph{"somewhat likely"} or \emph{"very likely"} to participate in volunteer computing projects \cite{intro:volunteerStudy}. However, the study also identified privacy and security concerns as primary factors that negatively influence willingness to volunteer in such projects \cite{intro:volunteerStudy}.
 
-\section{Theory}
-\label{sec:background:theory}
-This following section displays the mathematical and theoretical background of the developed volunteer computing network. The objective is to identify the constraints that must be satisfied to ensure that the use of a volunteer computing network offers advantages over regular local computing on a single device.
+\section{WebAssembly}
+\label{sec:background:webassembly}
+(TODO) Introduce WebAssembly as key and enabeling technologies - enhance Section ?
 
-The primary constraint is that the program code, which is distributed across multiple devices, must be capable of parallel execution. This allows all participating devices to  each compute a portion of the overall workload simultaneously. In this context, a parallelizable problem, as defined in this work, is characterized by the following properties:
-\begin{itemize}
-  \item The problem can be divided into multiple tasks.
-  \item Each task executes the same program code.
-  \item Each task can receive specific input parameters to process a distinct part of the problem.
-  \item Each task operates independently, with no need for communication between tasks and no dependencies to other sequentially preceding tasks.
-\end{itemize}
-The total estimated execution time of a problem that is divided into \emph{T} equally sized tasks which are executed sequentially is denoted as $t_{ExSeq}$. It is assumed that, on average, each of these tasks requires a computing time of $t_{Native}$ when executed in the native environment. Consequently, the total computation time for the sequential execution of a problem on a single device is expressed as:
-\begin{equation}
-  t_{ExSeq} = T \cdot t_{Native}
-  \label{equ:single}
-\end{equation}
-When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the total computation time is expected to be proportionally reduced, hece the workload is being parallelized. This reducing factor \emph{I} represents the amount of iterations needed to distribute all tasks \emph{T} over \emph{N} nodes and is described by the fraction of \emph{T} divided by \emph{N}. Since \emph{T} and \emph{N} are part of the natural numbers $\mathbb{N}$ and a single task can not be further divided into smaller chunks, \emph{I} is also part of the natural numbers $\mathbb{N}$. To esure that the result of the devision is always a natural number the gaussian ceiling function is applied here. Hence, \emph{I} is given by: 
-\begin{equation}
-  I = \bigg\lceil\frac{T}{N}\bigg\rceil
-  \label{equ:frac}
-\end{equation}
-Furthermore, when a problem is distributed across \emph{N} nodes over a wireless connection, the network latency must be taken into account in the computation of the total execution time $t_{ExDist}$. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. Additionally, it is assumed that the computation time $t_{Virtual}$ of each task executed in the virtualized environment is equally long across all independent nodes \emph{N}. Thus, the total execution time $t_{ExDist}$ for a parallelizable problem distributed across \emph{N} nodes can be expressed as:
-\begin{alignat}{4}
-  t_{ExDist} &= I \cdot (t_{Virtual} + t_{L}) \nonumber \\
-  t_{ExDist} &= \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})
-  \label{equ:multiple}
-\end{alignat}
-The main objective of this approach is to reduce the total computation time of a problem by distributing the workload across multiple nodes in parallel. This means that the distributed execution time on multiple devices $t_{ExDist}$, as described by \eqref{equ:multiple}, must be shorter than the sequential execution time on a single device $t_{ExSeq}$, as described by \eqref{equ:single}. This leads to the following inequality expression:
-\begin{alignat}{4}
-  t_{ExSeq} &> t_{ExDist} \nonumber \\
-  T \cdot t_{Native} &> \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})
-  \label{equ:compare}
-\end{alignat}
-In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. To remove the ceiling function of the gaussian bracket, the value of \emph{I} can be overestimated by the following term:
-\begin{equation}
-  I = \bigg\lceil\frac{T}{N}\bigg\rceil \quad < \quad \frac{T}{N} + 1
-  \label{equ:frac2}
-\end{equation}
-This overestimate is used to substitude the value of \emph{I} in function \eqref{equ:multiple} to create following inequality expression:
-\begin{equation}
-  T \cdot t_{Native} > \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L})
-  \label{equ:substitution}
-\end{equation}
-This allows the transformation of the inequality in \eqref{equ:substitution}. The inequality in \eqref{equ:substitution} can be transformed as follows, to estimate a maximum threshold value for $t_{Virtual}$:
-\begin{alignat}{4}
-  T \cdot t_{Native} &> \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L}) \nonumber \\
-  T \cdot t_{Native} &> \bigg(\frac{T + N}{N}\bigg) \cdot (t_{Virtual} + t_{L}) \nonumber \\
-  \frac{T \cdot N \cdot t_{Native}}{T + N} &> t_{Virtual} + t_{L} \nonumber \\
-  \frac{T \cdot N \cdot t_{Native}}{T + N} - t_{L} &> t_{Virtual}
-  \label{equ:transformation1}
-\end{alignat}
-In the case of the computation time $t_{Virtual}$ being shorter than this threshold value $\frac{T \cdot N \cdot t_{Native}}{T + N} - t_{L}$ from \eqref{equ:transformation1} with a given amount of tasks $T$ and availabile nodes $N$, the execution time $t_{ExDist}$ will be faster than $t_{ExSeq}$, resulting in a performance gain by distributing the workload $T$ on $N$ nodes.
+WebAssembly \cite{methodology:wasmW3C} is a key technology utilized in the implementation of WebArgo, offering several advantages for distributed or edge computing \cite{relatedwork:wasmedgecomputing}. It provides near-native performance, while maintaining platform independence \cite{methodology:wasm, methodology:wasmW3C, relatedwork:wasmedgecomputing}. 
 
-Furthermore, to estimate a minimum threshold value for the amount of availabile nodes $N$, the inequality in \eqref{equ:substitution} can also be transformed as follows:
-\begin{alignat}{4}
-  T \cdot t_{Native} &> \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L}) \nonumber \\
-  \frac{T \cdot t_{Native}}{t_{Virtual} + t_{L}} &> \bigg(\frac{T}{N} + 1\bigg) \nonumber \\
-  \frac{T \cdot t_{Native}}{t_{Virtual} + t_{L}} - 1 &> \frac{T}{N} \nonumber \\
-  \frac{T \cdot t_{Native} - t_{Virtual} - t_{L}}{t_{Virtual} + t_{L}} &> \frac{T}{N} \nonumber \\
-  N &> \frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot t_{Native} - t_{Virtual} - t_{L}}
-  \label{equ:transformation2}
-\end{alignat}
-The last expression through the transformation in \eqref{equ:transformation2} results in the constrain, that distributing a parallelizable problem across multiple nodes is only beneficial if the amount of nodes $N$ is larger than the estimated threshold value of $\frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot N \cdot t_{Native} - t_{Virtual} - t_{L}}$ with a given amount of tasks to execute $T$.
+WebAssembly is a low-level binary instruction format designed to serve as a compilation target for high-level programming languages \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2}, that promises near-native performance execution in web browsers \cite{methodology:wasm, methodology:wasmW3C, relatedwork:wasmedgecomputing}. It employs a stack-based virtual machine architecture, operates in a memory-safe sandboxed environment, and interacts with JavaScript of the browser environment through a defined \ac{API} \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2, methodology:wasmdocu}. A compiled WebAssembly is particularly effective for computationally intensive tasks in the browser \cite{methodology:wasm2, methodology:wasmW3C} like image processing, game engines, or cryptographic operations.
 
-Additionally the expression from \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. The number of iterations \emph{I} reaches its minimum of $1$ if \emph{N} and \emph{T} are equally sized. This outcome is intuitive, as in this ideal scenario each node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
-
-\subsection{Theoretical Case}
-\label{subsec:background:theroy_example}
-To illustrate the performance gain achieved by a volunteer computing network, both expressions $t_{ExSeq}$ \eqref{equ:single} and $t_{ExDist}$ \eqref{equ:multiple} are plotted in \autoref{fig:background:theoryplot}. To calculate these graphs, an internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{Native}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \autoref{app:code:mandelbrot1} on the system specified in \autoref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \autoref{app:code:mandelbrot2}. The average computation time $t_{Virtual}$ of the same task in a browser environment (Mozilla Firefox 132.0 \cite{background:firefox}) on the system specified in \autoref{app:system:mymachine} was measured at 71.17 seconds, being about 2.04 times slower than the native computation time.
-\newline
-\begin{addmargin}[25pt]{25pt}
-  This is an unexpected difference in computation duration between native and WebAssembly code execution, since WebAssembly is promised to perform at near-native speed \cite{methodology:wasm, methodology:wasmW3C}. \citeauthor{background:not-so-fast} stated in their work that WebAssembly shows a significantly worse performance compared to native code, with an average performance gap of 45\% (Firefox) to 55\% (Chrome) and peak slowdowns of 2.08x (Firefox) and 2.5x (Chrome) across measured SPEC \acs{CPU} benchmarks \cite{background:not-so-fast}. This matches the unexpected slowdown of 2.04 measured in the previously mentioned experiment of this work. \citeauthor{background:not-so-fast} identified the following performance issues to be the root cause of the experienced performance gap when using WebAssembly \cite{background:not-so-fast}:
-  \begin{enumerate}
-    \item \emph{Increased Register Pressure}
-    \item \emph{Extra Branch Instructions}
-    \item \emph{Increased Code Size}
-  \end{enumerate}
-\end{addmargin}
-In the modeling of this theoretical case is an additional initial offset time considered, which estimates the time needed to establish the volunteer computing network. In this process, each node must download all necessary files in advance to be able to execute the workload. Since this setup occurs in parallel across all nodes, the offset matches the time required for the setup of a single node. This offset value is calculated using the \ac{IQI} estimated download speed in Europe of 29 Mbps (3.625 MBps) \cite{backend:latency}. The size of the compiled WebAssembly binary file from the source code in \autoref{app:code:mandelbrot2} is 2.7 MB, and the corresponding \emph{wasm\_exec.js} JavaScript file to setup the WebAssembly environment is 16.7 KB, resulting in a total file size of about 2.717 MB. The time required to download both files to a single node can be estimated using the following expression:
-\begin{equation}
-  DownloadTime = Latency + \frac{Filesize}{Bandwith} 
-  \label{equ:offset}
-\end{equation}
-Since the bandwidth is given in megabytes per second, while the latency is provided in milliseconds, the latency value needs to be converted to seconds. Using the calculation in \eqref{equ:offset}, the additional offset that is required to set up the platform, in this theoretical case, is estimated to be at least 0.782 s.
-
-\begin{figure}[htbp]
-  \myfloatalign
-  \subfloat[Variable amount of nodes N]{
-     \label{fig:background:theoryA}
-     \includegraphics[width=.48\linewidth]{gfx/figures/Theory_A.png}
-   } 
-   \subfloat[Variable amount of tasks T]{
-     \label{fig:background:theoryB}
-     \includegraphics[width=.48\linewidth]{gfx/figures/Theory_B.png}
-   }
-   \caption{Visualizing the Total Computation Time for an Estimated Example Case}
-   \label{fig:background:theoryplot}
-\end{figure}
-~\\
-The graph in \autoref{fig:background:theoryA} represents the total runtime, on the y-axis in seconds, as a function of the number of nodes $N$ in the network, on the x-axis. The red dotted line displays the total execution time $t_{ExSeq}$ on a single machine, while the blue line illustrates the total execution time $t_{ExDist}$ of the volunteer computing network. The total number of all tasks $T$ is set to 20. This plot reveals that the volunteer network achieves a faster total computation time than a single device, if three or more nodes are availabile in the network. The total runtime $t_{ExDist}$ is already by 30\% faster than $t_{ExSeq}$ when the workload is distributed to three nodes.
-
-The other graph in \autoref{fig:background:theoryB} displays the total runtime on the y-axis in seconds as a function of the number of tasks $T$ on the x-axis. The red dotted line represents again $t_{ExSeq}$ of a single device and the blue line $t_{ExDist}$ of the volunteer computing network. The number of nodes $N$ is set to three. This plot demonstrates that the volunteer network achieves faster total computation time than a single device when the workload $T$ consists of more than two tasks. The performance gain grows exponentially as the number of tasks increases. Furthermore, it can be concluded that the total computation time $t_{ExDist}$ of the volunteer network only increases when the number of tasks $T$ and the number of nodes $N$ have no common divisor. However, it is crucial to note that the network will have a longer computation time in every scenario with only one task, as a single task cannot be executed in parallel.
-
-Both plots show, that the total computation time $t_{ExDist}$ is already almost even to the threshold value of $t_{ExSeq}$ if the volunteer network has two participating nodes and faster if there are three or more nodes. This holds true even if the computation time $t_{C}$ of a single task is twice as fast on a native system as measured in the browser environment. This proves that the approach of distributing the workload has a performance gain in this theoretical example, if multiple nodes participate in the volunteer computing network. 
-
-However it needs to be considdered, that if there is only one or two node in the network this approach will already be slower in this example due to the initial offset time, the additional network latency and the higher computation time for each individual task.
+The flexible features of platform independence and support of multiple high-level programming languages makes WebAssembly a fantastic choice for the WebArgo platfrom.
+\\~\\
+Furthermore, WebAssembly is maintaining the browsers inherent security model \cite{methodology:wasmW3C, methodology:wasm2, methodology:wasmdocu}. This is preventing any application to read and write ﬁles or to access device hardware such as cameras or microphones without explicit user permissions. Therefore WebArgo is ensuring a higher security for worker nodes than other volunteer computing applications, which require the installation of third-party software directly to the machine. This directly addresses the privacy and security concerns revealed by the study of \citeauthor{intro:volunteerStudy} \cite{intro:volunteerStudy} to increase the potential pool of participating workers.
 
 \section{Related Work}
-\label{sec:background:related_work}
+(TODO) bla bla
+
+\subsection{Volunteer Computing}
 The idea of volunteer computing has been established for a long time. The earliest concept of volunteer computing started already back in 1996 \cite{relatedwork:boinc1}. This section introduces relevant projects in this field, which have been used in the past or are currently in active use and maintained.
 
-\subsection{BOINC}
-\label{subsec:background:related_work:boinc}
-\ac{BOINC} is an open-source middleware system for volunteer computing, which utilizes consumer devices for scientific computing. It addresses key challenges in distributed computing, such as dealing with untrusted, unreliable, and heterogeneous computing resources, validating results from potentially malicious hosts, and supporting diverse applications and computing environments. \cite{relatedwork:boinc1}
-
-The BOINC architecture consists of server components, including a database and job scheduler, and client software comprising a core client, GUI, and screensaver. Communication between clients and servers is facilitated through HTTP-based RPCs. BOINC employs replication-based validation and adaptive replication to ensure result integrity while minimizing overhead. The system also implements sophisticated scheduling policies both on the client and server sides to optimize resource allocation and job dispatch. \cite{relatedwork:boinc1}
-
-BOINC has been successful in supporting numerous scientific projects and providing substantial computing power. \cite{relatedwork:boinc1}
-
-\subsection{SETI@home}
+\subsubsection{SETI@home}
 \label{subsec:background:related_work:seti}
 \ac{SETI} at home (\ac{SETI}@home) represents a pioneering project in the field of distributed and volunteer computing. It utilises the resources of volunteer computers worldwide to analyze radio telescope data in search of extraterrestrial intelligence. Data from the Arecibo radio telescope is divided into smaller chunks which are distributed to volunteer computers for processing. The system is designed to identify several types of patterns in radio signals that could indicate an artificial origin. These anormalies are spikes, Gaussians, pulsed signals, and triplets in the collected radio data. \cite{relatedwork:seti}
 
@@ -145,7 +46,7 @@ In the year 2002, \ac{SETI}@home had engaged over 3.8 million participants acros
 \end{itemize}
 The success of \ac{SETI}@home not only advanced scientific research but also increased public awareness and involvement in scientific participation. This project laid therefore the groundwork for future volunteer computing projects and frameworks. \cite{relatedwork:seti}
 
-\subsection{XtremWeb}
+\subsubsection{XtremWeb}
 \label{subsec:background:related_work:xtremweb}
 XtremWeb is an experimental Global Computing platform designed to harness idle computing resources connected to the internet for high-throughput computing. The system aims to provide a platform for experimenting with Global Computing capabilities and addressing issues such as scalability, heterogeneity, availability, fault tolerance, security, and usability in massively distributed computing environments. \cite{relatedwork:xtremweb}
 
@@ -168,7 +69,7 @@ XtremWeb has been successfully applied to various projects in the past. Thes inc
 
 In summary, XtremWeb provides a flexible and robust platform for experimenting with Global Computing concepts. Its approach and concept has some similarities to WebArgo. The original XtremWeb project seems not to be maintained since its development in the early 2000s.
 
-\subsection{EGEE}
+\subsubsection{EGEE}
 \label{subsec:background:related_work:egee}
 Initiated on April 1, 2004, \ac{EGEE} was a two-year project within a planned four-year program, involving 71 partners from Europe, Russia, and the United States \cite{relatedwork:egee}. The project's primary objectives were to establish a seamless European grid infrastructure for scientific research, provide production-level grid services, and re-engineer grid middleware for enhanced robustness and scalability \cite{relatedwork:egee}.
 
@@ -183,14 +84,28 @@ The project focused on re-engineering existing middleware to address issues from
 
 In conclusion, the \ac{EGEE} project represented a significant effort to transform grid computing from a research concept into a practical infrastructure to support "e-science" across Europe.
 
+\subsubsection{BOINC}
+\label{subsec:background:related_work:boinc}
+(TODO) More about BOINC and compare BOINC to WebArgo | Gegenüberstellung
+
+\ac{BOINC} is an open-source middleware system for volunteer computing, which utilizes consumer devices for scientific computing. It addresses key challenges in distributed computing, such as dealing with untrusted, unreliable, and heterogeneous computing resources, validating results from potentially malicious hosts, and supporting diverse applications and computing environments. \cite{relatedwork:boinc1}
+
+The BOINC architecture consists of server components, including a database and job scheduler, and client software comprising a core client, GUI, and screensaver. Communication between clients and servers is facilitated through HTTP-based RPCs. BOINC employs replication-based validation and adaptive replication to ensure result integrity while minimizing overhead. The system also implements sophisticated scheduling policies both on the client and server sides to optimize resource allocation and job dispatch. \cite{relatedwork:boinc1}
+
+BOINC has been successful in supporting numerous scientific projects and providing substantial computing power. \cite{relatedwork:boinc1}
+
 \subsection{WebAssembly for Edge Computing}
 \label{subsec:background:related_work:wasmedgecomputing}
+(TODO) Gegenüberstellung zu WebArgo - WebArgo nutzt quasi WebAssembly as Edgecomputing
+
 The work from \citeauthor{relatedwork:wasmedgecomputing} \cite{relatedwork:wasmedgecomputing} investigates WebAssembly as a promising solution for edge computing challenges, particularly addressing the crucial requirements of portability and migratability for such applications. This work builds upon previous research in edge computing virtualization while introducing novel perspectives on using WebAssembly as an enabling technology for portable and migratable edge applications. Their comprehensive analysis demonstrates WebAssembly's capabilities in achieving near-native performance while maintaining platform independence, which proposes a significant advancement compared to traditional virtualization approaches. In their work the authors present a systematic evaluation of different WebAssembly execution environments, including browser-based implementations and standalone runtimes, focusing on the performance to portability trade-off. 
 
 Their findings highlight WebAssembly's potential as a lightweight alternative to conventional virtual machines or container based approaches in edge computing scenarios \cite{relatedwork:wasmedgecomputing}. However, they identified that WebAssembly is currently lacking migratability features, compared to virtual machines and containers, to make it a complete solution for edge computing environments \cite{relatedwork:wasmedgecomputing}. Depending on the migration scenario they provide ideas for further actions or development to utilize WebAssembly.
 
 \subsection{Dynamic Mobile Device Clusters in
 Edge Femtoclouds}
+(TODO) Gegenüberstellung zu WebArgo - Heterogenous Clients enabled, Easy Job Distribution, not a prototype (=Security, Persistent, Scheduling), easy deployment \& participation
+
 The work from \citeauthor{relatedwork:mobilecloud} \cite{relatedwork:mobilecloud} explored the concept of Edge Femtoclouds, which demonstrated significant performance improvements through collaborative mobile edge computing \cite{relatedwork:mobilecloud}. Their experimental results show that Edge Femtoclouds can reduce job completion time by up to 26\% compared to traditional cloud computing approaches, with their novel checkpointing mechanism further improving efficiency by an additional 31\% \cite{relatedwork:mobilecloud}. The authors developed a comprehensive system architecture incorporating cloud-based controllers, mobile device helpers, and job managers, successfully addressing the challenges of device churn and system stability. 
 
 Their prototype demonstrated robust performance across varying job arrival rates \cite{relatedwork:mobilecloud}. While highlighting the benefits of reduced latency and network congestion, their findings also identified key challenges including the need for sufficient device participation and robust security measures \cite{relatedwork:mobilecloud}. The work presents Edge Femtoclouds as a cost-effective alternative to dedicated edge servers, though noting the importance of developing appropriate incentive mechanisms for device owners.

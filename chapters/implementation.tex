@@ -1,27 +1,12 @@
 \chapter{Implementation}
 \label{ch:implementation}
-This chapter presents the technical implementation of the dynamic and heterogeneous volunteer computing platform in detail. The implementation leverages modern web technologies introduced in \autoref{ch:methodology} to create a high-performance distributed computing solution for the web. At its core, the system utilizes WebAssembly for cross-platform compatibility, high-performance, and language independence (\autoref{sec:methodology:wasm, methodology:wasmW3C}), WebSockets for efficient bidirectional communication (\autoref{sec:methodology:websokets}) and WebWorkers to enhance user experience and to enable potential parallel Task execution (\autoref{sec:methodology:webworker}).
+(TODO) adjust to new content ? Use Backend instead of Server ?
 
-The following sections describe WebArgos architecture, communication protocol, scheduling strategies, persistence mechanisms and the challenges encountered during the implementation process. \autoref{sec:implementation:backend} and \autoref{sec:implementation:frontend} describe the interaction with the platforms API and web interface.
+This chapter presents the technical implementation of the dynamic and heterogeneous volunteer computing platform in detail. The implementation leverages modern web technologies introduced in \autoref{ch:methodology} to create a high-performance distributed computing solution for the web. At its core, the system utilizes WebAssembly for cross-platform compatibility, high-performance, and language independence (\autoref{sec:methodology:wasm}), WebSockets for efficient bidirectional communication (\autoref{sec:methodology:websockets}) and WebWorkers to enhance user experience and to enable potential parallel Task execution (\autoref{sec:methodology:webworker}).
 
-\section{Architecture}
-\label{sec:implementation:architecture}
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.9\textwidth]{gfx/figures/WebAssembly-MA.png}
-    \caption{Architecture Modell of the Platform}
-    \label{fig:implementation:architecture}
-\end{figure}
-~\\
-The platform consists of the following three components:
-\begin{itemize}
-    \item Server (\autoref{sec:implementation:backend}) as the central component handling the distribution of Tasks and persistence of Job results, implemented using Nest.js \cite{methodology:nestjs}
-    \item Frontend (\autoref{sec:implementation:frontend}) providing the web application for all clients, implemented using Next.js \cite{methodology:nextjs}
-    \item Database for persisting Job and User data, implemented with PostgreSQL \cite{methodology:db}
-\end{itemize}
-\autoref{fig:implementation:architecture} illustrates the architecture of the platform. Heterogenous clients, diverse in hardware and operating system, are able to connect to the platform. Clients access the platform through the frontend which than establishes the WebSocket communication with the server using the Socket.IO \cite{methodology:websockets2} library. Each client (worker and administrator) maintains a bidirectional WebSocket connection to the server. The database is exclusively accessible by the server.
+The following sections describe WebArgos communication protocol, scheduling strategies, persistence mechanisms and the challenges encountered during the implementation process. \autoref{sec:implementation:backend} and \autoref{sec:implementation:frontend} describe the interaction with the platforms API and web interface.
 
-\subsection{WebArgo's Communication Protocol}
+\section{WebArgo's Communication Protocol}
 \label{subsec:implementation:architecture:communication}
 When clients establish a connection to the platform by accessing the frontend application, a WebSocket connection is initiated. This enables real-time and bidirectional communication between the server and client. Therefore this connection is used to send tasks from the server to the workers as well to send the result of each task from the workers back to the server. Furthermore, administrators receive real-time data about all connected workers and the current status of each job through this WebSocket connection.
 \begin{figure}[htbp]
@@ -55,7 +40,7 @@ Each job has a timeout attribute for its tasks. Scheduled tasks that remain inco
 ~\\
 \autoref{fig:implementation:communication3} illustrates the case, if all tasks of the batch already have been scheduled, but one or more are not yet completed. When a worker transmits a completed task to the server - and therby is expecting to receive a new task to compute from the server - while the timeout period of all other scheduled tasks has not expired, the server responds with the \emph{No-Task} message accompanied by the job object of the currently active job. The worker extracts the status and the timeout value from this job objects and initiates a waiting period equivalent to the timeout value plus a randomized overhead, if the jobs status is still \emph{RUNNING}. This additional randomized overhead time prevents simultaneous task requests, if multiple workers are waiting for a task at the same time. After the completion of the waiting period, the worker transmits a \emph{Request Task} message to the server. The server responds either with a newly available task or another \emph{No-Task} message, repeating this sequence until the current batch is fully processed.
 
-\subsection{Persistence}
+\section{Persistence}
 \label{subsec:implementation:architecture:persistence}
 This section describes the persistent data storage implementation of the platform. The primary adressed objective is to ensure system recovery capabilities in cases of system failures, unexpected system crashes, or scheduled system restarts.
 \\~\\
@@ -74,25 +59,67 @@ Additionally the system persists job progress after each batch completion. This 
 
 It is noteworthy that from a worker's perspective, tasks cannot be persisted. Since WebAssembly is executed in a save sandbox environment the code has usually no access to local files. In the event of an unexpected crash of the worker's WebAssembly process or browser, the progress of the affected task has not been persisted on the workers device and therefore will be lost.
 
-\subsubsection{Database}
-The PostgreSQL database is used to store the user credentials aswell as each job object. Each job object contains a progress attribute that represents a pointer indexing the last completed task in the task sequence. During job recovery, this progress value determines the starting point for the first task in the new batch.
-
-\subsubsection{Data in Files}
-The system utilizes text files for persistent storage of task input arguments and task results. Each job's critical information about its tasks is stored in a separate text file for input arguments and the results. 
+\subsection{Data in Files}
+The system utilizes text files for persistent storage of task input arguments and task results. Each job's critical information about its tasks is stored in a separate text file for input arguments and the results on the server. 
 
 The method to generate a batch reads the task input arguments text file line by line, where each line represents an input argument. For each line, the system creates a unique task and adds it to the batch in sequence.
 
-When the progress of a job is persisted, the server writes the results of all completed tasks within the batch to the task results text file. Each result is written in a new line, and the results are stored in sequential order.
+When the progress of a job is persisted, the backend writes the results of all completed tasks within the batch to the task results text file. Each result is written in a new line, and the results are stored in sequential order.
 \\~\\
-Additionally the server implements a special handling mechanism for tasks that produce files as results. When a worker transmits such a completed task, the server immediately stores the result file in a result directory corresponding to the running job. Subsequently, when later a jobs progress is saved, the server stores the file path to each result in the corresponding task results text file instead of the actual result data.
+Additionally the backend implements a special handling mechanism for tasks that produce files as results. When a worker transmits such a completed task, the backend immediately stores the result file in a result directory corresponding to the running job. Subsequently, when later a jobs progress is saved, the backend stores the file path to each result in the corresponding task results text file instead of the actual result data.
 
-\subsection{Scheduling}
+\subsection{Database}
+The PostgreSQL database is used to store the user credentials aswell as each job object. Each job object contains a progress attribute that represents a pointer indexing the last completed task in the task sequence. During job recovery, this progress value determines the starting point for the first task in the new batch.
+
+Additionally, the following subsections describe the implementation of all entities that are used in WebArgo, as introduced in \autoref{sec:concept:terminology}.
+
+\subsubsection{Job}
+The job entity represents a problem to be processed or solved using the WebArgo platform. The platform is designed to handle multiple jobs while each job is a unique object. The State of a job can have one of the following values:
+\begin{itemize}
+  \item PENDING
+  \item ACTIVE
+  \item RUNNING
+  \item STOPPED
+  \item DONE
+\end{itemize}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth]{gfx/figures/Job-Task.png}
+  \caption{\acs{UML} Class Diagram: Job \& Task}
+  \label{fig:methodology:job-task}
+\end{figure}
+\autoref{fig:methodology:job-task} illustrates the \ac{UML} class diagram for the job entity on the left side, lisitng all important attributes and methods of a job. The language attribute defines the programming langugae of the source code that has been compiled to a WebAssembly binary file.
+
+Job entities are stored on the database and can be loaded from the backend. Additionally, the backend provides a compromised \ac{DTO} of each job object to workers or administrator users. 
+
+\subsubsection{Task}
+Each job is divided into multiple equally sized tasks. These tasks are distributed to the participating worker nodes. Tasks are unique objects, each holding the specific input parameters that describe the particular portion of the job to which the task is assigned. \autoref{fig:methodology:job-task} displays the \ac{UML} class diagram for the task entity on the right side. The relationship between the job and task entities is defined as One-to-Many, meaning a job can consist of multiple tasks, but each task is always assigned to a single job.
+
+A batch is defined to be a subset of tasks, wich are all assigned to the same job. When the state of a job becomes \emph{ACTIVE} the backend enriches the \emph{tasks} attribute of this job object to match the current batch of this job.
+
+Tasks are not stored in the database, but generated in the backend under utilization of the corresponding task input argument file stored on the server. These tasks are then distributed to workers for computation.
+
+\subsubsection{User}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth]{gfx/figures/Client.png}
+  \caption{\acs{UML} Class Diagram: User - Worker \& Administrator}
+  \label{fig:methodology:client}
+\end{figure}
+~\\
+A user represents a node that accesses the platform. The actions a user can perform are determined by its assigned user role. This user role can either have the value \emph{User} for limited access or \emph{Admin} for full access to all features. \autoref{fig:methodology:client} displays the \ac{UML} class diagram for the user entity at the top of the illustration. This user information is stored in the database and used for the security measures, later described in \autoref{subsec:implementation:authentication}. 
+
+Workers receive tasks from the current batch of the active job, compute these tasks, and send the corresponding results to the backend. \autoref{fig:methodology:client} presents the \ac{UML} class diagram of the worker entity on the left side, listing all relevant attributes and methods. As workers connect to the frontend via web browsers, the browser's user agent is utilized to individually characterize each worker. This so called browser user agent can be accessed inside the clients browser environment and provides information about the client's hardware resources and operating system. A worker object is generated and used in the frontend as well as the backend.
+
+An administrator user can perform the same actions as a worker, but also has additional capabilities. Only administrators have the ability to set or change the state of jobs and to oversee the progress of all jobs. \autoref{fig:methodology:client} illustrates the \ac{UML} class diagram of the administrator entity on the right side. A administrator object is also generated and used in the frontend as well as the backend.
+
+\section{Scheduling}
 \label{subsec:implementation:architecture:scheduling}
 The server is responsible for distributing tasks from the current batch to participating workers. To maximize performance, the server keeps track of scheduled tasks to prevent duplicate task distribution among workers. The scheduling of tasks follows the \ac{FIFO} methodology, scheduling the tasks in sequential order. As described in \autoref{subsec:implementation:architecture:communication}, each job entity has a timeout attribute for its tasks. Only if a task remains incomplete after its designated timeout period has expired can this task be rescheduled. This mechanism serves to mitigate issues arising from malfunctioning, disconnected, or straggling workers.
 
 The scheduling mechanism could be enhanced through the implementation of performance-aware distribution, allocating computationally intensive tasks to workers identified as having superior hardware. Furthermore, theses identified stonger workers could execute multiple WebWorker threads with different tasks.
 
-\subsection{Security through Authentication \& Authorization}
+\section{Security through Authentication \& Authorization}
 \label{subsec:implementation:authentication}
 To prevent malicious use, particularly in critical processes managed by administrators, the system implements a authentication mechanism. This is achieved through user credentials combined with a \ac{JWT}.
 
@@ -175,14 +202,15 @@ On the left side of the \emph{Dashboard Page} is a component located to manage t
 The \emph{Client Page} represents the logic for workers and can be accessed by workers or administrators. When a client is accessing this web page the browser process becomes a participating worker in the volunteer computing platform. First the worker establishes a WebSocket connection to the server to receive job and task data and to send task results as described in \autoref{subsec:implementation:architecture:communication}. If this connection is successful the browser user agent of the workers device is extracted and transmitted to the server. When a job is active or running the connected worker is creating an independent browser thread - the WebWorker - and initializes the corresponding WebAssembly environment inside this WebWorker. Each task that the worker is receiving is forewarded for computing to this WebWorker. The performance and availabilty of the main browser thread, responsible for the \ac{UI} and WebSocket connection, is not affected by the processing of incoming tasks, since the intensive WebAssembly computation is handled inside the separate independent WebWorker.
 
 In the current state of WebArgo the worker is implemented to initialize and execute WebAssembly binaries complied from either C \& C++, Go or Python source code. The support of further WebAssembly targeting languages can be added effortlessly to this work, since the usage of WebWorker scripts is handled generic. To support specific programming languages each WebWorker script requires additional unique glue code during the WebAssembly initialization process.
-
-\autoref{fig:implementation:client-page} displays the view of the \emph{Client Page}. The component lists various information like the WebSocket connection status, the current actively supported job and statistics about tasks completed by the worker. Therefore workers can always monitor the current status of their device, task computation and what kind of job they are suporting. Additionally, the usage of a WebWorker for the WebAssembly execution prevents the user page from becoming unresponsible during task computation. This enhances the user experience and also is supposed to prevent workers from potentially disconnecting because they could experince a unexpected frozen screen. 
+\newpage
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.95\textwidth]{gfx/figures/client-page.png}
     \caption{Frontend Client Page}
     \label{fig:implementation:client-page}
 \end{figure}
+~\\
+\autoref{fig:implementation:client-page} displays the view of the \emph{Client Page}. The component lists various information like the WebSocket connection status, the current actively supported job and statistics about tasks completed by the worker. Therefore workers can always monitor the current status of their device, task computation and what kind of job they are suporting. Additionally, the usage of a WebWorker for the WebAssembly execution prevents the user page from becoming unresponsible during task computation. This enhances the user experience and also is supposed to prevent workers from potentially disconnecting because they could experince a unexpected frozen screen. 
 
 \section{Benchmark}
 \label{sec:implementation:benchmark}
