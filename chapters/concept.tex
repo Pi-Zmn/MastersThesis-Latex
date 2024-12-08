@@ -1,84 +1,54 @@
 \chapter{Concept}
 \label{ch:concept}
-This chapter presents the theoretical concept of WebArgo as a foundation for the following chapters. The first section defines the terminology used to describe the various actors and entities of WebArgo. Following this, the next section presents WebArgo's architectural design and its key components. The final section introduces the underlying theoretical model of WebArgo, which describes the constraints and conditions necessary to achieve potential performance improvement by utilizing the WebArgo platform.
+This chapter presents the theoretical concept of WebArgo as a foundation for the following chapters. The first section defines the terminology used to describe the various actors and entities of WebArgo. Following this, the next section presents WebArgo's architectural design and its key components. The last section of this chapter introduces the underlying theoretical model of WebArgo, which describes the constraints and conditions necessary to achieve potential performance improvement by utilizing the WebArgo platform.
 
 \section{Terminology}
 \label{sec:concept:terminology}
-(TODO) Einführen der begriffe
-
-\section{Entities}
-\label{sec:methodology:entities}
-(TODO) Adjust to fit new content - Where are entetys stored or used (Client vs Server) \& Remove Server Subsection ?
-
-This section describes all entities and establishes the terms used to describe the processes in this work.
+This section defines the fundamental terms used to describe all entities and actors of WebArgo. These precise definitions establish all terms used to describe WebArgo's processes in the following chapters of this work.
 
 \subsection{Job}
-\label{subsec:methodology:entities:job}
-The job entity represents a problem to be processed or solved using the platform. The platform is designed to handle multiple jobs while each job is a unique object. The State of a job can have one of the following values:
-\begin{itemize}
-  \item PENDING
-  \item ACTIVE
-  \item RUNNING
-  \item STOPPED
-  \item DONE
-\end{itemize}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.75\textwidth]{gfx/figures/Job-Task.png}
-  \caption{\acs{UML} Class Diagram: Job \& Task}
-  \label{fig:methodology:job-task}
-\end{figure}
-\autoref{fig:methodology:job-task} illustrates the \ac{UML} class diagram for the job entity on the left side, lisitng all important attributes and methods of a job. The language attribute defines the programming langugae of the source code that has been compiled to a WebAssembly binary file.
+\label{subsec:concept:job}
+A job represents a computational problem or project to be processed or solved by participating volunteers of WebArgo. Jobs are required to be parallelizable, hence a job can be divided into multiple tasks for parallel execution of tasks.
 
 \subsection{Task}
-\label{subsec:methodology:entities:task}
-Each job is divided into multiple equally sized tasks. These tasks are distributed to the worker nodes of the platform. Tasks are unique objects, each holding the specific input parameters that describe the particular portion of the job to which the task is assigned. \autoref{fig:methodology:job-task} displays the \ac{UML} class diagram for the task entity on the right side. The relationship between the job and task entities is defined as One-to-Many, meaning a job can consist of multiple tasks, but each task is always assigned to a single job.
+\label{subsec:concept:task}
+Each job is divided into multiple equally sized tasks. Therefore, each task represent a unique, atomic unit of computational workload from its assigned job. Additionally, each task is required to operate independently and therefore requires no communication to other tasks during execution. These tasks are distributed among the volunteer participants of WebArgo to achieve parallel processing of the entire job.
 
 \subsubsection{Batch}
-\label{ssubsec:methodology:entities:task:batch}
+\label{ssubsec:concept:batch}
 A batch is defined to be a subset of tasks, wich are all assigned to the same job.
 
-\subsection{User}
-\label{subsec:methodology:entities:client}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.75\textwidth]{gfx/figures/Client.png}
-  \caption{\acs{UML} Class Diagram: User - Worker \& Administrator}
-  \label{fig:methodology:client}
-\end{figure}
-~\\
-A user represents a node that accesses the platform. The actions a user can perform are determined by its assigned user role. This user role can either have the value \emph{User} for limited access or \emph{Admin} for full access to all features. \autoref{fig:methodology:client} displays the \ac{UML} class diagram for the user entity at the top of the illustration.
-
 \subsubsection{Worker}
-\label{ssubsec:methodology:entities:client:worker}
-Workers are users that voluntarily donate their computing power to support an active job. Therefore they receive tasks from the current batch of the active job, compute these tasks, and send the corresponding results to the backend. \autoref{fig:methodology:client} presents the \ac{UML} class diagram of the worker entity on the left side, listing all relevant attributes and methods. As workers connect to the frontend via web browsers, the browser's user agent is utilized to individually characterize each worker. This so called browser user agent can be accessed inside the clients browser environment and provides information about the client's hardware resources and operating system.
+\label{subsec:concept:worker}
+Workers are volunteers who contribute the computational resources of their consumer device to participate in WebArgo and therfore support jobs computed by the WebArgo platform. They receive tasks from the current batch, compute them using their local resources, and transmit the task results to the WebArgo platform.
 
 \subsubsection{Administrator}
-\label{ssubsec:methodology:entities:client:admin}
-An administrator user can perform the same actions as a worker, but also has additional capabilities. Only administrators have the ability to set or change the state of jobs and to oversee the progress of all jobs. \autoref{fig:methodology:client} illustrates the \ac{UML} class diagram of the administrator entity on the right side.
+\label{ssubsec:concept:admin}
+Administrators manage the WebArgo platform. Therefore, they have the ability to control job execution, monitor overall job progress and monitor the connected workers. Additinally, administrators can develop custom jobs to distribute their project through the WebArgo platform.
 
-\subsection{Server}
-\label{subsec:methodology:entities:Server}
-The server is used as the central component to maintain the network. Each client intending to connect to the network must establish a connection with the server.
+\subsection{Backend}
+\label{subsec:concept:backend}
+The backend is used as the central component to maintain the network. Each client (worker \& administrator) intending to connect to WebCrowd must establish a WebSocket connection to the backend. Additionally, the backend is responsible for scheduling and distributing the tasks of a job among all participating workers. Furthermore, the backend is responsible to manage information about all jobs and to persistently store the results of all completed tasks.
 
-Additionally the server is responsible for scheduling and distributing the tasks to all workers. It also persistently stores each job along with all results of its corresponding tasks.
+\subsection{Frontend}
+\label{subsec:concept:frontend}
+The frontend enables the connection between workers or administrators and the backend. Furthermore, it represents a interactive \ac{UI} for the connected clients and is responsible to provide the WebAssembly environment for the workers.
 
 \section{Architecture}
 \label{sec:concept:architecture}
+The WebArgo platform consists of the following three components:
+\begin{itemize}
+    \item Backend (\autoref{subsec:concept:backend}) as the central component handling the distribution of tasks
+    \item Frontend (\autoref{subsec:concept:frontend}) providing the interface of the web application for all clients
+    \item Database used to persist job and job progress data
+\end{itemize}
+\autoref{fig:concept:architecture} illustrates the architecture of WebArgo. The web server that hosts the WebArgo platform serves the backend and the frontend on independent ports. Any heterogenous clients, diverse in hardware and operating system, are able to connect to WebArgo, if they use a web browser that supports WebAssembly, WebSockets and WebWorker. These clients access the platform by connecting to the frontend, which than establishes the WebSocket communication between the client and the backend. Each client (worker \& administrator) always maintains a bidirectional WebSocket connection to the backend. The database is used to persistently store data about jobs and the progress of each job, and is exclusively accessible by the backend.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{gfx/figures/WebAssembly-MA.png}
+    \includegraphics[width=0.95\textwidth]{gfx/figures/WebAssembly-MA.png}
     \caption{Architecture Modell of the Platform}
-    \label{fig:implementation:architecture}
+    \label{fig:concept:architecture}
 \end{figure}
-~\\
-The platform consists of the following three components:
-\begin{itemize}
-    \item Backend (\autoref{sec:implementation:backend}) as the central component handling the distribution of Tasks and persistence of Job results, implemented using Nest.js \cite{methodology:nestjs}
-    \item Frontend (\autoref{sec:implementation:frontend}) providing the web application for all clients, implemented using Next.js \cite{methodology:nextjs}
-    \item Database for persisting Job and User data, implemented with PostgreSQL \cite{methodology:db}
-\end{itemize}
-\autoref{fig:implementation:architecture} illustrates the architecture of the platform. Heterogenous clients, diverse in hardware and operating system, are able to connect to WebArgo. These clients access the platform through the frontend which than establishes the WebSocket communication between the client and the backend, using the Socket.IO \cite{methodology:websockets2} library. Each client (worker and administrator) always maintains a bidirectional WebSocket connection to the backend. The PostgreSQL \cite{methodology:db} database is exclusively accessible by the backend.
 
 \section{Theory}
 \label{sec:concept:theory}
@@ -86,7 +56,7 @@ The platform consists of the following three components:
 
 This following section displays the mathematical and theoretical background of the developed volunteer computing network. The objective is to identify the constraints that must be satisfied to ensure that the use of a volunteer computing network offers advantages over regular local computing on a single device.
 
-The primary constraint is that the program code, which is distributed across multiple devices, must be capable of parallel execution. This allows all participating devices to  each compute a portion of the overall workload simultaneously. In this context, a parallelizable problem, as defined in this work, is characterized by the following properties:
+The primary constraint is that the program code, which is distributed across multiple devices, must be capable of parallel execution. This allows all participating devices to each compute a portion of the overall workload simultaneously. In this context, a parallelizable job is characterized by the following properties:
 \begin{itemize}
   \item The problem can be divided into multiple tasks.
   \item Each task executes the same program code.

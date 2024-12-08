@@ -100,6 +100,7 @@ An object-relational database system was identified to fulfill the platform's re
 PostgreSQL is an open source object-relational database system that has been actively developed for more than 35 years \cite{methodology:db}. Therefore it has gained a strong reputation for reliability, feature robustness, and performance \cite{methodology:db}, hence PostgreSQL was selected as the database management system for this implementation.
 
 \section{Web Technologies}
+\label{sec:methodology:technologies}
 The implementation of WebArgo leverages three key web technologies that are fundamental to its functionality in the web environment. These web technologies enable the WebArgo platform to efficiently distribute computational workloads across heterogeneous devices while maintaining platform independence and security. The following subsections present each technology and corresponding tools, discussing their specific roles and contributions to WebArgo.
 
 \subsection{WebAssembly}
@@ -135,7 +136,7 @@ Unfortunatly, Pyodide performed relatively slow compared to emscripten or Go dur
 \label{sec:methodology:websockets}
 WebSockets play a crucial role for the communication infrastructure of WebArgo. Different from standard \ac{HTTP} requests enable WebSockets a faster, bidirectional and full-duplex communication between clients and servers \cite{methodology:websockets1, methodology:websockets3, methodology:websockets2}. Unlike traditional \ac{HTTP} request-response patterns, WebSocket are establishing a persistent connections between client and server \cite{methodology:websockets3}, allowing real-time data transmission in both directions with minimal overhead after the initial handshake \cite{methodology:websockets3}. This protocol utilizes the ws:// or wss:// (secure) URI scheme and efficiently handles scenarios requiring live updates such as financial trading platforms, multiplayer games, or chat applications, with significantly reduced latency compared to polling mechanisms.
 
-The real-time capability is leveraged for efficient task distribution, progress monitoring, and result collection in the implementation of the WebArgo platform. Additionally, is the bidirectional and full-duplex communication model extremely useful to handel the transmission of task and results between the backend and workers. This replaces inefficient polling strategies and therefore enhances the performance of the communication process between backend and workers.
+The real-time capability is leveraged for efficient task distribution, progress monitoring, and result collection in the implementation of the WebArgo platform. Additionally, is the bidirectional and full-duplex communication model extremely useful to handle the transmission of task and results between the backend and workers. This replaces inefficient polling strategies and therefore enhances the performance of the communication process between backend and workers.
 \\~\\
 \autoref{fig:methodology:websocket} displays the browser compatibility of WebSocket with multiple major browsers \cite{methodology:websockets1}. The check mark indicates WebSocket support and the green number below marks the version since WebSocket support was implemented. All browsers are sorted by desktop and mobile version.
 \begin{figure}[htbp]
