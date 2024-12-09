@@ -98,7 +98,7 @@ A batch is defined to be a subset of tasks, wich are all assigned to the same jo
 Tasks are not stored in the database, but generated in the backend under utilization of the corresponding task input argument file stored on the web server. These tasks are then distributed to workers for computation.
 
 \subsubsection{User}
-A user represents a client that accesses the WebArgo platform through the frontend application. The actions a user can perform are determined by its assigned user role. This user role can either have the value \emph{User} for limited access or \emph{Admin} for full access to all features. \autoref{fig:methodology:client} displays the \ac{UML} class diagram for the user entity at the top of the illustration. This user information is stored in the database and used for the security measures, later described in \autoref{subsec:implementation:authentication}. 
+A user represents a client that accesses the WebArgo platform through the frontend application. The actions a user can perform are determined by its assigned user role. This user role can either have the value \emph{User} for limited access or \emph{Admin} for full access to all features. \autoref{fig:methodology:client} displays the \ac{UML} class diagram for the user entity at the top of the illustration. This user information is stored in the database and used for the security measures, later described in \autoref{sec:implementation:authentication}. 
 
 \begin{figure}[htbp]
     \centering
