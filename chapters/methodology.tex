@@ -2,19 +2,19 @@
 \label{ch:methodology}
 The overall process of developing the WebArgo platform presented in this work consisted of the following steps:
 \begin{enumerate}
-  \item Theoretical design of the platforms Architecture
+  \item Theoretical design of WebArgo's architecture
   \item Development of a Proof of Concept prototype
   \item Development process from the prototype to the WebArgo platform
   \begin{itemize}
     \item Implementation of \acs{API} and web interface
     \item Usage of generic job and task entities to support any kind of custom job
     \item Add WebAssembly Support for multiple programming languages
-    \item Implement support for various output datatypes (primitiv datatypes, lists, files as binary)
+    \item Implement support for multiple datatypes of task results (primitiv datatypes, lists, files as binary)
   \end{itemize}
   \item Deployment of the web application
   \begin{itemize}
     \item Orchestrate all components of the WebArgo platform with Docker Compose \cite{conclusion:docker}
-    \item Host the project on a cloud services (\emph{openstack} from h\_da)
+    \item Host the project on a cloud services (\emph{openstack} from \ac{HDA})
     \item Implement user entity with specific user roles to enable security
     \item Implement security measures through authentication \& authorization
   \end{itemize}
@@ -27,7 +27,7 @@ The overall process of developing the WebArgo platform presented in this work co
   \item Implement the visualization of the Mandelbrot set in multiple languages as the benchmark job
   \item Evaluation of the platform through multiple experiments 
 \end{enumerate}
-The following content of this chapter enumerates and describes all the technologies, frameworks, and tools utilized in the development of the WebArgo volunteer computing platform, along with the reasoning for their selection. The first section provides the framework selection for the three components of WebArgos architecture, as described in \autoref{sec:concept:architecture}. The following section describes each of the three key web technologies and corresponding tools utilized in the implementation of WebArgo to establish a foundation for the following \autoref{ch:implementation}, which focuses on the implementation. The last section of this chapter introduces the approach to benchmark WebArgo, which is used in \autoref{ch:evaluation} to evaluate the developed platform.
+The content of this chapter introduces and describes all the technologies, frameworks, and tools utilized in the development of the WebArgo volunteer computing platform, along with the reasoning for their selection. At first \autoref{sec:methodology:frameworks} provides the framework selection for the three components of WebArgos architecture, as described in \autoref{sec:concept:architecture}. Then \autoref{sec:methodology:technologies} describes each of the three key web technologies and corresponding tools utilized in the implementation of WebArgo to establish a foundation for the following \autoref{ch:implementation}, which focuses on the implementation. Finally \autoref{sec:methodology:benchmark} of this chapter introduces the approach to benchmark WebArgo, which is used in \autoref{ch:evaluation} to evaluate the developed platform.
 
 \section{Frameworks}
 \label{sec:methodology:frameworks}
@@ -52,7 +52,7 @@ The 15 most popular backend frameworks of January 2024 are displayed in \autoref
 In addition to the previously stated criteria, the selected backend framework needed to meet specific performance requirements. It was essential for the framework to efficiently handle multiple connected clients with minimal latency. Furthermore, the framework's internal computation speed was critical, particularly for preparing input arguments for each task and managing task scheduling across all clients. The goal was to reduce overhead as much as possible to ensure high performance.
 \begin{figure}[htbp]
   \myfloatalign
-  \subfloat[Best fortunes responses per second (2023-10-17) \cite{backend:benchmark2}]{
+  \subfloat[Best responses per second (2023-10-17) \cite{backend:benchmark2}]{
     \label{fig:methodology:benchmark2BE}
     \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark2_BE.png}
   }
@@ -60,7 +60,7 @@ In addition to the previously stated criteria, the selected backend framework ne
   \label{fig:methodology:benchmarkBE}
 \end{figure}
 ~\\
-To identify a high-performance framework, the most popular backend frameworks listed in \autoref{fig:methodology:popularBE} were compared by using two independent benchmark sources. The results of these benchmarks are presented in \autoref{fig:methodology:benchmarkBE}, where the frameworks are ranked from top to bottom based on their performance. It is important to note that some frameworks from the list in \autoref{fig:methodology:popularBE} where not part of these specific benchmarks. Both benchmark sources simulated numerous clients sending requests to each backend and measuring the number of successful responses per second in order to determine the performance \cite{backend:benchmark1, backend:benchmark2}.
+To identify a high-performance framework, the most popular backend frameworks listed in \autoref{fig:methodology:popularBE} were compared by using two independent benchmark sources. The results of these benchmarks are presented in \autoref{fig:methodology:benchmarkBE}, where the frameworks are ranked from top to bottom based on their performance. It is important to note that some frameworks from the list in \autoref{fig:methodology:popularBE} were not part of these specific benchmarks. Both benchmark sources simulated numerous clients sending requests to each backend and measuring the number of successful responses per second in order to determine the performance \cite{backend:benchmark1, backend:benchmark2}.
 \clearpage
 \begin{figure}[htbp] \ContinuedFloat
   \myfloatalign
@@ -68,11 +68,11 @@ To identify a high-performance framework, the most popular backend frameworks li
      \label{fig:methodology:benchmark1BE}
      \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark1_BE-smal.png}
    }
-   \caption{Most Popular Backend Frameworks from \autoref{fig:methodology:popularBE} Ranked by Performance.}
+   \caption{Frameworks from \autoref{fig:methodology:popularBE} Ranked by Performance}
    \label{fig:methodology:benchmarkBE}
 \end{figure}
 ~\\
-Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the backend framework. It performed exceptionally well in both benchmarks shown in \autoref{fig:methodology:benchmarkBE} and is also a popular choice among developers.
+Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the framework to implement the backend component. It performed exceptionally well in both benchmarks shown in \autoref{fig:methodology:benchmarkBE} and is also a popular choice among developers.
 %\begin{figure}[htbp] \ContinuedFloat
 %  \myfloatalign
 %  \subfloat[Requests/Second (2024-06-25) \cite{backend:benchmark1}]{
@@ -92,10 +92,10 @@ Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the backe
 
 \subsection{Frontend}
 \label{subsec:methodology:frameworks:frontend}
-The criteria stated in \autoref{sec:methodology:frameworks} also applied for the selection of a framework for the frontend. \autoref{fig:methodology:popularFE} shows the 36 most used frameworks among web developers in July 2024 \cite{frontend:popularity}. This statistic was collected by Stack Overflow and is the result of a survey. In this survey web developers have been asked which web frameworks and web technologies they had been working with in the past year, and which do they want to work in over the next year \cite{frontend:popularity}. The two most popular options are, by far, Node.js and React with each around 40\% of votes. While Node.js is mainly used for backend development React is a JavaScript library used for frontend development. This is qualifying React as the choice of technology for the frontend development. Ranking fourth in \autoref{sec:methodology:frameworks} is Next.js with 17.9\% of votes. Next.js is a web framework based on React \cite{methodology:nextjs} and according to the survey the most popular React web framework in the year 2024. Therefore Next.js was selected as the framework for frontend development.
+The criteria stated in \autoref{sec:methodology:frameworks} also applied for the selection of a framework for the frontend. \autoref{fig:methodology:popularFE} shows the 36 most used frameworks among web developers in July 2024 \cite{frontend:popularity}. This statistic was collected by Stack Overflow and is the result of a survey. In this survey web developers have been asked which web frameworks and web technologies they had been working with in the past year, and which do they want to work in over the next year \cite{frontend:popularity}. The two most popular options are, by far, Node.js and React with each around 40\% of votes. While Node.js is mainly used for backend development React is a JavaScript library used for frontend development. This qualifies React as the choice of technology for the frontend development. Ranking fourth in \autoref{sec:methodology:frameworks} is Next.js with 17.9\% of votes. Next.js is a web framework based on React \cite{methodology:nextjs} and according to the survey the most popular React web framework in the year 2024. Therefore Next.js was selected as the framework for frontend development.
 
 \subsection{Database}
-An object-relational database system was identified to fulfill the platform's requirements, as these systems typically offer high performance capabilities and the entities described in \autoref{sec:concept:terminology} can be represented with an object-relational database schema.
+An object-relational database system fulfills WebArgos's requirements, as these systems typically offer high performance capabilities and the entities described in \autoref{sec:concept:terminology} can be represented with an object-relational database schema.
 
 PostgreSQL is an open source object-relational database system that has been actively developed for more than 35 years \cite{methodology:db}. Therefore it has gained a strong reputation for reliability, feature robustness, and performance \cite{methodology:db}, hence PostgreSQL was selected as the database management system for this implementation.
 
@@ -105,7 +105,7 @@ The implementation of WebArgo leverages three key web technologies that are fund
 
 \subsection{WebAssembly}
 \label{sec:methodology:wasm}
-As presented in \autoref{sec:background:webassembly}, WebAssembly serves as the core enabling technology for the development of a platform like WebArgo. WebAssembly is a low-level binary instruction format designed to serve as a compilation target for multiple high-level programming languages, promising near-native performance execution in supporting web browsers \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2}.
+As presented in \autoref{sec:background:webassembly}, WebAssembly serves as the core enabling technology for the development of WebArgo. WebAssembly is a low-level binary instruction format designed to serve as a compilation target for multiple high-level programming languages, promising near-native performance execution in supporting web browsers \cite{methodology:wasm, methodology:wasmW3C, methodology:wasm2}.
 
 The characteristics of WebAssembly make it particularly suitable for WebArgo's requirements. Its platform independence provides the flexibility needed in a volunteer computing environment with heterogeneous consumer devices. Additionally, WebAssembly's support for multiple high-level programming languages as compilation targets enhances the usability for administrator users to develop custom WebArgo jobs in their preferred programming language. Furthermore, WebAssembly maintains the browser's inherent security model, that prevents any application from accessing the hardware or the file system of the client device without explicit user permissions. This security feature directly addresses privacy concerns identified by \citeauthor{intro:volunteerStudy} in their study about participation in volunteer computing \cite{intro:volunteerStudy}, potentially increasing participant trust and willingness to actively support a WebArgo project.
 
@@ -120,11 +120,11 @@ The characteristics of WebAssembly make it particularly suitable for WebArgo's r
 
 \subsubsection{emscriptren for C and C++}
 \label{subsec:methodology:wasm:cpp}
-The toolchain, used in this work, to compile C or C++ code into the WebAssembly binary format is emscripten. The team of emscripten already focused on the compilation of C and C++ code to \emph{asm.js} - a predecessor of WebAssembly - in the past \cite{methodology:emcc}. This compiler infrastructure has evolved to target the WebAssembly format, enabling the execution of native C/C++ applications in web browsers. Furthermore, emscripten provides the necessary JavaScript glue code to initialize the WebAssembly environment according to the compiled source code \cite{methodology:emcc}.
+The toolchain, used in this work, to compile C or C++ code into the WebAssembly binary format is emscripten. The distributors of emscripten already focused on the compilation of C and C++ code to \emph{asm.js} - a predecessor of WebAssembly - in the past \cite{methodology:emcc}. This compiler infrastructure has evolved to target the WebAssembly format, enabling the execution of native C/C++ applications in web browsers. Furthermore, emscripten provides the necessary JavaScript glue code to initialize the WebAssembly environment according to the compiled source code \cite{methodology:emcc}.
 
 \subsubsection{Go}
 \label{subsec:methodology:wasm:go}
-The standard Go compiler inherently provides a option to directly target the WebAssembly format during the compilation process \cite{methodology:go}. This was utilized to support Go applications in WebArgo. Unlike emscripten, this compilation to WebAssembly is not producing a specific JavaScript glue code file for each Go application, however Go provides a general JavaScript glue code file suitable for all generated WebAssembly binaries \cite{methodology:go}. The files size of this general Go JavaScript glue code is surprisingly small compared to the JavaScript glue code generated by emscripten.
+The standard Go compiler inherently provides a option to directly target the WebAssembly format during the compilation process \cite{methodology:go}. This was utilized to support Go applications in WebArgo. Unlike emscripten, the Go compiler is not additionally generating a specific JavaScript glue code file for each Go application. However, Go provides a general JavaScript glue code file suitable for all generated WebAssembly binaries generated by the Go compiler \cite{methodology:go}. The file size of this general Go JavaScript glue code is surprisingly small compared to the JavaScript glue code generated by emscripten.
 
 \subsubsection{Pyodie for Python}
 \label{subsec:methodology:wasm:python}
@@ -147,7 +147,7 @@ The real-time capability is leveraged for efficient task distribution, progress 
 \end{figure}
 
 \subsubsection{Socket.IO}
-Socket.IO \cite{methodology:websockets2} is a popular JavaScript library that implements the usage of WebSockets on both the server and client side. NestJS \cite{methodology:nestjs}, the selected framework to implement the backend, has an inherent support of Socket.IO, using its concept of so called \emph{Gateways} \cite{methodology:nestjs}. Therefore the Socket.IO libary was selected to implement WebSocket inside the WebArgo platform.
+Socket.IO \cite{methodology:websockets2} is a popular JavaScript library that implements the usage of WebSockets on both the server and client side. NestJS \cite{methodology:nestjs}, the selected framework to implement the backend, has an inherent support of Socket.IO, by utilizing the \emph{NestJS-Gateways} library \cite{methodology:nestjs}. Therefore the Socket.IO library was selected to implement WebSocket inside the WebArgo platform.
 
 \subsection{WebWorker}
 \label{sec:methodology:webworker}

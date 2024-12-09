@@ -12,7 +12,7 @@ A job represents a computational problem or project to be processed or solved by
 
 \subsection{Task}
 \label{subsec:concept:task}
-Each job is divided into multiple equally sized tasks. Therefore, each task represent a unique, atomic unit of computational workload from its assigned job. Additionally, each task is required to operate independently and therefore requires no communication to other tasks during execution. These tasks are distributed among the volunteer participants of WebArgo to achieve parallel processing of the entire job.
+Each job is divided into multiple tasks and ideally has each task an equal computational workload. Therefore, each task represent a unique, atomic unit of computational workload from its assigned job. Additionally, each task is required to operate independently and therefore requires no communication to other tasks during execution. These tasks are distributed among the volunteer participants of WebArgo to achieve parallel processing of the entire job.
 
 \subsubsection{Batch}
 \label{ssubsec:concept:batch}
@@ -38,7 +38,7 @@ The frontend enables the connection between workers or administrators and the ba
 \label{sec:concept:architecture}
 The WebArgo platform consists of the following three components:
 \begin{itemize}
-    \item Backend (\autoref{subsec:concept:backend}) as the central component handling the distribution of tasks
+    \item Backend (\autoref{subsec:concept:backend}) handling the distribution of tasks
     \item Frontend (\autoref{subsec:concept:frontend}) providing the interface of the web application for all clients
     \item Database used to persist job and job progress data
 \end{itemize}
@@ -63,12 +63,12 @@ The primary constraint is that the program code, which is distributed across mul
   \item Each task can receive specific input parameters to process a distinct part of the problem.
   \item Each task operates independently, with no need for communication between tasks and no dependencies to other sequentially preceding tasks.
 \end{itemize}
-The total estimated execution time of a problem that is divided into \emph{T} equally sized tasks which are executed sequentially is denoted as $t_{ExSeq}$. It is assumed that, on average, each of these tasks requires a computing time of $t_{Native}$ when executed in the native environment. Consequently, the total computation time for the sequential execution of a problem on a single device is expressed as:
+The total estimated execution time of a problem that is divided into \emph{T} tasks which are computing an equal amount of workload and are executed sequentially is denoted as $t_{ExSeq}$. It is assumed that, on average, each of these tasks requires a computing time of $t_{Native}$ when executed in the native environment. Consequently, the total computation time for the sequential execution of a problem on a single device is expressed as:
 \begin{equation}
   t_{ExSeq} = T \cdot t_{Native}
   \label{equ:single}
 \end{equation}
-When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the total computation time is expected to be proportionally reduced, hece the workload is being parallelized. This reducing factor \emph{I} represents the amount of iterations needed to distribute all tasks \emph{T} over \emph{N} nodes and is described by the fraction of \emph{T} divided by \emph{N}. Since \emph{T} and \emph{N} are part of the natural numbers $\mathbb{N}$ and a single task can not be further divided into smaller chunks, \emph{I} is also part of the natural numbers $\mathbb{N}$. To esure that the result of the devision is always a natural number the gaussian ceiling function is applied here. Hence, \emph{I} is given by: 
+When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the total computation time is expected to be proportionally reduced, because the workload is being parallelized. This reducing factor \emph{I} represents the amount of iterations needed to distribute all tasks \emph{T} over \emph{N} nodes and is described by the fraction of \emph{T} divided by \emph{N}. Since \emph{T} and \emph{N} are part of the natural numbers $\mathbb{N}$ and a single task can not be split into smaller chunks, \emph{I} is also part of the natural numbers $\mathbb{N}$. In order to esure that the result of the devision is always a natural number the Gaussian ceiling function is applied here. Hence, \emph{I} is given by: 
 \begin{equation}
   I = \bigg\lceil\frac{T}{N}\bigg\rceil
   \label{equ:frac}
@@ -76,7 +76,7 @@ When \emph{T} equal tasks are distributed over \emph{N} independent nodes, the t
 (TODO) Change calculation from latency to overhead = latency + file Size input \& wasm + gluecode (?) + (latency) + file size result
 (TODO) replacy latency for overhead and use latency in calculation
 
-Furthermore, when a problem is distributed across \emph{N} nodes over a wireless connection, the network latency must be taken into account in the computation of the total execution time $t_{ExDist}$. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. 
+Furthermore, when a problem is distributed across \emph{N} nodes over a network connection, the network latency must be taken into account in the computation of the total execution time $t_{ExDist}$. The latency, denoted as $t_{L}$, consists of the time required to send input arguments to a single device and the time needed to receive the result from a single task. It is assumed that the program code necessary to execute a task is loaded on all devices in advance, and therefore, the initial overhead of this process is excluded from the calculation. 
 (TODO) overhead estimate calculation
 
 Additionally, it is assumed that the computation time $t_{Virtual}$ of each task executed in the virtualized environment is equally long across all independent nodes \emph{N}. Thus, the total execution time $t_{ExDist}$ for a parallelizable problem distributed across \emph{N} nodes can be expressed as:
@@ -91,12 +91,12 @@ The main objective of this approach is to reduce the total computation time of a
   T \cdot t_{Native} &> \bigg\lceil\frac{T}{N}\bigg\rceil \cdot (t_{Virtual} + t_{L})
   \label{equ:compare}
 \end{alignat}
-In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. To remove the ceiling function of the gaussian bracket, the value of \emph{I} can be overestimated by the following term:
+In order to transform this inequality, the term needs to be simplified by substituting the gaussian bracket. To remove the ceiling function of the Gaussian bracket, the value of \emph{I} can be overestimated by the following term:
 \begin{equation}
   I = \bigg\lceil\frac{T}{N}\bigg\rceil \quad < \quad \frac{T}{N} + 1
   \label{equ:frac2}
 \end{equation}
-This overestimate is used to substitude the value of \emph{I} in function \eqref{equ:multiple} to create following inequality expression:
+This overestimate is used to substitude the value of \emph{I} in function \eqref{equ:multiple} to create following inequality:
 \begin{equation}
   T \cdot t_{Native} > \bigg(\frac{T}{N} + 1\bigg) \cdot (t_{Virtual} + t_{L})
   \label{equ:substitution}
@@ -120,9 +120,9 @@ Furthermore, to estimate a minimum threshold value for the amount of availabile 
   N &> \frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot t_{Native} - t_{Virtual} - t_{L}}
   \label{equ:transformation2}
 \end{alignat}
-The last expression through the transformation in \eqref{equ:transformation2} results in the constrain, that distributing a parallelizable problem across multiple nodes is only beneficial if the amount of nodes $N$ is larger than the estimated threshold value of $\frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot N \cdot t_{Native} - t_{Virtual} - t_{L}}$ with a given amount of tasks to execute $T$.
+The last expression through the transformation in \eqref{equ:transformation2} results in following constrain: Distributing a parallelizable problem across multiple nodes is only beneficial if the amount of nodes $N$ is larger than the estimated threshold value of $\frac{T \cdot (t_{Virtual} + t_{L})}{T \cdot N \cdot t_{Native} - t_{Virtual} - t_{L}}$ with a given amount of tasks to execute $T$.
 
-Additionally the expression from \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} equally sized tasks. The number of iterations \emph{I} reaches its minimum of $1$ if \emph{N} and \emph{T} are equally sized. This outcome is intuitive, as in this ideal scenario each node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. Furthermore can be concluded from \eqref{equ:frac} that the amount of nodes should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
+Additionally, the expression from \eqref{equ:frac} can be used to determine the optimal amount of nodes \emph{N} for a problem divided in \emph{T} tasks of equally sized computaional workload. The number of iterations \emph{I} reaches its minimum of $1$ if \emph{N} and \emph{T} are equal. This outcome is intuitive, as in this ideal scenario each node is rersponsible for a single task and therefore all tasks \emph{T} are executed simultaneously. It can be concluded from \eqref{equ:frac} that the amount of nodes \emph{N} should ideally be a divisor of \emph{T} to ensure a efficient utilization of all nodes. However, in practice, it should be considered to include additional backup devices in the network to account for potential failures or disruptions.
 
 (TODO) Add amduhls law speedup caalculation
 (TODO) Introduce amduhls law
@@ -133,15 +133,14 @@ Additionally the expression from \eqref{equ:frac} can be used to determine the o
 (TODO) Expectation Section | (TODO) Add amduhls law speedup caalculation
 
 To illustrate the performance gain achieved by a volunteer computing network, both expressions $t_{ExSeq}$ \eqref{equ:single} and $t_{ExDist}$ \eqref{equ:multiple} are plotted in \autoref{fig:background:theoryplot}. To calculate these graphs, an internet latency of 32 ms \cite{backend:latency} was assumed. This value is the \ac{IQI} estimated round trip time within Europe \cite{backend:latency}. The average computation time $t_{Native}$ for a single task was assumed to be 34.97 s, based on the measured average run time of the source code in \autoref{app:code:mandelbrot1} on the system specified in \autoref{app:system:mymachine}. This measurment was repeated with a WebAssembly binary, generated with the source code in \autoref{app:code:mandelbrot2}. The average computation time $t_{Virtual}$ of the same task in a browser environment (Mozilla Firefox 132.0 \cite{background:firefox}) on the system specified in \autoref{app:system:mymachine} was measured at 71.17 seconds, being about 2.04 times slower than the native computation time.
-\newline
-\begin{addmargin}[25pt]{25pt}
-  This is an unexpected difference in computation duration between native and WebAssembly code execution, since WebAssembly is promised to perform at near-native speed \cite{methodology:wasm, methodology:wasmW3C}. \citeauthor{background:not-so-fast} stated in their work that WebAssembly shows a significantly worse performance compared to native code, with an average performance gap of 45\% (Firefox) to 55\% (Chrome) and peak slowdowns of 2.08x (Firefox) and 2.5x (Chrome) across measured SPEC \acs{CPU} benchmarks \cite{background:not-so-fast}. This matches the unexpected slowdown of 2.04 measured in the previously mentioned experiment of this work. \citeauthor{background:not-so-fast} identified the following performance issues to be the root cause of the experienced performance gap when using WebAssembly \cite{background:not-so-fast}:
-  \begin{enumerate}
-    \item \emph{Increased Register Pressure}
-    \item \emph{Extra Branch Instructions}
-    \item \emph{Increased Code Size}
-  \end{enumerate}
-\end{addmargin}
+\\~\\
+This is an unexpected difference in computation duration between native and WebAssembly code execution, since WebAssembly is promised to perform at near-native speed \cite{methodology:wasm, methodology:wasmW3C}. \citeauthor{background:not-so-fast} stated in their work that WebAssembly shows a significantly worse performance compared to native code, with an average performance gap of 45\% (Firefox) to 55\% (Chrome) and peak slowdowns of 2.08x (Firefox) and 2.5x (Chrome) across measured SPEC \acs{CPU} benchmarks \cite{background:not-so-fast}. This matches the unexpected slowdown of 2.04 measured in the previously mentioned experiment of this work. \citeauthor{background:not-so-fast} identified the following performance issues to be the root cause of the experienced performance gap when using WebAssembly \cite{background:not-so-fast}:
+\begin{enumerate}
+  \item \emph{Increased Register Pressure}
+  \item \emph{Extra Branch Instructions}
+  \item \emph{Increased Code Size}
+\end{enumerate}
+~\\
 In the modeling of this theoretical case is an additional initial offset time considered, which estimates the time needed to establish the volunteer computing network. In this process, each node must download all necessary files in advance to be able to execute the workload. Since this setup occurs in parallel across all nodes, the offset matches the time required for the setup of a single node. This offset value is calculated using the \ac{IQI} estimated download speed in Europe of 29 Mbps (3.625 MBps) \cite{backend:latency}. The size of the compiled WebAssembly binary file from the source code in \autoref{app:code:mandelbrot2} is 2.7 MB, and the corresponding \emph{wasm\_exec.js} JavaScript file to setup the WebAssembly environment is 16.7 KB, resulting in a total file size of about 2.717 MB. The time required to download both files to a single node can be estimated using the following expression:
 \begin{equation}
   DownloadTime = Latency + \frac{Filesize}{Bandwith} 

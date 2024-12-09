@@ -91,14 +91,14 @@ The job entity represents a problem to be processed or solved using the WebArgo 
 Job entities are stored on the database and can be loaded from the backend. Additionally, the backend provides a compromised \ac{DTO} of each job object for workers or administrator users. 
 
 \subsubsection{Task}
-Each job is divided into multiple equally sized tasks. These tasks are distributed to the participating worker nodes. Tasks are unique objects, each holding the specific input parameters that describe the particular portion of the job to which the task is assigned. \autoref{fig:methodology:job-task} displays the \ac{UML} class diagram for the task entity on the right side. The relationship between the job and task entities is defined as One-to-Many, meaning a job can consist of multiple tasks, but each task is always assigned to a single job.
+Each job is divided into multiple tasks and ideally has each task an equal computational workload. These tasks are distributed to the participating worker nodes. Tasks are unique objects, each holding the specific input parameters that describe the particular portion of the job to which the task is assigned. \autoref{fig:methodology:job-task} displays the \ac{UML} class diagram for the task entity on the right side. The relationship between the job and task entities is defined as One-to-Many, meaning a job can consist of multiple tasks, but each task is always assigned to a single job.
 
 A batch is defined to be a subset of tasks, wich are all assigned to the same job. When the state of a job becomes \emph{ACTIVE} the backend enriches the \emph{tasks} attribute of this job object to match the current batch of this job.
 
 Tasks are not stored in the database, but generated in the backend under utilization of the corresponding task input argument file stored on the web server. These tasks are then distributed to workers for computation.
 
 \subsubsection{User}
-A user represents a client that accesses the WebArgo platform. The actions a user can perform are determined by its assigned user role. This user role can either have the value \emph{User} for limited access or \emph{Admin} for full access to all features. \autoref{fig:methodology:client} displays the \ac{UML} class diagram for the user entity at the top of the illustration. This user information is stored in the database and used for the security measures, later described in \autoref{subsec:implementation:authentication}. 
+A user represents a client that accesses the WebArgo platform through the frontend application. The actions a user can perform are determined by its assigned user role. This user role can either have the value \emph{User} for limited access or \emph{Admin} for full access to all features. \autoref{fig:methodology:client} displays the \ac{UML} class diagram for the user entity at the top of the illustration. This user information is stored in the database and used for the security measures, later described in \autoref{subsec:implementation:authentication}. 
 
 \begin{figure}[htbp]
     \centering
