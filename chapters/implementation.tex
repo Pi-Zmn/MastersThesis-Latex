@@ -78,7 +78,6 @@ The job entity represents a problem to be processed or solved using the WebArgo 
   \item STOPPED
   \item DONE
 \end{itemize}
-~\\
 However, at the current state of the WebArgo implementation only one job at a time can have the \emph{ACTIVE} or \emph{RUNNING} state.
 
 \autoref{fig:methodology:job-task} illustrates the \ac{UML} class diagram for the job entity on the left side, lisitng all important attributes and methods of a job. The language attribute defines the programming langugae of the source code that has been compiled to a WebAssembly binary file.
@@ -109,7 +108,7 @@ A user represents a client that accesses the WebArgo platform through the fronte
 \end{figure}
 ~\\
 Workers receive tasks from the current batch of the active job, compute these tasks, and send the corresponding results to the backend. \autoref{fig:methodology:client} presents the \ac{UML} class diagram of the worker entity on the left side, listing all relevant attributes and methods. As workers connect to the frontend via web browsers, the browser's user agent is utilized to individually characterize each worker. This so-called browser user agent can be accessed inside the clients browser environment and provides information about the client's hardware resources and operating system. A worker object is dynamically generated in the frontend and backend application when a worker client accesses WebArgo.
-\\~\\
+\\~\\~\\
 An administrator user can perform the same actions as a worker, but also has additional capabilities. Only administrators have the ability to set or change the state of jobs and to oversee the progress of all jobs. \autoref{fig:methodology:client} illustrates the \ac{UML} class diagram of the administrator entity on the right side. When an administrator accesses the WebArgo platform an corresponding administrator object is dynamically generated in the frontend and backend application.
 
 \section{Scheduling}
@@ -136,7 +135,6 @@ This section describes the usage and features of the backend, which is implement
     \item Handling the WebSockets communication with all connected clients.
     \item Task distribution to participating workers.
 \end{itemize}
-~\\
 To manage and interact with jobs or users, the backend exposes multiple endpoints through a \acs{REST}ful \ac{API}. \autoref{fig:implementation:backend} presents a list of all available endpoints and their corresponding \acs{HTTP} request method. Due to their handling of critical and sensitive data, all endpoints are secured through \ac{JWT} authorization and always require administrator privileges, granted only for users with the \emph{Admin} \emph{userRole}. The login endpoint represents the only exception to this security measure, as it serves to generate a \ac{JWT} in the first place by validating a users credentials, and therefore operates without any \ac{JWT} authorization.
 
 The backend \ac{API} implements comprehensive \ac{CRUD} operations for both job and user entities. These endpoints enable the retrieval of individual objects or complete object collections, the creation of new objects, and the modification or removal of existing objects. Furthermore, the \ac{API} exposes four additional endpoints to change the state of jobs and therefore providing the features to control job execution of WebArgo. Upon job activation, a batch associated to this job is generated and all connected workers are triggered to initiate the initialization of their corresponding WebAssembly environment. Starting a job initiates the process of distributing tasks from its batch to \emph{ready} participating workers. When a job is stopped, its current state is persisted on the web server as described in \autoref{sec:implementation:persistence}. The job reset operation permanently removes all progress associated with a job and generates a new unprocessed batch containing the initial tasks.
@@ -187,7 +185,7 @@ The \emph{Dashboard Page}, displayed in \autoref{fig:implementation:dashboard-pa
 \end{figure}
 ~\\
 On the left side of the \emph{Dashboard Page} is a component located to manage the jobs of the platform. It holds a list of all existing jobs and their current progress, displayed in \autoref{fig:implementation:job-list}. Above this list of jobs appears a new component when a job is activated by an administrator.
-
+~\\
 \autoref{fig:implementation:active-job} displays a view of this active job component on the left side. This component visualizes the progress of an active job and displays the gathered results of complete tasks after each batch completion in real-time. Additionally it provides an interface to interact with this job. When a button of this interface is clicked, a corresponding \acs{HTTP} request, containing the administrator's \ac{JWT}, is transmitted to the backend. After all tasks are completed and the state of the job is \emph{DONE}, this component presents information about the total run time of the job. 
 
 On the right side is another component located that displays a list of all connected workers, also in real-time. This list contains information about the initialization progress as well as the hardware and operating system for each worker with an active WebSocket connection to the backend. A view of this list is displayed in \autoref{fig:implementation:active-job} on the right side.
