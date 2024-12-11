@@ -66,33 +66,23 @@ To identify a high-performance framework, the most popular backend frameworks li
   \myfloatalign
   \subfloat[Requests/Second (2024-06-25) \cite{backend:benchmark1}]{
      \label{fig:methodology:benchmark1BE}
-     \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark1_BE-smal.png}
+     \includegraphics[width=.95\linewidth]{gfx/figures/Benchmark1_BE_2.png}
    }
    \caption{Frameworks from \autoref{fig:methodology:popularBE} Ranked by Performance}
    \label{fig:methodology:benchmarkBE}
 \end{figure}
 ~\\
-Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the framework to implement the backend component. It performed exceptionally well in both benchmarks shown in \autoref{fig:methodology:benchmarkBE} and is also a popular choice among developers.
-%\begin{figure}[htbp] \ContinuedFloat
-%  \myfloatalign
-%  \subfloat[Requests/Second (2024-06-25) \cite{backend:benchmark1}]{
-%     \label{fig:methodology:benchmark1BE}
-%     \includegraphics[width=.75\linewidth]{gfx/figures/Benchmark1_BE.png}
-%   }
-%   \caption{Most Popular Backend Frameworks from \autoref{fig:methodology:popularBE} Ranked by Performance.}
-%   \label{fig:methodology:benchmarkBE}
-%\end{figure}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.95\textwidth]{gfx/figures/FrameworkSurvey2024.png}
-  \caption{Most Used Web Frameworks and Technologies in 2024 (Developer Survey from Stack Overflow) \cite{frontend:popularity}}
-  \label{fig:methodology:popularFE}
-\end{figure}
-\clearpage
+Finally, NestJS \cite{methodology:nestjs} with Fastify was selected as the framework to implement the backend component. It performed exceptionally well in both benchmarks, ranking on first place in \autoref{fig:methodology:benchmark1BE} and second place in \autoref{fig:methodology:benchmark2BE}. Additionally is the NestJS framework a popular choice among developers, as shown in \autoref{fig:methodology:popularBE}.
 
 \subsection{Frontend}
 \label{subsec:methodology:frameworks:frontend}
 The criteria stated in \autoref{sec:methodology:frameworks} also applied for the selection of a framework for the frontend. \autoref{fig:methodology:popularFE} shows the 36 most used frameworks among web developers in July 2024 \cite{frontend:popularity}. This statistic was collected by Stack Overflow and is the result of a survey. In this survey web developers have been asked which web frameworks and web technologies they had been working with in the past year, and which do they want to work in over the next year \cite{frontend:popularity}. The two most popular options are, by far, Node.js and React with each around 40\% of votes. While Node.js is mainly used for backend development React is a JavaScript library used for frontend development. This qualifies React as the choice of technology for the frontend development. Ranking fourth in \autoref{sec:methodology:frameworks} is Next.js with 17.9\% of votes. Next.js is a web framework based on React \cite{methodology:nextjs} and according to the survey the most popular React web framework in the year 2024. Therefore Next.js was selected as the framework for frontend development.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{gfx/figures/FrameworkSurvey2024.png}
+  \caption{20 Most Used Web Frameworks and Technologies in 2024 (Developer Survey from Stack Overflow) \cite{frontend:popularity}}
+  \label{fig:methodology:popularFE}
+\end{figure}
 
 \subsection{Database}
 An object-relational database system fulfills WebArgo's requirements, as these systems typically offer high performance capabilities and the entities described in \autoref{sec:concept:terminology} can be represented with an object-relational database schema.
@@ -129,7 +119,7 @@ The standard Go compiler inherently provides a option to directly target the Web
 \subsubsection{Pyodie for Python}
 \label{subsec:methodology:wasm:python}
 Pyodide is described to be a port from CPython to WebAssembly/Emscripten \cite{methodology:pyodie}. It is a JavaScript library that provides a robust foreign function interface to compile python code to WebAssembly and execute it inside the browser environment \cite{methodology:pyodie}. Additionally it enables the installation and execution of Python packages inside the browser using micropip \cite{methodology:pyodie}. Also Pyodide promises, that the executed Python code has full access to the Web \ac{API}s \cite{methodology:pyodie}, which is not an default feature of emscripten or Go.
-
+~\\
 Unfortunately, Pyodide performed relatively slow compared to emscripten or Go during the testing of this work. \autoref{sec:evaluation:languages} further investigates the performance of these WebAssembly environments. 
 
 \subsection{WebSockets}
@@ -137,14 +127,14 @@ Unfortunately, Pyodide performed relatively slow compared to emscripten or Go du
 WebSockets play a crucial role for the communication infrastructure of WebArgo. Different from standard \acs{HTTP} requests enable WebSockets a faster, bidirectional and full-duplex communication between clients and servers \cite{methodology:websockets1, methodology:websockets3, methodology:websockets2}. Unlike traditional \acs{HTTP} request-response patterns, WebSocket are establishing a persistent connections between client and server \cite{methodology:websockets3}, allowing real-time data transmission in both directions with minimal overhead after the initial handshake \cite{methodology:websockets3}. This protocol utilizes the ws:// or wss:// (secure) \ac{URI} scheme and efficiently handles scenarios requiring live updates such as financial trading platforms, multiplayer games, or chat applications, with significantly reduced latency compared to polling mechanisms \cite{methodology:websockets3}.
 
 The real-time capability is leveraged for efficient task distribution, progress monitoring, and result collection in the implementation of the WebArgo platform. Additionally, is the bidirectional and full-duplex communication model extremely useful to handle the transmission of task and results between the backend and workers. This replaces inefficient polling strategies and therefore enhances the performance of the communication process between backend and workers.
-\\~\\
-\autoref{fig:methodology:websocket} displays the browser compatibility of WebSocket with multiple major browsers \cite{methodology:websockets1}. The check mark indicates WebSocket support and the green number below marks the version since WebSocket support was implemented. All browsers are sorted by desktop and mobile version.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{gfx/figures/websocket-browsercompability.png}
   \caption{Browser Compatibility: WebSocket \cite{methodology:websockets1}}
   \label{fig:methodology:websocket}
 \end{figure}
+~\\
+\autoref{fig:methodology:websocket} displays the browser compatibility of WebSocket with multiple major browsers \cite{methodology:websockets1}. The check mark indicates WebSocket support and the green number below marks the version since WebSocket support was implemented. All browsers are sorted by desktop and mobile version.
 
 \subsubsection{Socket.IO}
 Socket.IO \cite{methodology:websockets2} is a popular JavaScript library that implements the usage of WebSockets on both the server and client side. NestJS \cite{methodology:nestjs}, the selected framework to implement the backend, has an inherent support of Socket.IO, by utilizing the \emph{NestJS-Gateways} library \cite{methodology:nestjs}. Therefore the Socket.IO library was selected to implement WebSocket inside the WebArgo platform.
@@ -154,19 +144,19 @@ Socket.IO \cite{methodology:websockets2} is a popular JavaScript library that im
 WebWorkers can be accessed through a specific JavaScript \ac{API}, enabling concurrent execution of scripts in background threads separate from the main browser UI thread \cite{methodology:webworkers}. These WebWorkers operate in an isolated context, communicating with the main thread through a message-passing interface, and therefore cannot directly access the \acs{HTML} \acs{DOM} of the web page \cite{methodology:webworkers}. 
 
 This implementation of parallel processing through WebWorkers prevents the computationally intensive WebAssembly execution from blocking the user interface of a worker. This enables the worker to monitor the currently executed task and prevents an unpleasant user experience caused by an unexpectedly frozen screen. Furthermore, the WebWorker \ac{API} allows to create multiple WebWorkers in parallel. This feature could be used in the future to implement a browser-based multi-threading solution for WebArgo.
-\\~\\
-\autoref{fig:methodology:webworker} displays the browser compatibility of WebWorker with multiple major browsers \cite{methodology:webworkers}. The check mark indicates WebWorker support and the green number below marks the version since WebWorker support was implemented. All browsers are sorted by desktop and mobile version.
-\newpage
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{gfx/figures/webworker-browsercompability.png}
   \caption{Browser Compatibility: WebWorker \cite{methodology:webworkers}}
   \label{fig:methodology:webworker}
 \end{figure}
+~\\
+\autoref{fig:methodology:webworker} displays the browser compatibility of WebWorker with multiple major browsers \cite{methodology:webworkers}. The check mark indicates WebWorker support and the green number below marks the version since WebWorker support was implemented. All browsers are sorted by desktop and mobile version.
 
 \section{Benchmark: Visualizing the Mandelbrot set}
 \label{sec:methodology:benchmark}
 To benchmark the platform's performance, a computationally intensive job is implemented and executed across multiple connected workers. The total execution time is compared to the execution time of the same job on a single machine with native source code. The visualization of the Mandelbrot set represents all characteristics previously described in section \ref{sec:concept:theory}, making it suitable as a job for this benchmark.
+\newpage
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth]{gfx/figures/mandelbrot.png}
