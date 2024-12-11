@@ -3,8 +3,8 @@
 The overall process of developing the WebArgo platform presented in this work consisted of the following steps:
 \begin{enumerate}
   \item Theoretical design of WebArgo's architecture
-  \item Development of a Proof of Concept prototype
-  \item Development process from the prototype to the WebArgo platform
+  \item Development of a \ac{POC} prototype
+  \item Development process from the \ac{POC} to the WebArgo platform
   \begin{itemize}
     \item Implementation of \ac{API} and web interface
     \item Usage of generic job and task entities to support any kind of custom job
@@ -80,7 +80,7 @@ The criteria stated in \autoref{sec:methodology:frameworks} also applied for the
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{gfx/figures/FrameworkSurvey2024.png}
-  \caption{20 Most Used Web Frameworks and Technologies in 2024 (Developer Survey from Stack Overflow) \cite{frontend:popularity}}
+  \caption{Most Used Web Frameworks and Technologies in 2024 (Developer Survey from Stack Overflow) \cite{frontend:popularity}}
   \label{fig:methodology:popularFE}
 \end{figure}
 
@@ -141,7 +141,7 @@ Socket.IO \cite{methodology:websockets2} is a popular JavaScript library that im
 
 \subsection{WebWorker}
 \label{sec:methodology:webworker}
-WebWorkers can be accessed through a specific JavaScript \ac{API}, enabling concurrent execution of scripts in background threads separate from the main browser UI thread \cite{methodology:webworkers}. These WebWorkers operate in an isolated context, communicating with the main thread through a message-passing interface, and therefore cannot directly access the \acs{HTML} \acs{DOM} of the web page \cite{methodology:webworkers}. 
+WebWorkers can be accessed through a specific JavaScript \ac{API}, enabling concurrent execution of scripts in background threads separate from the main browser \ac{UI} thread \cite{methodology:webworkers}. These WebWorkers operate in an isolated context, communicating with the main thread through a message-passing interface, and therefore cannot directly access the \acs{HTML} \acs{DOM} of the web page \cite{methodology:webworkers}. 
 
 This implementation of parallel processing through WebWorkers prevents the computationally intensive WebAssembly execution from blocking the user interface of a worker. This enables the worker to monitor the currently executed task and prevents an unpleasant user experience caused by an unexpectedly frozen screen. Furthermore, the WebWorker \ac{API} allows to create multiple WebWorkers in parallel. This feature could be used in the future to implement a browser-based multi-threading solution for WebArgo.
 \begin{figure}[htbp]
@@ -171,4 +171,4 @@ The Mandelbrot set is a famous subset of the complex numbers $\mathbb{C}$. \auto
 \end{equation}
 If the value of $z_{n+1}$ does not diverge over $n$ iterations, $c$ belongs to the Mandelbrot set. In \autoref{fig:methodology:mandelbrot}, all complex numbers $c$, for which $z_{n+1}$ remains bounded over $n$ iterations are colored black. All other $c$ are colored based on the number of iterations required for $z_{n+1}$ to diverge, with the color spectrum ranging from red (low iteration count) over to blue (high iteration count) indicating increasing iteration counts.
 
-The calculation and visualization of the Mandelbrot set can be partitioned into multiple tasks. Each task executes the same source code but with different input parameters, which define a unique two-dimensional area in the complex plane. These tasks can be executed in parallel due to the independence of calculations between different areas. The implementation for this benchmark is provided in \autoref{ch:appendix}. The source code for the native Go variant can be found in \autoref{app:code:mandelbrot1} and its Go-to-WebAssembly counterpart in \autoref{app:code:mandelbrot2}.
+The calculation and visualization of the Mandelbrot set can be partitioned into multiple tasks. Each task executes the same source code but with different input parameters, which define a unique two-dimensional area in the complex plane. These tasks can be executed in parallel due to the independence of calculations between different areas. The implementation for this benchmark is provided in \autoref{ch:appendix}. The source code for the native Go variant can be found in \autoref{app:code:mandelbrot1} and its Go-to-WebAssembly counterpart in \autoref{app:code:mandelbrot2} as well as the C++-to-WebAssembly version in \autoref{app:code:mandelbrot4}.

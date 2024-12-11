@@ -76,7 +76,7 @@ Experiments and code executions have been made on a systems with the following s
 \label{app:code:mandelbrot1}
 Below is the Go source code for generating a colored PNG file of the Mandelbrot set:
 
-\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation}]
+\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation: Go}]
     package main
 
     import (
@@ -217,7 +217,7 @@ The output of this code on the system specified in \ref{app:system:mymachine} wa
 \label{app:code:mandelbrot2}
 Below is the Go source code for generating a colored PNG file of the Mandelbrot set with all required additions to be compiled to a WebAssembly binary file and executed in the browser:
 
-\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation (WASM build)}]
+\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation: Go (WASM build)}]
     package main
 
     import (
@@ -412,7 +412,7 @@ This code has been executed in three isolated runs by accessing the web applicat
 \label{app:code:mandelbrot3}
 Below is the Go source code for generating 101 unique colored \acs{PNG} files of the Mandelbrot set:
 
-\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation}]
+\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation: Go (native benchamrk)}]
     package main
 
     import (
@@ -581,7 +581,7 @@ The output of this code on the system specified in \ref{app:system:server} was:
 \label{app:code:mandelbrot4}
 Below is the C++ source code for generating a colored PNG file of the Mandelbrot set with all required additions to be compiled to a WebAssembly binary file and executed in the browser:
 
-\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation (WASM build)}]
+\begin{lstlisting}[language=go, frame=tb, caption={Mandelbrot Set Calculation: C++ (WASM build)}]
     #include <emscripten/bind.h>
     #include <emscripten/val.h>
     #include <complex>
