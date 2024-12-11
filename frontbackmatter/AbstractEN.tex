@@ -1,22 +1,16 @@
 %*******************************************************
 % Abstract in English
 %*******************************************************
-\pdfbookmark[0]{Abstract}{Abstract}
-
-
 \begin{otherlanguage}{american}
+	\pdfbookmark[0]{Abstract}{Abstract}
 	\chapter*{Abstract}
-	A short summary of the contents in English of about one page. The following points should be addressed in particular:
-	\begin{itemize}
-		\item Motivation: Why did this work come about? Why is the topic of the work interesting (for the general public)? The motivation should be abstracted as far as possible from the specific tasks that may be given by a company.
-		\item Content: What is the content of this thesis? What exactly is covered in the thesis? The methodology and working method should be briefly discussed here.
-		\item Results: What are the results of this work? A brief overview of the most important results as a teaser to read the complete thesis.
-	\end{itemize}
-	\medskip
-	
-	\noindent
-	BTW: A great guide by Kent Beck how to write good abstracts can be found here:
-	\begin{center}
-		\url{https://plg.uwaterloo.ca/~migod/research/beckOOPSLA.html}
-	\end{center}
+	\begin{sloppypar}
+		This work presents WebArgo, a novel volunteer computing platform that leverages modern web technologies to create an accessible and efficient distributed computing solution. The platform addresses the growing need for computational resources for research and development projects, while providing an alternative to traditional high-performance computing infrastructure, particularly beneficial for organizations with limited resources.
+		\\~\\
+		WebArgo's implementation utilizes three key web technologies: WebAssembly for platform-independent code execution, WebSockets for efficient real-time communication, and WebWorkers for potential browser-based parallel processing. The platform is designed to support heterogeneous client devices, requiring only access to a web browser for volunteers to participate in WebArgo and contribute their computational resources. Additionally, WebArgo allows dynamic worker participation, because the volunteer computing environment is expected to consist of potentially unreliable and fluctuating volunteer workers.
+		\\~\\
+		The evaluation experiments demonstrate WebArgo's capability to effectively distribute computational workloads across diverse consumer devices while maintaining system stability in environments with fluctuating worker participation. Empirical evaluation using a benchmark project to visualize the Mandelbrot set in high resolution achieved a 59\% reduction of the total computation time compared to native code execution in a cloud environment when distributing the workload across four heterogeneous common household devices with WebArgo. The platform successfully supported various client devices, including smartphones, tablets, laptops, personal computers, and single-board computers, while maintaining a reliable task distribution and providing a complete result collection.
+		\\~\\
+		This work contributes to the field of volunteer computing by providing a web-based solution that reduces the barrier of entry for volunteer participation while addressing security concerns through the browser's inherent security model and WebAssembly's sandbox environment. WebArgo's implementation enables a straightforward deployment, management and development of custom jobs for independent usage without a deep understanding of the underlying architecture, making distributed computing more accessible in general.
+	\end{sloppypar}
 \end{otherlanguage}
